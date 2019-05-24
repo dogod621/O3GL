@@ -7,5 +7,5 @@ Objective Oriented OpenGL
   	OpenGL Utility Toolkit (FreeGLUT): https://github.com/dcnieho/FreeGLUT
 
 # How to build
-	1. clone with submodul: git clone --recursive https://github.com/dogod621/E57Converter.git
+	1. clone with submodul: git clone --recursive https://github.com/dogod621/O3GL.git
 	2. build the project: use CMAKE
