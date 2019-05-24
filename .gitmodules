@@ -1,0 +1,9 @@
+[submodule "GLM"]
+	path = GLM
+	url = https://github.com/g-truc/glm.git
+[submodule "GLEW"]
+	path = GLEW
+	url = https://github.com/Perlmint/glew-cmake.git
+[submodule "FreeGLUT"]
+	path = FreeGLUT
+	url = https://github.com/dcnieho/FreeGLUT.git
