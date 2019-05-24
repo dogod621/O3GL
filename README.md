@@ -1,5 +1,5 @@
 # O3GL
-Objective Oriented OpenGL
+Object-Oriented OpenGL
 
 # Submodules
 	OpenGL Mathematics (GLM): https://github.com/g-truc/glm
