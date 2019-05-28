@@ -196,7 +196,7 @@ list(APPEND GLM_TARGETS
 	test-perf_matrix_transpose
 	test-perf_vector_mul_matrix)
 	
-set_target_properties(${GLM_TARGETS} PROPERTIES COMPILE_FLAGS "/wd4819" FOLDER "GLM")
+set_target_properties(${GLM_TARGETS} PROPERTIES FOLDER "GLM")
 
 # GLEW
 set(glew-cmake_BUILD_SHARED OFF CACHE BOOL " " FORCE)
@@ -222,7 +222,7 @@ if(${glew-cmake_BUILD_STATIC})
 	endif()
 endif()
 
-set_target_properties(${GLEW_TARGETS} PROPERTIES COMPILE_FLAGS "/wd4819" FOLDER "GLEW")
+set_target_properties(${GLEW_TARGETS} PROPERTIES FOLDER "GLEW")
 
 # FreeGLUT
 set(FREEGLUT_BUILD_SHARED_LIBS OFF CACHE BOOL " " FORCE)
@@ -274,7 +274,7 @@ if(${FREEGLUT_BUILD_STATIC_LIBS})
 	endif()
 endif()
 
-set_target_properties(${FreeGLUT_TARGETS} PROPERTIES COMPILE_FLAGS "/wd4819" FOLDER "FreeGLUT")
+set_target_properties(${FreeGLUT_TARGETS} PROPERTIES FOLDER "FreeGLUT")
 
 # O3GL
 add_subdirectory("O3GL")
