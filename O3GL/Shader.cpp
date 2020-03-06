@@ -2,7 +2,7 @@
 #include <fstream>
 
 // O3GL
-#include "Shader.hpp"
+#include "O3GL/Shader.hpp"
 
 // 
 namespace O3GL
@@ -16,40 +16,76 @@ namespace O3GL
 		return log;
 	}
 
-	void _Shader::Source(const std::vector<std::string>& strings) const
+	std::string _Shader::GetSource() const
+	{
+		std::string ss(GetInfo<GLint>(GL_SHADER_SOURCE_LENGTH), NULL);
+		GLsizei loadSize(0);
+		glGetShaderSource(*this, (GLsizei)ss.size(), &loadSize, &ss[0]);
+		GL_CHECK_ERROR;
+		return ss;
+	}
+
+	void _Shader::Source(const std::vector<std::string>& srcs) const
 	{
 		std::vector<GLint> length;
-		std::vector<const GLchar *> stringsGL;
-		length.resize(strings.size());
-		stringsGL.resize(strings.size());
-		for (int i = 0; i < strings.size(); ++i)
+		std::vector<const GLchar*> srcsPtr;
+		length.resize(srcs.size());
+		srcsPtr.resize(srcs.size());
+		for (int i = 0; i < srcs.size(); ++i)
 		{
-			length[i] = (GLint)strings[i].size();
-			stringsGL[i] = strings[i].c_str();
+			length[i] = (GLint)srcs[i].size();
+			srcsPtr[i] = srcs[i].c_str();
 		}
-		glShaderSource(*this, (GLsizei)strings.size(), &stringsGL[0], &length[0]);
+		glShaderSource(*this, (GLsizei)srcs.size(), &srcsPtr[0], &length[0]);
 		GL_CHECK_ERROR;
 	}
 
-	void _Shader::Source(const std::string& fileName) const
+	void _Shader::Source(const std::string& src) const
+	{
+		std::vector<GLint> length;
+		std::vector<const GLchar*> srcsPtr;
+		length.resize(1);
+		srcsPtr.resize(1);
+		length[0] = (GLint)src.size();
+		srcsPtr[0] = src.c_str();
+		glShaderSource(*this, 1, &srcsPtr[0], &length[0]);
+		GL_CHECK_ERROR;
+	}
+
+	void _Shader::SourceFile(const std::vector<std::string>& fileNames) const
+	{
+		std::vector<std::string> srcs(fileNames.size());
+		for (std::size_t i = 0; i < fileNames.size(); ++i)
+		{
+			std::ifstream file;
+			file.open(fileNames[i], std::ios::in | std::ios::ate);
+			if (!file.is_open())
+			{
+				file.close();
+				THROW_EXCEPTION("File: " + fileNames[i] + " cannot be opened.");
+			}
+			srcs[i].resize((std::size_t)file.tellg());
+			file.seekg(0, std::ios::beg);
+			file.read(&srcs[i][0], srcs[i].size());
+			file.close();
+		}
+		Source(srcs);
+	}
+
+	void _Shader::SourceFile(const std::string& fileName) const
 	{
 		std::ifstream file;
 		file.open(fileName, std::ios::in | std::ios::ate);
 		if (!file.is_open())
 		{
 			file.close();
-			EXCEPTION("File: " + fileName + " cannot be opened.");
+			THROW_EXCEPTION("File: " + fileName + " cannot be opened.");
 		}
-
-		std::string fileContent((std::size_t)file.tellg() + 1, NULL);
+		std::string src((std::size_t)file.tellg(), NULL);
 		file.seekg(0, std::ios::beg);
-		file.read(&fileContent[0], fileContent.size() - 1);
+		file.read(&src[0], src.size());
 		file.close();
-
-		const GLchar * temp[1] = { fileContent.c_str() };
-		glShaderSource(*this, 1, temp, NULL);
-
-		GL_CHECK_ERROR;
+		Source(src);
 	}
 
 	std::tuple<GLboolean, std::string> _Shader::Compile() const

@@ -1,31 +1,26 @@
 #pragma once
 
 // std
+#include <vector>
 #include <map>
 
 // O3GL
-#include "Utils.hpp"
-#include "Texture.hpp"
+#include "O3GL/Utils.hpp"
+#include "O3GL/Texture.hpp"
 
 // 
 namespace O3GL
 {
 	//
-	class _FrameBuffer : public Object
+	class _FrameBuffer : public GLObject
 	{
 	public:
-		_FrameBuffer() : Object(glCreateFramebuffer(), glDeleteFramebuffers) {}
-
-	public:
-		inline std::map<GLenum, Texture>& ColorAttachments() { return colorAttachments; }
-		inline std::map<GLenum, Texture>& DepthAttachments() { return depthAttachments; }
-		inline const std::map<GLenum, Texture>& ColorAttachments() const { return colorAttachments; }
-		inline const std::map<GLenum, Texture>& DepthAttachments() const { return depthAttachments; }
+		_FrameBuffer() : GLObject(glCreateFramebuffer(), glDeleteFramebuffers) {}
 
 	public:
 		void Begin() const;
 
-		static void End();
+		void End() const;
 
 		template<class T>
 		T GetInfo(GLenum pname) const;
@@ -33,17 +28,16 @@ namespace O3GL
 		template<class T>
 		void SetInfo(GLenum pname, T params) const;
 
-		void AttachToColor(GLenum attachment, const Texture& texture);
+		template<class T>
+		T GetInfo(GLenum attachment, GLenum pname) const;
 
-		void AttachToDepth(const Texture& texture);
-
-		Texture GetColorAttachment(GLenum attachment) const;
-
-		Texture GetDepthAttachment(GLenum attachment) const;
+		void Attach(GLenum attachment, const Texture& texture, GLint level = 0);
 
 		void DrawBuffer(GLenum attachment) const;
 
 		void DrawBuffer(const std::vector<GLenum>& attachments) const;
+
+		std::string AttachmentInformation() const;
 
 	public:
 		template<>
@@ -52,16 +46,15 @@ namespace O3GL
 		template<>
 		void SetInfo<GLint>(GLenum pname, GLint params) const;
 
-	protected:
-		std::map<GLenum, Texture> colorAttachments;
-		std::map<GLenum, Texture> depthAttachments;
+		template<>
+		GLint GetInfo<GLint>(GLenum attachment, GLenum pname) const;
 	};
 
 	//
-	class FrameBuffer : public Handle<_FrameBuffer>
+	class FrameBuffer : public GLHandle<_FrameBuffer>
 	{
 	public:
-		FrameBuffer() : Handle<_FrameBuffer>(new _FrameBuffer()) {}
+		FrameBuffer() : GLHandle<_FrameBuffer>(new _FrameBuffer()) {}
 	};
 
 	//
@@ -79,5 +72,14 @@ namespace O3GL
 	{
 		glNamedFramebufferParameteri(*this, pname, params);
 		GL_CHECK_ERROR;
+	}
+
+	template<>
+	GLint _FrameBuffer::GetInfo<GLint>(GLenum attachment, GLenum pname) const
+	{
+		GLint ri(0);
+		glGetNamedFramebufferAttachmentParameteriv(*this, attachment, pname, &ri);
+		GL_CHECK_ERROR;
+		return ri;
 	}
 };

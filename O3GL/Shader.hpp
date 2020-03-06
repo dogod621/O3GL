@@ -2,17 +2,18 @@
 
 // std
 #include <tuple>
+#include <vector>
 
 // O3GL
-#include "Utils.hpp"
+#include "O3GL/Utils.hpp"
 
 // 
 namespace O3GL
 {
-	class _Shader : public Object
+	class _Shader : public GLObject
 	{
 	public:
-		_Shader(GLenum type = GL_VERTEX_SHADER) : Object(glCreateShader(type), glDeleteShader), type(type) {}
+		_Shader(GLenum type = GL_VERTEX_SHADER) : GLObject(glCreateShader(type), glDeleteShader), type(type) {}
 
 	public:
 		inline const GLenum& Type() const { return type; }
@@ -22,9 +23,15 @@ namespace O3GL
 
 		std::string GetLog() const;
 
-		void Source(const std::vector<std::string>& strings) const;
+		std::string GetSource() const;
 
-		void Source(const std::string& fileName) const;
+		void Source(const std::vector<std::string>& srcs) const;
+
+		void Source(const std::string& src) const;
+
+		void SourceFile(const std::vector<std::string>& fileNames) const;
+
+		void SourceFile(const std::string& fileName) const;
 
 		std::tuple<GLboolean, std::string> Compile() const;
 
@@ -40,10 +47,10 @@ namespace O3GL
 	};
 
 	//
-	class Shader : public Handle<_Shader>
+	class Shader : public GLHandle<_Shader>
 	{
 	public:
-		Shader(GLenum type = GL_VERTEX_SHADER) : Handle<_Shader>(new _Shader(type)) {}
+		Shader(GLenum type = GL_VERTEX_SHADER) : GLHandle<_Shader>(new _Shader(type)) {}
 	};
 
 	//

@@ -1,23 +1,25 @@
 #pragma once
 
 // O3GL
-#include "Utils.hpp"
-#include "Buffer.hpp"
+#include "O3GL/Utils.hpp"
+#include "O3GL/Buffer.hpp"
 
 // 
 namespace O3GL
 {
-	class _VertexArray : public Object
+	class _VertexArray : public GLObject
 	{
 	public:
-		_VertexArray() : Object(glCreateVertexArray(), glDeleteVertexArrays) {}
+		_VertexArray() : GLObject(glCreateVertexArray(), glDeleteVertexArrays) {}
 
 	public:
 		void Begin() const;
 
-		static void End();
+		void End() const;
 
 		void EnableAttrib(GLuint attribindex) const;
+
+		void DisableAttrib(GLuint attribindex) const;
 
 		template<class T>
 		void VertexBuffer(GLuint bindingindex, GLuint buffer, std::size_t offset, std::size_t stride) const;
@@ -34,10 +36,10 @@ namespace O3GL
 	};
 
 	//
-	class VertexArray : public Handle<_VertexArray>
+	class VertexArray : public GLHandle<_VertexArray>
 	{
 	public:
-		VertexArray() : Handle<_VertexArray>(new _VertexArray()) {}
+		VertexArray() : GLHandle<_VertexArray>(new _VertexArray()) {}
 	};
 
 	//

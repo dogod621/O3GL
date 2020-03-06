@@ -1,24 +1,44 @@
 // O3GL
-#include "VertexArray.hpp"
+#include "O3GL/VertexArray.hpp"
 
 // 
 namespace O3GL
 {
 	void _VertexArray::Begin() const
 	{
-		glBindVertexArray(*this);
+		if (begin)
+		{
+			THROW_EXCEPTION("Call Begin without End");
+		}
+		{
+			glBindVertexArray(*this);
+		}
+		*(bool*)(&begin) = true;
 		GL_CHECK_ERROR;
 	}
 
-	void _VertexArray::End()
+	void _VertexArray::End() const
 	{
-		glBindVertexArray(0);
+		if (!begin)
+		{
+			THROW_EXCEPTION("Call End without Begin");
+		}
+		{
+			glBindVertexArray(0);
+		}
+		*(bool*)(&begin) = false;
 		GL_CHECK_ERROR;
 	}
 
 	void _VertexArray::EnableAttrib(GLuint attribindex) const
 	{
 		glEnableVertexArrayAttrib(*this, attribindex);
+		GL_CHECK_ERROR;
+	}
+
+	void _VertexArray::DisableAttrib(GLuint attribindex) const
+	{
+		glDisableVertexArrayAttrib(*this, attribindex);
 		GL_CHECK_ERROR;
 	}
 

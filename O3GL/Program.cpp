@@ -1,18 +1,32 @@
 // O3GL
-#include "Program.hpp"
+#include "O3GL/Program.hpp"
 
 // 
 namespace O3GL
 {
 	void _Program::Begin() const
 	{
-		glUseProgram(*this);
+		if (begin)
+		{
+			THROW_EXCEPTION("Call Begin without End");
+		}
+		{
+			glUseProgram(*this);
+		}
+		*(bool*)(&begin) = true;
 		GL_CHECK_ERROR;
 	}
 
-	void _Program::End()
+	void _Program::End() const
 	{
-		glUseProgram(0);
+		if (!begin)
+		{
+			THROW_EXCEPTION("Call End without Begin");
+		}
+		{
+			glUseProgram(0);
+		}
+		*(bool*)(&begin) = false;
 		GL_CHECK_ERROR;
 	}
 
@@ -33,7 +47,7 @@ namespace O3GL
 		std::vector<GLbyte> buffer;
 		std::tie(format, buffer) = binary;
 
-		glProgramBinary(*this, format, (const void *)(&buffer[0]), (GLsizei)buffer.size());
+		glProgramBinary(*this, format, (const void*)(&buffer[0]), (GLsizei)buffer.size());
 		GL_CHECK_ERROR;
 	}
 

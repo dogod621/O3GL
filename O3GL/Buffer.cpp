@@ -1,5 +1,5 @@
 // O3GL
-#include "Buffer.hpp"
+#include "O3GL/Buffer.hpp"
 
 //
 namespace O3GL

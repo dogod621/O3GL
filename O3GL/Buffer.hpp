@@ -1,16 +1,19 @@
 #pragma once
 
+// std
+#include <vector>
+
 // O3GL
-#include "Utils.hpp"
+#include "O3GL/Utils.hpp"
 
 // 
 namespace O3GL
 {
 	//
-	class _Buffer : public Object
+	class _Buffer : public GLObject
 	{
 	public:
-		_Buffer() : Object(glCreateBuffer(), glDeleteBuffers) {}
+		_Buffer() : GLObject(glCreateBuffer(), glDeleteBuffers) {}
 
 		template<class T>
 		T GetInfo(GLenum pname) const;
@@ -47,10 +50,10 @@ namespace O3GL
 	};
 
 	//
-	class Buffer : public Handle<_Buffer>
+	class Buffer : public GLHandle<_Buffer>
 	{
 	public:
-		Buffer() : Handle<_Buffer>(new _Buffer()) {}
+		Buffer() : GLHandle<_Buffer>(new _Buffer()) {}
 	};
 
 	//
@@ -75,7 +78,7 @@ namespace O3GL
 	template<class T>
 	void _Buffer::Data(const std::vector<T>& data, GLenum usage) const
 	{
-		glNamedBufferData(*this, data.size() * sizeof(T), (const void *)&data[0], usage);
+		glNamedBufferData(*this, data.size() * sizeof(T), (const void*)&data[0], usage);
 		GL_CHECK_ERROR;
 	}
 
@@ -89,7 +92,7 @@ namespace O3GL
 	template<class T>
 	void _Buffer::SubData(std::size_t offset, const std::vector<T>& data) const
 	{
-		glNamedBufferSubData(*this, offset * sizeof(T), data.size() * sizeof(T), (const void *)&data[0]);
+		glNamedBufferSubData(*this, offset * sizeof(T), data.size() * sizeof(T), (const void*)&data[0]);
 		GL_CHECK_ERROR;
 	}
 
@@ -98,7 +101,7 @@ namespace O3GL
 	{
 		std::vector<T> data;
 		data.resize(size);
-		glGetNamedBufferSubData(*this, offset * sizeof(T), data.size() * sizeof(T), (void *)&data[0]);
+		glGetNamedBufferSubData(*this, offset * sizeof(T), data.size() * sizeof(T), (void*)&data[0]);
 		GL_CHECK_ERROR;
 		return data;
 	}

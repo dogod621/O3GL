@@ -1,21 +1,24 @@
 #pragma once
 
+// std
+#include <vector>
+
 // O3GL
-#include "Utils.hpp"
-#include "Shader.hpp"
+#include "O3GL/Utils.hpp"
+#include "O3GL/Shader.hpp"
 
 //
 namespace O3GL
 {
-	class _Program : public Object
+	class _Program : public GLObject
 	{
 	public:
-		_Program() : Object(glCreateProgram(), glDeleteProgram) {}
+		_Program() : GLObject(glCreateProgram(), glDeleteProgram) {}
 
 	public:
 		void Begin() const;
 
-		static void End();
+		void End() const;
 
 		template<class T> 
 		T GetInfo(GLenum pname) const;
@@ -41,59 +44,59 @@ namespace O3GL
 		GLint GetUniformLocation(const std::string& name) const;
 
 		// Pass Var
-		template<class GLType, int v		> void Uniform(GLint location, GLType v0															) const;
-		template<class GLType, int v		> void Uniform(GLint location, GLType v0, GLType v1													) const;
-		template<class GLType, int v		> void Uniform(GLint location, GLType v0, GLType v1, GLType v2										) const;
-		template<class GLType, int v		> void Uniform(GLint location, GLType v0, GLType v1, GLType v2, GLType v3							) const;
-		template<class GLType, int v		> void Uniform(GLint location, const Vec2& v														) const;
-		template<class GLType, int v		> void Uniform(GLint location, const Vec3& v														) const;
-		template<class GLType, int v		> void Uniform(GLint location, const Vec4& v														) const;	
-		template<class GLType, int v		> void Uniform(GLint location, const Vec2i& v														) const;
-		template<class GLType, int v		> void Uniform(GLint location, const Vec3i& v														) const;
-		template<class GLType, int v		> void Uniform(GLint location, const Vec4i& v														) const;
-		template<class GLType, int v		> void Uniform(GLint location, const Vec2ui& v														) const;
-		template<class GLType, int v		> void Uniform(GLint location, const Vec3ui& v														) const;
-		template<class GLType, int v		> void Uniform(GLint location, const Vec4ui& v														) const;
+		template<class GLType, int n		> void Uniform(GLint location, GLType v0															) const;
+		template<class GLType, int n		> void Uniform(GLint location, GLType v0, GLType v1													) const;
+		template<class GLType, int n		> void Uniform(GLint location, GLType v0, GLType v1, GLType v2										) const;
+		template<class GLType, int n		> void Uniform(GLint location, GLType v0, GLType v1, GLType v2, GLType v3							) const;
+		template<class GLType, int n		> void Uniform(GLint location, const Vec2& v														) const;
+		template<class GLType, int n		> void Uniform(GLint location, const Vec3& v														) const;
+		template<class GLType, int n		> void Uniform(GLint location, const Vec4& v														) const;	
+		template<class GLType, int n		> void Uniform(GLint location, const Vec2i& v														) const;
+		template<class GLType, int n		> void Uniform(GLint location, const Vec3i& v														) const;
+		template<class GLType, int n		> void Uniform(GLint location, const Vec4i& v														) const;
+		template<class GLType, int n		> void Uniform(GLint location, const Vec2ui& v														) const;
+		template<class GLType, int n		> void Uniform(GLint location, const Vec3ui& v														) const;
+		template<class GLType, int n		> void Uniform(GLint location, const Vec4ui& v														) const;
 
-		template<class GLType, int v		> void Uniform(const std::string &name, GLType v0													) const { Uniform<GLType, v		>(GetUniformLocation(name.c_str()), v0						); GL_CHECK_ERROR; }
-		template<class GLType, int v		> void Uniform(const std::string &name, GLType v0, GLType v1										) const { Uniform<GLType, v		>(GetUniformLocation(name.c_str()), v0, v1					); GL_CHECK_ERROR; }
-		template<class GLType, int v		> void Uniform(const std::string &name, GLType v0, GLType v1, GLType v2								) const { Uniform<GLType, v		>(GetUniformLocation(name.c_str()), v0, v1, v2				); GL_CHECK_ERROR; }
-		template<class GLType, int v		> void Uniform(const std::string &name, GLType v0, GLType v1, GLType v2, GLType v3					) const { Uniform<GLType, v		>(GetUniformLocation(name.c_str()), v0, v1, v3				); GL_CHECK_ERROR; }
-		template<class GLType, int v		> void Uniform(const std::string &name, const Vec2& v												) const { Uniform<GLType, v		>(GetUniformLocation(name.c_str()), v						); GL_CHECK_ERROR; }
-		template<class GLType, int v		> void Uniform(const std::string &name, const Vec3& v												) const { Uniform<GLType, v		>(GetUniformLocation(name.c_str()), v						); GL_CHECK_ERROR; }
-		template<class GLType, int v		> void Uniform(const std::string &name, const Vec4& v												) const { Uniform<GLType, v		>(GetUniformLocation(name.c_str()), v						); GL_CHECK_ERROR; }
-		template<class GLType, int v		> void Uniform(const std::string &name, const Vec2i& v												) const { Uniform<GLType, v		>(GetUniformLocation(name.c_str()), v						); GL_CHECK_ERROR; }
-		template<class GLType, int v		> void Uniform(const std::string &name, const Vec3i& v												) const { Uniform<GLType, v		>(GetUniformLocation(name.c_str()), v						); GL_CHECK_ERROR; }
-		template<class GLType, int v		> void Uniform(const std::string &name, const Vec4i& v												) const { Uniform<GLType, v		>(GetUniformLocation(name.c_str()), v						); GL_CHECK_ERROR; }
-		template<class GLType, int v		> void Uniform(const std::string &name, const Vec2ui& v												) const { Uniform<GLType, v		>(GetUniformLocation(name.c_str()), v						); GL_CHECK_ERROR; }
-		template<class GLType, int v		> void Uniform(const std::string &name, const Vec3ui& v												) const { Uniform<GLType, v		>(GetUniformLocation(name.c_str()), v						); GL_CHECK_ERROR; }
-		template<class GLType, int v		> void Uniform(const std::string &name, const Vec4ui& v												) const { Uniform<GLType, v		>(GetUniformLocation(name.c_str()), v						); GL_CHECK_ERROR; }
+		template<class GLType, int n		> void Uniform(const std::string &name, GLType v0													) const { Uniform<GLType, n		>(GetUniformLocation(name.c_str()), v0						); GL_CHECK_ERROR; }
+		template<class GLType, int n		> void Uniform(const std::string &name, GLType v0, GLType v1										) const { Uniform<GLType, n		>(GetUniformLocation(name.c_str()), v0, v1					); GL_CHECK_ERROR; }
+		template<class GLType, int n		> void Uniform(const std::string &name, GLType v0, GLType v1, GLType v2								) const { Uniform<GLType, n		>(GetUniformLocation(name.c_str()), v0, v1, v2				); GL_CHECK_ERROR; }
+		template<class GLType, int n		> void Uniform(const std::string &name, GLType v0, GLType v1, GLType v2, GLType v3					) const { Uniform<GLType, n		>(GetUniformLocation(name.c_str()), v0, v1, v3				); GL_CHECK_ERROR; }
+		template<class GLType, int n		> void Uniform(const std::string &name, const Vec2& v												) const { Uniform<GLType, n		>(GetUniformLocation(name.c_str()), v						); GL_CHECK_ERROR; }
+		template<class GLType, int n		> void Uniform(const std::string &name, const Vec3& v												) const { Uniform<GLType, n		>(GetUniformLocation(name.c_str()), v						); GL_CHECK_ERROR; }
+		template<class GLType, int n		> void Uniform(const std::string &name, const Vec4& v												) const { Uniform<GLType, n		>(GetUniformLocation(name.c_str()), v						); GL_CHECK_ERROR; }
+		template<class GLType, int n		> void Uniform(const std::string &name, const Vec2i& v												) const { Uniform<GLType, n		>(GetUniformLocation(name.c_str()), v						); GL_CHECK_ERROR; }
+		template<class GLType, int n		> void Uniform(const std::string &name, const Vec3i& v												) const { Uniform<GLType, n		>(GetUniformLocation(name.c_str()), v						); GL_CHECK_ERROR; }
+		template<class GLType, int n		> void Uniform(const std::string &name, const Vec4i& v												) const { Uniform<GLType, n		>(GetUniformLocation(name.c_str()), v						); GL_CHECK_ERROR; }
+		template<class GLType, int n		> void Uniform(const std::string &name, const Vec2ui& v												) const { Uniform<GLType, n		>(GetUniformLocation(name.c_str()), v						); GL_CHECK_ERROR; }
+		template<class GLType, int n		> void Uniform(const std::string &name, const Vec3ui& v												) const { Uniform<GLType, n		>(GetUniformLocation(name.c_str()), v						); GL_CHECK_ERROR; }
+		template<class GLType, int n		> void Uniform(const std::string &name, const Vec4ui& v												) const { Uniform<GLType, n		>(GetUniformLocation(name.c_str()), v						); GL_CHECK_ERROR; }
 
 
 		// Pass Arr
-		template<class GLType, int v		> void Uniform(GLint location, const GLType *value													) const;
-		template<class GLType, int v		> void Uniform(GLint location, GLsizei count, const GLType *value									) const;	
-		template<class GLType, int v		> void Uniform(GLint location, const std::vector<Vec2>& v											) const;
-		template<class GLType, int v		> void Uniform(GLint location, const std::vector<Vec3>& v											) const;
-		template<class GLType, int v		> void Uniform(GLint location, const std::vector<Vec4>& v											) const;
-		template<class GLType, int v		> void Uniform(GLint location, const std::vector<Vec2i>& v											) const;
-		template<class GLType, int v		> void Uniform(GLint location, const std::vector<Vec3i>& v											) const;
-		template<class GLType, int v		> void Uniform(GLint location, const std::vector<Vec4i>& v											) const;
-		template<class GLType, int v		> void Uniform(GLint location, const std::vector<Vec2ui>& v											) const;
-		template<class GLType, int v		> void Uniform(GLint location, const std::vector<Vec3ui>& v											) const;
-		template<class GLType, int v		> void Uniform(GLint location, const std::vector<Vec4ui>& v											) const;
+		template<class GLType, int n		> void Uniform(GLint location, const GLType *value													) const;
+		template<class GLType, int n		> void Uniform(GLint location, GLsizei count, const GLType *value									) const;	
+		template<class GLType, int n		> void Uniform(GLint location, const std::vector<Vec2>& v											) const;
+		template<class GLType, int n		> void Uniform(GLint location, const std::vector<Vec3>& v											) const;
+		template<class GLType, int n		> void Uniform(GLint location, const std::vector<Vec4>& v											) const;
+		template<class GLType, int n		> void Uniform(GLint location, const std::vector<Vec2i>& v											) const;
+		template<class GLType, int n		> void Uniform(GLint location, const std::vector<Vec3i>& v											) const;
+		template<class GLType, int n		> void Uniform(GLint location, const std::vector<Vec4i>& v											) const;
+		template<class GLType, int n		> void Uniform(GLint location, const std::vector<Vec2ui>& v											) const;
+		template<class GLType, int n		> void Uniform(GLint location, const std::vector<Vec3ui>& v											) const;
+		template<class GLType, int n		> void Uniform(GLint location, const std::vector<Vec4ui>& v											) const;
 
-		template<class GLType, int v		> void Uniform(const std::string &name, const GLType *value											) const { Uniform<GLType, v		>(GetUniformLocation(name.c_str()), value					); GL_CHECK_ERROR; }
-		template<class GLType, int v		> void Uniform(const std::string &name, GLsizei count, const GLType *value							) const { Uniform<GLType, v		>(GetUniformLocation(name.c_str()), count, value			); GL_CHECK_ERROR; }
-		template<class GLType, int v		> void Uniform(const std::string &name, const std::vector<Vec2>& v									) const { Uniform<GLType, v		>(GetUniformLocation(name.c_str()), v						); GL_CHECK_ERROR; }
-		template<class GLType, int v		> void Uniform(const std::string &name, const std::vector<Vec3>& v									) const { Uniform<GLType, v		>(GetUniformLocation(name.c_str()), v						); GL_CHECK_ERROR; }
-		template<class GLType, int v		> void Uniform(const std::string &name, const std::vector<Vec4>& v									) const { Uniform<GLType, v		>(GetUniformLocation(name.c_str()), v						); GL_CHECK_ERROR; }
-		template<class GLType, int v		> void Uniform(const std::string &name, const std::vector<Vec2i>& v									) const { Uniform<GLType, v		>(GetUniformLocation(name.c_str()), v						); GL_CHECK_ERROR; }
-		template<class GLType, int v		> void Uniform(const std::string &name, const std::vector<Vec3i>& v									) const { Uniform<GLType, v		>(GetUniformLocation(name.c_str()), v						); GL_CHECK_ERROR; }
-		template<class GLType, int v		> void Uniform(const std::string &name, const std::vector<Vec4i>& v									) const { Uniform<GLType, v		>(GetUniformLocation(name.c_str()), v						); GL_CHECK_ERROR; }
-		template<class GLType, int v		> void Uniform(const std::string &name, const std::vector<Vec2ui>& v								) const { Uniform<GLType, v		>(GetUniformLocation(name.c_str()), v						); GL_CHECK_ERROR; }
-		template<class GLType, int v		> void Uniform(const std::string &name, const std::vector<Vec3ui>& v								) const { Uniform<GLType, v		>(GetUniformLocation(name.c_str()), v						); GL_CHECK_ERROR; }
-		template<class GLType, int v		> void Uniform(const std::string &name, const std::vector<Vec4ui>& v								) const { Uniform<GLType, v		>(GetUniformLocation(name.c_str()), v						); GL_CHECK_ERROR; }
+		template<class GLType, int n		> void Uniform(const std::string &name, const GLType *value											) const { Uniform<GLType, n		>(GetUniformLocation(name.c_str()), value					); GL_CHECK_ERROR; }
+		template<class GLType, int n		> void Uniform(const std::string &name, GLsizei count, const GLType *value							) const { Uniform<GLType, n		>(GetUniformLocation(name.c_str()), count, value			); GL_CHECK_ERROR; }
+		template<class GLType, int n		> void Uniform(const std::string &name, const std::vector<Vec2>& v									) const { Uniform<GLType, n		>(GetUniformLocation(name.c_str()), v						); GL_CHECK_ERROR; }
+		template<class GLType, int n		> void Uniform(const std::string &name, const std::vector<Vec3>& v									) const { Uniform<GLType, n		>(GetUniformLocation(name.c_str()), v						); GL_CHECK_ERROR; }
+		template<class GLType, int n		> void Uniform(const std::string &name, const std::vector<Vec4>& v									) const { Uniform<GLType, n		>(GetUniformLocation(name.c_str()), v						); GL_CHECK_ERROR; }
+		template<class GLType, int n		> void Uniform(const std::string &name, const std::vector<Vec2i>& v									) const { Uniform<GLType, n		>(GetUniformLocation(name.c_str()), v						); GL_CHECK_ERROR; }
+		template<class GLType, int n		> void Uniform(const std::string &name, const std::vector<Vec3i>& v									) const { Uniform<GLType, n		>(GetUniformLocation(name.c_str()), v						); GL_CHECK_ERROR; }
+		template<class GLType, int n		> void Uniform(const std::string &name, const std::vector<Vec4i>& v									) const { Uniform<GLType, n		>(GetUniformLocation(name.c_str()), v						); GL_CHECK_ERROR; }
+		template<class GLType, int n		> void Uniform(const std::string &name, const std::vector<Vec2ui>& v								) const { Uniform<GLType, n		>(GetUniformLocation(name.c_str()), v						); GL_CHECK_ERROR; }
+		template<class GLType, int n		> void Uniform(const std::string &name, const std::vector<Vec3ui>& v								) const { Uniform<GLType, n		>(GetUniformLocation(name.c_str()), v						); GL_CHECK_ERROR; }
+		template<class GLType, int n		> void Uniform(const std::string &name, const std::vector<Vec4ui>& v								) const { Uniform<GLType, n		>(GetUniformLocation(name.c_str()), v						); GL_CHECK_ERROR; }
 
 
 		// Pass MatArr
@@ -383,10 +386,10 @@ namespace O3GL
 	};
 
 	//
-	class Program : public Handle<_Program>
+	class Program : public GLHandle<_Program>
 	{
 	public:
-		Program() : Handle<_Program>(new _Program()) {}
+		Program() : GLHandle<_Program>(new _Program()) {}
 	};
 
 	//
