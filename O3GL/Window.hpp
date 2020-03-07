@@ -11,6 +11,9 @@
 namespace O3GL
 {
 	//
+	void EnterMainLoop();
+	void LeaveMainLoop();
+
 	class _WindowBase
 	{
 	public:
@@ -30,9 +33,7 @@ namespace O3GL
 	public:
 		void Begin() const;
 		void End() const;
-
-	public:
-		virtual void Start() const;
+		void Init() const;
 
 	public:
 		virtual void RegisterCallbackEvent() const;
@@ -93,8 +94,10 @@ namespace O3GL
 
 	//
 	template<int key>
-	_Window<key>::_Window(const std::string& name, unsigned int displayMode, int x, int y, int width, int height, unsigned int tick)
-		: GLUTObject(InitAndCreateWindow(name, displayMode, x, y, width, height), glutDestroyWindow), _WindowBase(), tick(tick)
+	_Window<key>::_Window(const std::string& name, unsigned int displayMode, int x, int y, int width, int height, unsigned int tick) :
+		GLUTObject(InitAndCreateWindow(name, displayMode, x, y, width, height), glutDestroyWindow),
+		_WindowBase(),
+		tick(tick)
 	{
 		instance = this;
 	}
@@ -133,17 +136,17 @@ namespace O3GL
 	}
 
 	template<int key>
-	void _Window<key>::Start() const
+	void _Window<key>::Init() const
 	{
+		Begin();
 		RegisterCallbackEvent();
 		InitGLStatusEvent();
-		glutMainLoop();
+		End();
 	}
 
 	template<int key>
 	void _Window<key>::RegisterCallbackEvent() const
 	{
-		Begin();
 		glutDisplayFunc(_Window<key>::DisplayCallback);
 		glutOverlayDisplayFunc(_Window<key>::OverlayDisplayCallback);
 		glutReshapeFunc(_Window<key>::ReshapeCallback);
@@ -158,7 +161,6 @@ namespace O3GL
 		glutEntryFunc(_Window<key>::EntryCallback);
 		glutCloseFunc(_Window<key>::CloseCallback);
 		glutTimerFunc(tick, _Window<key>::TimerCallback, 0);
-		End();
 	}
 
 	template<int key>
@@ -189,12 +191,7 @@ namespace O3GL
 	template<int key>
 	void _Window<key>::KeyboardEvent(unsigned char key, int x, int y)
 	{
-		switch (key)
-		{
-		case 27:
-			glutLeaveMainLoop();
-			break;
-		}
+
 	}
 
 	template<int key>
@@ -297,7 +294,9 @@ namespace O3GL
 	{
 		if (instance)
 		{
+			instance->Begin();
 			instance->DisplayEvent();
+			instance->End();
 		}
 	}
 
@@ -306,7 +305,9 @@ namespace O3GL
 	{
 		if (instance)
 		{
+			instance->Begin();
 			instance->OverlayDisplayEvent();
+			instance->End();
 		}
 	}
 
@@ -315,7 +316,9 @@ namespace O3GL
 	{
 		if (instance)
 		{
+			instance->Begin();
 			instance->ReshapeEvent(width, height);
+			instance->End();
 		}
 	}
 
@@ -324,7 +327,9 @@ namespace O3GL
 	{
 		if (instance)
 		{
+			instance->Begin();
 			instance->KeyboardEvent(key, x, y);
+			instance->End();
 		}
 	}
 
@@ -333,7 +338,9 @@ namespace O3GL
 	{
 		if (instance)
 		{
+			instance->Begin();
 			instance->KeyboardUpEvent(key, x, y);
+			instance->End();
 		}
 	}
 
@@ -342,7 +349,9 @@ namespace O3GL
 	{
 		if (instance)
 		{
+			instance->Begin();
 			instance->SpecialEvent(key, x, y);
+			instance->End();
 		}
 	}
 
@@ -351,7 +360,9 @@ namespace O3GL
 	{
 		if (instance)
 		{
+			instance->Begin();
 			instance->SpecialUpEvent(key, x, y);
+			instance->End();
 		}
 	}
 
@@ -360,7 +371,9 @@ namespace O3GL
 	{
 		if (instance)
 		{
+			instance->Begin();
 			instance->MouseEvent(button, state, x, y);
+			instance->End();
 		}
 	}
 
@@ -369,7 +382,9 @@ namespace O3GL
 	{
 		if (instance)
 		{
+			instance->Begin();
 			instance->MotionEvent(x, y);
+			instance->End();
 		}
 	}
 
@@ -378,7 +393,9 @@ namespace O3GL
 	{
 		if (instance)
 		{
+			instance->Begin();
 			instance->PassiveMotionEvent(x, y);
+			instance->End();
 		}
 	}
 
@@ -387,7 +404,9 @@ namespace O3GL
 	{
 		if (instance)
 		{
+			instance->Begin();
 			instance->VisibilityEvent(state);
+			instance->End();
 		}
 	}
 
@@ -396,7 +415,9 @@ namespace O3GL
 	{
 		if (instance)
 		{
+			instance->Begin();
 			instance->EntryEvent(state);
+			instance->End();
 		}
 	}
 
@@ -405,7 +426,9 @@ namespace O3GL
 	{
 		if (instance)
 		{
+			instance->Begin();
 			instance->CloseEvent();
+			instance->End();
 		}
 	}
 
@@ -414,8 +437,10 @@ namespace O3GL
 	{
 		if (instance)
 		{
+			instance->Begin();
 			instance->TimerEvent(value);
+			glutTimerFunc(instance->tick, TimerCallback, 0);
+			instance->End();
 		}
-		glutTimerFunc(instance->tick, TimerCallback, 0);
 	}
 };

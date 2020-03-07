@@ -11,8 +11,8 @@ namespace O3GL
 	class _PrintEvent : public _Window<key>
 	{
 	public:
-		_PrintEvent(int x, int y, int width, int height) :
-			_Window<key>("PrintEvent", GLUT_DOUBLE | GLUT_RGBA, x, y, width, height, 33)
+		_PrintEvent(const std::string& name, int x, int y, int width, int height) :
+			_Window<key>(name, GLUT_DOUBLE | GLUT_RGBA, x, y, width, height, 33)
 		{}
 
 	public:
@@ -55,7 +55,8 @@ namespace O3GL
 	class PrintEvent : public GLUTHandle<_PrintEvent<key>>
 	{
 	public:
-		PrintEvent(int x, int y, int width, int height) : GLUTHandle<_PrintEvent<key>>(new _PrintEvent<key>(x, y, width, height)) {}
+		PrintEvent(const std::string& name, int x, int y, int width, int height) :
+			GLUTHandle<_PrintEvent<key>>(new _PrintEvent<key>(name, x, y, width, height)) {}
 	};
 };
 
@@ -87,34 +88,6 @@ namespace O3GL
 		float wx = -1.0f;
 		float wy = -1.0f;
 
-		Text(wx, wy, 0.0f, "\t\t" + std::string((char*)glGetString(GL_EXTENSIONS)), 0.0f, 0.0f, 0.0f, 1.0f);
-		wy += lineHeight;
-		Text(wx, wy, 0.0f, "GL_EXTENSIONS: ", 0.0f, 1.0f, 0.0f, 1.0f);
-		wy += lineHeight;
-
-		Text(wx, wy, 0.0f, "\t\t" + std::string((char*)glGetString(GL_RENDERER)), 0.0f, 0.0f, 0.0f, 1.0f);
-		wy += lineHeight;
-		Text(wx, wy, 0.0f, "GL_RENDERER: ", 0.0f, 1.0f, 0.0f, 1.0f);
-		wy += lineHeight;
-
-		Text(wx, wy, 0.0f, "\t\t" + std::string((char*)glGetString(GL_VENDOR)), 0.0f, 0.0f, 0.0f, 1.0f);
-		wy += lineHeight;
-		Text(wx, wy, 0.0f, "GL_VENDOR: ", 0.0f, 1.0f, 0.0f, 1.0f);
-		wy += lineHeight;
-
-		Text(wx, wy, 0.0f, "\t\t" + std::string((char*)glGetString(GL_SHADING_LANGUAGE_VERSION)), 0.0f, 0.0f, 0.0f, 1.0f);
-		wy += lineHeight;
-		Text(wx, wy, 0.0f, "GL_SHADING_LANGUAGE_VERSION: ", 0.0f, 1.0f, 0.0f, 1.0f);
-		wy += lineHeight;
-
-		Text(wx, wy, 0.0f, "\t\t" + std::string((char*)glGetString(GL_VERSION)), 0.0f, 0.0f, 0.0f, 1.0f);
-		wy += lineHeight;
-		Text(wx, wy, 0.0f, "GL_VERSION: ", 0.0f, 1.0f, 0.0f, 1.0f);
-		wy += lineHeight;
-		wy += lineHeight;
-		wy += lineHeight;
-
-		//
 		displayEventMessage.Draw(wx, wy);
 		wy += lineHeight;
 		overlayDisplayEventMessage.Draw(wx, wy);
@@ -168,13 +141,6 @@ namespace O3GL
 		keyboardEventMessage.key = key;
 		keyboardEventMessage.x = x;
 		keyboardEventMessage.y = y;
-
-		switch (key)
-		{
-		case 27:
-			glutLeaveMainLoop();
-			break;
-		}
 	}
 
 	template<int key>

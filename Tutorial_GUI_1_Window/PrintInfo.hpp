@@ -5,13 +5,13 @@
 //
 namespace O3GL
 {
-	//
+	// Simply Print FrameCounter
 	template<int key>
-	class _PrintInfo : public _Window<key>
+	class _PrintFrameCounter : public _Window<key>
 	{
 	public:
-		_PrintInfo(int x, int y, int width, int height) :
-			_Window<key>("PrintInfo", GLUT_DOUBLE | GLUT_RGBA, x, y, width, height, 33), frameCounter(0)
+		_PrintFrameCounter(const std::string& name, int x, int y, int width, int height) :
+			_Window<key>(name, GLUT_DOUBLE | GLUT_RGBA, x, y, width, height, 33), frameCounter(0)
 		{}
 
 	public:
@@ -26,10 +26,32 @@ namespace O3GL
 	};
 
 	template<int key>
-	class PrintInfo : public GLUTHandle<_PrintInfo<key>>
+	class PrintFrameCounter : public GLUTHandle<_PrintFrameCounter<key>>
 	{
 	public:
-		PrintInfo(int x, int y, int width, int height) : GLUTHandle<_PrintInfo<key>>(new _PrintInfo<key>(x, y, width, height)) {}
+		PrintFrameCounter(const std::string& name, int x, int y, int width, int height) :
+			GLUTHandle<_PrintFrameCounter<key>>(new _PrintFrameCounter<key>(name, x, y, width, height)) {}
+	};
+
+	// Simply Print OpenGL Version
+	template<int key>
+	class _PrintGLVersion : public _PrintFrameCounter<key>
+	{
+	public:
+		_PrintGLVersion(const std::string& name, int x, int y, int width, int height) :
+			_PrintFrameCounter<key>(name, x, y, width, height)
+		{}
+
+	public:
+		virtual void DisplayEvent();
+	};
+
+	template<int key>
+	class PrintGLVersion : public GLUTHandle<_PrintGLVersion<key>>
+	{
+	public:
+		PrintGLVersion(const std::string& name, int x, int y, int width, int height) :
+			GLUTHandle<_PrintGLVersion<key>>(new _PrintGLVersion<key>(name, x, y, width, height)) {}
 	};
 };
 
@@ -37,7 +59,7 @@ namespace O3GL
 {
 	//
 	template<int key>
-	void _PrintInfo<key>::InitGLStatusEvent() const
+	void _PrintFrameCounter<key>::InitGLStatusEvent() const
 	{
 		glClearColor(1.0, 1.0, 1.0, 0.0);
 
@@ -49,7 +71,32 @@ namespace O3GL
 	}
 
 	template<int key>
-	void _PrintInfo<key>::DisplayEvent()
+	void _PrintFrameCounter<key>::DisplayEvent()
+	{
+		// Clear backbuffer
+		glClear(GL_COLOR_BUFFER_BIT);
+
+		//
+		float lineHeight = 0.06f;
+		float wx = -1.0f;
+		float wy = -1.0f;
+
+		Text(wx, wy, 0.0f, "This is the " + std::to_string(frameCounter) + "-th frame", 1.0f, 0.0f, 0.0f, 1.0f);
+
+		// Swap buffers
+		glutSwapBuffers();
+	}
+
+	template<int key>
+	void _PrintFrameCounter<key>::TimerEvent(int value)
+	{
+		frameCounter++;
+		glutPostRedisplay();
+	}
+
+	//
+	template<int key>
+	void _PrintGLVersion<key>::DisplayEvent()
 	{
 		// Clear backbuffer
 		glClear(GL_COLOR_BUFFER_BIT);
@@ -88,13 +135,5 @@ namespace O3GL
 
 		// Swap buffers
 		glutSwapBuffers();
-	}
-
-	template<int key>
-	void _PrintInfo<key>::TimerEvent(int value)
-	{
-		frameCounter++;
-
-		glutPostRedisplay();
 	}
 };

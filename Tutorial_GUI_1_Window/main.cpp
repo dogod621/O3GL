@@ -4,7 +4,10 @@
 // Main
 int main(int argc, char** argv)
 {
-	O3GL::PrintInfo<0> printInfo(0, 0, 800, 600);
-	printInfo->Start();
+	O3GL::PrintFrameCounter<0> printFrameCounter("PrintFrameCounter", 0, 0, 400, 600);
+	O3GL::PrintGLVersion<1> printGLVersion("PrintGLVersion", 500, 0, 400, 600);
+	printFrameCounter->Init();
+	printGLVersion->Init();
+	O3GL::EnterMainLoop();
 	return EXIT_SUCCESS;
 }

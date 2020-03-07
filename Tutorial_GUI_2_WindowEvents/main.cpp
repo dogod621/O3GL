@@ -4,7 +4,8 @@
 // Main
 int main(int argc, char** argv)
 {
-	O3GL::PrintEvent<0> printEvent(0, 0, 800, 600);
-	printEvent->Start();
+	O3GL::PrintEvent<0> printEvent("PrintEvent", 0, 0, 800, 600);
+	printEvent->Init();
+	O3GL::EnterMainLoop();
 	return EXIT_SUCCESS;
 }
