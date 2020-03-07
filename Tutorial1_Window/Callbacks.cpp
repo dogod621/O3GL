@@ -77,6 +77,13 @@ void KeyboardCallback(unsigned char key, int x, int y)
 	keyboardCallbackMessage.key = key;
 	keyboardCallbackMessage.x = x;
 	keyboardCallbackMessage.y = y;
+
+	switch (key)
+	{
+	case 27:
+		glutLeaveMainLoop();
+		break;
+	}
 }
 
 void KeyboardUpCallback(unsigned char key, int x, int y)
@@ -141,8 +148,6 @@ void EntryCallback(int state)
 void CloseCallback()
 {
 	closeCallbackMessage.Active();
-
-	glutLeaveMainLoop();
 }
 
 void TimerCallback(int value)

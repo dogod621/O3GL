@@ -20,18 +20,20 @@ public:
 		life = 5;
 	}
 
-	virtual std::string Print() const = 0;
+	virtual std::string PrintName() const = 0;
+	virtual std::string PrintFormat() const { return ""; }
+	virtual std::string PrintValue() const { return ""; }
 
 	void Draw(float& wx, float& wy, float lineHeight = 0.06f)
 	{
 		if (life > 0)
 		{
-			O3GL::Text(wx, wy, 0.0f, Print(), 1.0f, 0.0f, 0.0f, 1.0f);
+			O3GL::Text(wx, wy, 0.0f, PrintName() + "[" + PrintFormat() + "] - " + PrintValue(), 1.0f, 0.0f, 0.0f, 1.0f);
 			life--;
 		}
 		else
 		{
-			O3GL::Text(wx, wy, 0.0f, Print(), 0.0f, 0.0f, 0.0f, 1.0f);
+			O3GL::Text(wx, wy, 0.0f, PrintName() + "[" + PrintFormat() + "] - " + PrintValue(), 0.0f, 0.0f, 0.0f, 1.0f);
 		}
 		wy += lineHeight;
 	}
@@ -42,12 +44,9 @@ class DisplayCallbackMessage : public CallbackMessage
 public:
 	DisplayCallbackMessage() : CallbackMessage() {}
 
-	virtual std::string Print() const
+	virtual std::string PrintName() const
 	{
-		std::stringstream ss;
-		ss << std::right << std::setw(NAME_LENGTH) << "Display";
-		ss << ":";
-		return ss.str();
+		return "Display";
 	}
 };
 
@@ -56,12 +55,9 @@ class OverlayDisplayCallbackMessage : public CallbackMessage
 public:
 	OverlayDisplayCallbackMessage() : CallbackMessage() {}
 
-	virtual std::string Print() const
+	virtual std::string PrintName() const
 	{
-		std::stringstream ss;
-		ss << std::right << std::setw(NAME_LENGTH) << "OverlayDisplay";
-		ss << ":";
-		return ss.str();
+		return "OverlayDisplay";
 	}
 };
 
@@ -73,17 +69,20 @@ public:
 
 	ReshapeCallbackMessage() : CallbackMessage(), width(0), height(0) {}
 
-	virtual std::string Print() const
+	virtual std::string PrintName() const
+	{
+		return "Reshape";
+	}
+
+	virtual std::string PrintFormat() const
+	{
+		return "width, height";
+	}
+
+	virtual std::string PrintValue() const
 	{
 		std::stringstream ss;
-		ss << std::right << std::setw(NAME_LENGTH) << "Reshape";
-		ss << ":";
-		ss << std::right << std::setw(INFO_LENGTH) << "width";
-		ss << "-";
-		ss << std::left << std::setw(INFO_LENGTH) << width;
-		ss << std::right << std::setw(INFO_LENGTH) << "height";
-		ss << "-";
-		ss << std::left << std::setw(INFO_LENGTH) << height;
+		ss << width << ", " << height;
 		return ss.str();
 	}
 };
@@ -97,20 +96,20 @@ public:
 
 	KeyboardCallbackMessage() : CallbackMessage(), key(0), x(0), y(0) {}
 
-	virtual std::string Print() const
+	virtual std::string PrintName() const
+	{
+		return "Keyboard";
+	}
+
+	virtual std::string PrintFormat() const
+	{
+		return "key, x, y";
+	}
+
+	virtual std::string PrintValue() const
 	{
 		std::stringstream ss;
-		ss << std::right << std::setw(NAME_LENGTH) << "Keyboard";
-		ss << ":";
-		ss << std::right << std::setw(INFO_LENGTH) << "key";
-		ss << "-";
-		ss << std::left << std::setw(INFO_LENGTH) << key;
-		ss << std::right << std::setw(INFO_LENGTH) << "x";
-		ss << "-";
-		ss << std::left << std::setw(INFO_LENGTH) << x;
-		ss << std::right << std::setw(INFO_LENGTH) << "y";
-		ss << "-";
-		ss << std::left << std::setw(INFO_LENGTH) << y;
+		ss << key << ", " << x << ", " << y;
 		return ss.str();
 	}
 };
@@ -120,21 +119,9 @@ class KeyboardUpCallbackMessage : public KeyboardCallbackMessage
 public:
 	KeyboardUpCallbackMessage() : KeyboardCallbackMessage() {}
 
-	virtual std::string Print() const
+	virtual std::string PrintName() const
 	{
-		std::stringstream ss;
-		ss << std::right << std::setw(NAME_LENGTH) << "KeyboardUp";
-		ss << ":";
-		ss << std::right << std::setw(INFO_LENGTH) << "key";
-		ss << "-";
-		ss << std::left << std::setw(INFO_LENGTH) << key;
-		ss << std::right << std::setw(INFO_LENGTH) << "x";
-		ss << "-";
-		ss << std::left << std::setw(INFO_LENGTH) << x;
-		ss << std::right << std::setw(INFO_LENGTH) << "y";
-		ss << "-";
-		ss << std::left << std::setw(INFO_LENGTH) << y;
-		return ss.str();
+		return "KeyboardUp";
 	}
 };
 
@@ -176,20 +163,20 @@ public:
 		}
 	}
 
-	virtual std::string Print() const
+	virtual std::string PrintName() const
+	{
+		return "Special";
+	}
+
+	virtual std::string PrintFormat() const
+	{
+		return "key, x, y";
+	}
+
+	virtual std::string PrintValue() const
 	{
 		std::stringstream ss;
-		ss << std::right << std::setw(NAME_LENGTH) << "Special";
-		ss << ":";
-		ss << std::right << std::setw(INFO_LENGTH) << "key";
-		ss << "-";
-		ss << std::left << std::setw(INFO_LENGTH) << KeyStr();
-		ss << std::right << std::setw(INFO_LENGTH) << "x";
-		ss << "-";
-		ss << std::left << std::setw(INFO_LENGTH) << x;
-		ss << std::right << std::setw(INFO_LENGTH) << "y";
-		ss << "-";
-		ss << std::left << std::setw(INFO_LENGTH) << y;
+		ss << key << ", " << x << ", " << y;
 		return ss.str();
 	}
 };
@@ -199,21 +186,9 @@ class SpecialUpCallbackMessage : public SpecialCallbackMessage
 public:
 	SpecialUpCallbackMessage() : SpecialCallbackMessage() {}
 
-	virtual std::string Print() const
+	virtual std::string PrintName() const
 	{
-		std::stringstream ss;
-		ss << std::right << std::setw(NAME_LENGTH) << "SpecialUp";
-		ss << ":";
-		ss << std::right << std::setw(INFO_LENGTH) << "key";
-		ss << "-";
-		ss << std::left << std::setw(INFO_LENGTH) << KeyStr();
-		ss << std::right << std::setw(INFO_LENGTH) << "x";
-		ss << "-";
-		ss << std::left << std::setw(INFO_LENGTH) << x;
-		ss << std::right << std::setw(INFO_LENGTH) << "y";
-		ss << "-";
-		ss << std::left << std::setw(INFO_LENGTH) << y;
-		return ss.str();
+		return "SpecialUp";
 	}
 };
 
@@ -248,23 +223,20 @@ public:
 		}
 	}
 
-	virtual std::string Print() const
+	virtual std::string PrintName() const
+	{
+		return "Mouse";
+	}
+
+	virtual std::string PrintFormat() const
+	{
+		return "button, state, x, y";
+	}
+
+	virtual std::string PrintValue() const
 	{
 		std::stringstream ss;
-		ss << std::right << std::setw(NAME_LENGTH) << "Mouse";
-		ss << ":";
-		ss << std::right << std::setw(INFO_LENGTH) << "button";
-		ss << "-";
-		ss << std::left << std::setw(INFO_LENGTH) << ButtonStr();
-		ss << std::right << std::setw(INFO_LENGTH) << "state";
-		ss << "-";
-		ss << std::left << std::setw(INFO_LENGTH) << StateStr();
-		ss << std::right << std::setw(INFO_LENGTH) << "x";
-		ss << "-";
-		ss << std::left << std::setw(INFO_LENGTH) << x;
-		ss << std::right << std::setw(INFO_LENGTH) << "y";
-		ss << "-";
-		ss << std::left << std::setw(INFO_LENGTH) << y;
+		ss << ButtonStr() << ", " << StateStr() << ", " << x << ", " << y;
 		return ss.str();
 	}
 };
@@ -277,17 +249,20 @@ public:
 
 	MotionCallbackMessage() : CallbackMessage(), x(0), y(0) {}
 
-	virtual std::string Print() const
+	virtual std::string PrintName() const
+	{
+		return "Motion";
+	}
+
+	virtual std::string PrintFormat() const
+	{
+		return "x, y";
+	}
+
+	virtual std::string PrintValue() const
 	{
 		std::stringstream ss;
-		ss << std::right << std::setw(NAME_LENGTH) << "Motion";
-		ss << ":";
-		ss << std::right << std::setw(INFO_LENGTH) << "x";
-		ss << "-";
-		ss << std::left << std::setw(INFO_LENGTH) << x;
-		ss << std::right << std::setw(INFO_LENGTH) << "y";
-		ss << "-";
-		ss << std::left << std::setw(INFO_LENGTH) << y;
+		ss << x << ", " << y;
 		return ss.str();
 	}
 };
@@ -297,18 +272,9 @@ class PassiveMotionCallbackMessage : public MotionCallbackMessage
 public:
 	PassiveMotionCallbackMessage() : MotionCallbackMessage() {}
 
-	virtual std::string Print() const
+	virtual std::string PrintName() const
 	{
-		std::stringstream ss;
-		ss << std::right << std::setw(NAME_LENGTH) << "PassiveMotion";
-		ss << ":";
-		ss << std::right << std::setw(INFO_LENGTH) << "x";
-		ss << "-";
-		ss << std::left << std::setw(INFO_LENGTH) << x;
-		ss << std::right << std::setw(INFO_LENGTH) << "y";
-		ss << "-";
-		ss << std::left << std::setw(INFO_LENGTH) << y;
-		return ss.str();
+		return "PassiveMotion";
 	}
 };
 
@@ -329,14 +295,20 @@ public:
 		}
 	}
 
-	virtual std::string Print() const
+	virtual std::string PrintName() const
+	{
+		return "Visibility";
+	}
+
+	virtual std::string PrintFormat() const
+	{
+		return "state";
+	}
+
+	virtual std::string PrintValue() const
 	{
 		std::stringstream ss;
-		ss << std::right << std::setw(NAME_LENGTH) << "Visibility";
-		ss << ":";
-		ss << std::right << std::setw(INFO_LENGTH) << "state";
-		ss << "-";
-		ss << std::left << std::setw(INFO_LENGTH) << StateStr();
+		ss << StateStr();
 		return ss.str();
 	}
 };
@@ -358,14 +330,20 @@ public:
 		}
 	}
 
-	virtual std::string Print() const
+	virtual std::string PrintName() const
+	{
+		return "Entry";
+	}
+
+	virtual std::string PrintFormat() const
+	{
+		return "state";
+	}
+
+	virtual std::string PrintValue() const
 	{
 		std::stringstream ss;
-		ss << std::right << std::setw(NAME_LENGTH) << "Entry";
-		ss << ":";
-		ss << std::right << std::setw(INFO_LENGTH) << "state";
-		ss << "-";
-		ss << std::left << std::setw(INFO_LENGTH) << StateStr();
+		ss << StateStr();
 		return ss.str();
 	}
 };
@@ -375,12 +353,9 @@ class CloseCallbackMessage : public CallbackMessage
 public:
 	CloseCallbackMessage() : CallbackMessage() {}
 
-	virtual std::string Print() const
+	virtual std::string PrintName() const
 	{
-		std::stringstream ss;
-		ss << std::right << std::setw(NAME_LENGTH) << "Close";
-		ss << ":";
-		return ss.str();
+		return "Close";
 	}
 };
 
@@ -391,14 +366,20 @@ public:
 
 	TimerCallbackMessage() : CallbackMessage(), value(0) {}
 
-	virtual std::string Print() const
+	virtual std::string PrintName() const
+	{
+		return "Timer";
+	}
+
+	virtual std::string PrintFormat() const
+	{
+		return "value";
+	}
+
+	virtual std::string PrintValue() const
 	{
 		std::stringstream ss;
-		ss << std::right << std::setw(NAME_LENGTH) << "Timer";
-		ss << ":";
-		ss << std::right << std::setw(INFO_LENGTH) << "value";
-		ss << "-";
-		ss << std::left << std::setw(INFO_LENGTH) << value;
+		ss << value;
 		return ss.str();
 	}
 };

@@ -25,7 +25,7 @@ int main(int argc, char** argv)
 		glutInitDisplayMode(GLUT_DOUBLE | GLUT_RGBA | GLUT_DEPTH);
 		glutInitWindowPosition(0, 0);
 		glutInitWindowSize(windowWidth, windowHeight);
-		glutCreateWindow("GLUT Window");
+		int winID = glutCreateWindow("GLUT Window");
 
 		// Init glew after window has been created
 		glewInit();
@@ -62,7 +62,6 @@ int main(int argc, char** argv)
 
 void InitGLStatus()
 {
-	glutSetOption(GLUT_ACTION_ON_WINDOW_CLOSE, GLUT_ACTION_CONTINUE_EXECUTION);
 	glEnable(GL_DEPTH_TEST);
 	glClearColor(1.0, 1.0, 1.0, 0.0);
 	glClearDepth(1.0);
