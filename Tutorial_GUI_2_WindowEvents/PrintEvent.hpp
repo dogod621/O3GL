@@ -15,6 +15,10 @@ namespace O3GL
 			_Window<key>(name, GLUT_DOUBLE | GLUT_RGBA, x, y, width, height, 33)
 		{}
 
+		_PrintEvent(int window, int x, int y, int width, int height) :
+			_Window<key>(window, x, y, width, height, 33)
+		{}
+
 	public:
 		virtual void InitGLStatusEvent() const;
 
@@ -57,6 +61,9 @@ namespace O3GL
 	public:
 		PrintEvent(const std::string& name, int x, int y, int width, int height) :
 			GLUTHandle<_PrintEvent<key>>(new _PrintEvent<key>(name, x, y, width, height)) {}
+
+		PrintEvent(int window, int x, int y, int width, int height) :
+			GLUTHandle<_PrintEvent<key>>(new _PrintEvent<key>(window, x, y, width, height)) {}
 	};
 };
 

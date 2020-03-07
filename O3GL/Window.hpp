@@ -30,6 +30,7 @@ namespace O3GL
 	{
 	public:
 		_Window(const std::string& name, unsigned int displayMode, int x, int y, int width, int height, unsigned int tick);
+		_Window(int window, int x, int y, int width, int height, unsigned int tick);
 		~_Window();
 
 	public:
@@ -56,6 +57,8 @@ namespace O3GL
 
 	protected:
 		static int InitAndCreateWindow(const std::string& name, unsigned int displayMode, int x, int y, int width, int height);
+		static int InitAndCreateSubWindow(int window, int x, int y, int width, int height);
+
 		static void DisplayCallback();
 		static void OverlayDisplayCallback();
 		static void ReshapeCallback(int width, int height);
@@ -73,7 +76,7 @@ namespace O3GL
 
 	protected:
 		unsigned int tick;
-
+		bool subWindow;
 		static _Window* instance;
 	};
 
@@ -83,6 +86,7 @@ namespace O3GL
 	{
 	public:
 		Window(const std::string& name, unsigned int displayMode, int x, int y, int width, int height, unsigned int tick) : GLUTHandle<_Window<key>>(new _Window<key>(name, displayMode, x, y, width, height, tick)) {}
+		Window(int window, int x, int y, int width, int height, unsigned int tick) : GLUTHandle<_Window<key>>(new _Window<key>(window, x, y, width, height, tick)) {}
 	};
 };
 
@@ -96,7 +100,18 @@ namespace O3GL
 	_Window<key>::_Window(const std::string& name, unsigned int displayMode, int x, int y, int width, int height, unsigned int tick) :
 		GLUTObject(InitAndCreateWindow(name, displayMode, x, y, width, height), glutDestroyWindow),
 		_WindowBase(),
-		tick(tick)
+		tick(tick),
+		subWindow(false)
+	{
+		instance = this;
+	}
+
+	template<int key>
+	_Window<key>::_Window(int window, int x, int y, int width, int height, unsigned int tick) :
+		GLUTObject(InitAndCreateSubWindow(window, x, y, width, height), glutDestroyWindow),
+		_WindowBase(),
+		tick(tick),
+		subWindow(true)
 	{
 		instance = this;
 	}
@@ -251,6 +266,23 @@ namespace O3GL
 				init = true;
 			}
 			return winID;
+		}
+	}
+
+	template<int key>
+	int _Window<key>::InitAndCreateSubWindow(int window, int x, int y, int width, int height)
+	{
+		if (instance)
+		{
+			THROW_EXCEPTION("Window key is already uesd");
+		}
+		else
+		{
+			if (!init)
+			{
+				THROW_EXCEPTION("Window is not init!?");
+			}
+			return glutCreateSubWindow(window, x, y, width, height);
 		}
 	}
 

@@ -14,6 +14,10 @@ namespace O3GL
 			_Window<key>(name, GLUT_DOUBLE | GLUT_RGBA, x, y, width, height, 33), frameCounter(0)
 		{}
 
+		_PrintFrameCounter(int window, int x, int y, int width, int height) :
+			_Window<key>(window, x, y, width, height, 33), frameCounter(0)
+		{}
+
 	public:
 		virtual void InitGLStatusEvent() const;
 
@@ -31,6 +35,9 @@ namespace O3GL
 	public:
 		PrintFrameCounter(const std::string& name, int x, int y, int width, int height) :
 			GLUTHandle<_PrintFrameCounter<key>>(new _PrintFrameCounter<key>(name, x, y, width, height)) {}
+
+		PrintFrameCounter(int window, int x, int y, int width, int height) :
+			GLUTHandle<_PrintFrameCounter<key>>(new _PrintFrameCounter<key>(window, x, y, width, height)) {}
 	};
 
 	// Simply Print OpenGL Version
@@ -40,6 +47,10 @@ namespace O3GL
 	public:
 		_PrintGLVersion(const std::string& name, int x, int y, int width, int height) :
 			_PrintFrameCounter<key>(name, x, y, width, height)
+		{}
+
+		_PrintGLVersion(int window, int x, int y, int width, int height) :
+			_PrintFrameCounter<key>(window, x, y, width, height)
 		{}
 
 	public:
@@ -52,6 +63,9 @@ namespace O3GL
 	public:
 		PrintGLVersion(const std::string& name, int x, int y, int width, int height) :
 			GLUTHandle<_PrintGLVersion<key>>(new _PrintGLVersion<key>(name, x, y, width, height)) {}
+
+		PrintGLVersion(int window, int x, int y, int width, int height) :
+			GLUTHandle<_PrintGLVersion<key>>(new _PrintGLVersion<key>(window, x, y, width, height)) {}
 	};
 };
 
