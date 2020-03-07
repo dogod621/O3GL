@@ -67,24 +67,35 @@ namespace O3GL
 		return id;
 	}
 
-	GLObject::GLObject(GLuint id, Delete1 delete1) : id(id), delete1(delete1), delete2(nullptr), begin(false)
+	GLObject::GLObject(GLuint id, GLDeleteFun1 deleteFun1) : id(id), deleteFun1(deleteFun1), deleteFun2(nullptr)
 	{
 		GL_CHECK_ERROR;
 	}
 
-	GLObject::GLObject(GLuint id, Delete2 delete2) : id(id), delete1(nullptr), delete2(delete2), begin(false)
+	GLObject::GLObject(GLuint id, GLDeleteFun2 deleteFun2) : id(id), deleteFun1(nullptr), deleteFun2(deleteFun2)
 	{
 		GL_CHECK_ERROR;
 	}
 
 	GLObject::~GLObject() noexcept(false)
 	{
-		if (delete1)
-			delete1(id);
+		if (deleteFun1)
+			deleteFun1(id);
 		else
-			delete2(1, &id);
+			deleteFun2(1, &id);
 
 		GL_CHECK_ERROR;
+		id = 0;
+	}
+
+	GLUTObject::GLUTObject(int id, GLUTDelete deleteFun) : id(id), deleteFun(deleteFun)
+	{
+		GL_CHECK_ERROR;
+	}
+
+	GLUTObject::~GLUTObject()
+	{
+		deleteFun(id);
 		id = 0;
 	}
 };

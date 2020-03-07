@@ -1,78 +1,10 @@
-// std
-#include<sstream>
-
 // O3GL
-#include "Callbacks.hpp"
-
-// Global vars
-static int windowWidth = 1280;
-static int windowHeight = 720;
-
-
-// GL operators
-void InitGLStatus();
-
-void InitGLObjects();
-
+#include "VisCallbacks.hpp"
 
 // Main
 int main(int argc, char** argv)
 {
-	try
-	{
-		// Create GLUT window
-		glutInit(&argc, argv);
-		glutInitDisplayMode(GLUT_DOUBLE | GLUT_RGBA | GLUT_DEPTH);
-		glutInitWindowPosition(0, 0);
-		glutInitWindowSize(windowWidth, windowHeight);
-		int winID = glutCreateWindow("GLUT Window");
-
-		// Init glew after window has been created
-		glewInit();
-		InitGLStatus();
-		InitGLObjects();
-
-		// Set glut callback before start
-		glutDisplayFunc(DisplayCallback);
-		glutOverlayDisplayFunc(OverlayDisplayCallback);
-		glutReshapeFunc(ReshapeCallback);
-		glutKeyboardFunc(KeyboardCallback);
-		glutKeyboardUpFunc(KeyboardUpCallback);
-		glutSpecialFunc(SpecialCallback);
-		glutSpecialUpFunc(SpecialUpCallback);
-		glutMouseFunc(MouseCallback);
-		glutMotionFunc(MotionCallback);
-		glutPassiveMotionFunc(PassiveMotionCallback);
-		glutVisibilityFunc(VisibilityCallback);
-		glutEntryFunc(EntryCallback);
-		glutCloseFunc(CloseCallback); // Close callback
-		glutTimerFunc(33, TimerCallback, 0);
-
-		// Start the glut main loop thread
-		glutMainLoop();
-	}
-	catch (const std::exception & ex)
-	{
-		PRINT_ERROR(ex.what());
-	}
-
-	system("PAUSE");
+	O3GL::VisCallbacks visCallbacks(0, 0, 800, 600);
+	visCallbacks->Start();
 	return EXIT_SUCCESS;
-}
-
-void InitGLStatus()
-{
-	glEnable(GL_DEPTH_TEST);
-	glClearColor(1.0, 1.0, 1.0, 0.0);
-	glClearDepth(1.0);
-
-	glMatrixMode(GL_MODELVIEW);
-	glLoadIdentity();
-
-	glMatrixMode(GL_PROJECTION);
-	glLoadIdentity();
-}
-
-void InitGLObjects()
-{
 }

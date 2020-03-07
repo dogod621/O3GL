@@ -213,9 +213,9 @@ namespace O3GL
 	void Text(float x, float y, float z, std::string str, GLfloat r = 1.f, GLfloat g = 1.f, GLfloat b = 1.f, GLfloat a = 1.f);
 
 	// Common GL Create and Delete object function
-	typedef void(*Create) (GLsizei, GLuint*);
-	typedef void(*Delete1) (GLuint);
-	typedef void(*Delete2) (GLsizei, const GLuint*);
+	typedef void(*GLCreateFun) (GLsizei, GLuint*);
+	typedef void(*GLDeleteFun1) (GLuint);
+	typedef void(*GLDeleteFun2) (GLsizei, const GLuint*);
 
 	//
 	GLuint glCreateBuffer();
@@ -228,16 +228,15 @@ namespace O3GL
 	class GLObject
 	{
 	public:
-		GLObject(GLuint id, Delete1 delete1);
-		GLObject(GLuint id, Delete2 delete2);
+		GLObject(GLuint id, GLDeleteFun1 deleteFun1);
+		GLObject(GLuint id, GLDeleteFun2 deleteFun2);
 		~GLObject() noexcept(false);
 		operator const GLuint() const { return id; }
 
 	protected:
-		bool begin;
 		GLuint id;
-		Delete1 delete1;
-		Delete2 delete2;
+		GLDeleteFun1 deleteFun1;
+		GLDeleteFun2 deleteFun2;
 	};
 
 	template<class T>
@@ -248,6 +247,35 @@ namespace O3GL
 		T* operator ->() { return obj.get(); }
 		const T* operator ->() const { return obj.get(); }
 		operator const GLuint() const { return GLuint(*obj); }
+
+	protected:
+		PTR<T> obj;
+	};
+
+	// Common GLUT Create and Delete object function
+	typedef void(*GLUTDelete) (int);
+
+	//
+	class GLUTObject
+	{
+	public:
+		GLUTObject(int id, GLUTDelete deleteFun);
+		~GLUTObject();
+		operator const int() const { return id; }
+
+	protected:
+		int id;
+		GLUTDelete deleteFun;
+	};
+
+	template<class T>
+	class GLUTHandle
+	{
+	public:
+		GLUTHandle(T* t = nullptr) : obj(t) {};
+		T* operator ->() { return obj.get(); }
+		const T* operator ->() const { return obj.get(); }
+		operator const int() const { return int(*obj); }
 
 	protected:
 		PTR<T> obj;

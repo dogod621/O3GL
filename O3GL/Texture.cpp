@@ -10,7 +10,7 @@ namespace O3GL
 	bool _Texture::initUnits = false;
 	std::vector<GLuint> _Texture::units = std::vector<GLuint>();
 
-	_Texture::_Texture(GLenum target) : GLObject(glCreateTexture(target), glDeleteTextures), target(target), unitID(0)
+	_Texture::_Texture(GLenum target) : GLObject(glCreateTexture(target), glDeleteTextures), target(target), unitID(0), begin(false)
 	{
 		if (!initUnits)
 		{

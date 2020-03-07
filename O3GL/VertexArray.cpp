@@ -4,29 +4,35 @@
 // 
 namespace O3GL
 {
+	std::vector<GLuint> _VertexArray::bindStack = std::vector<GLuint>();
+
 	void _VertexArray::Begin() const
 	{
-		if (begin)
-		{
-			THROW_EXCEPTION("Call Begin without End");
-		}
-		{
-			glBindVertexArray(*this);
-		}
-		*(bool*)(&begin) = true;
+		bindStack.push_back(*this);
+		glBindVertexArray(bindStack.back());
 		GL_CHECK_ERROR;
 	}
 
 	void _VertexArray::End() const
 	{
-		if (!begin)
+		if (bindStack.empty())
 		{
-			THROW_EXCEPTION("Call End without Begin");
+			THROW_EXCEPTION("Invalid End");
 		}
+		else if (bindStack.back() != GLuint(*this))
+		{
+			THROW_EXCEPTION("Invalid End");
+		}
+
+		bindStack.pop_back();
+		if (bindStack.empty())
 		{
 			glBindVertexArray(0);
 		}
-		*(bool*)(&begin) = false;
+		else
+		{
+			glBindVertexArray(bindStack.back());
+		}
 		GL_CHECK_ERROR;
 	}
 

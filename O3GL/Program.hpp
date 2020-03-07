@@ -383,6 +383,9 @@ namespace O3GL
 		template<> void Uniform<GLfloat	, 4, 4	>(GLint location, const Mat44& v, GLboolean transpose						) const { glProgramUniformMatrix4fv		(*this, location, 1, transpose, &v[0][0]					); GL_CHECK_ERROR; }
 		template<> void Uniform<GLfloat	, 4, 4	>(GLint location, const std::vector<Mat44>& v								) const { glProgramUniformMatrix4fv		(*this, location, (GLsizei)v.size(), GL_FALSE, &v[0][0][0]	); GL_CHECK_ERROR; }
 		template<> void Uniform<GLfloat	, 4, 4	>(GLint location, const std::vector<Mat44>& v, GLboolean transpose			) const { glProgramUniformMatrix4fv		(*this, location, (GLsizei)v.size(), transpose, &v[0][0][0]	); GL_CHECK_ERROR; }
+	
+	protected:
+		static std::vector<GLuint> bindStack;
 	};
 
 	//

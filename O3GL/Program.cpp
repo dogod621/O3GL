@@ -4,29 +4,35 @@
 // 
 namespace O3GL
 {
+	std::vector<GLuint> _Program::bindStack = std::vector<GLuint>();
+
 	void _Program::Begin() const
 	{
-		if (begin)
-		{
-			THROW_EXCEPTION("Call Begin without End");
-		}
-		{
-			glUseProgram(*this);
-		}
-		*(bool*)(&begin) = true;
+		bindStack.push_back(*this);
+		glUseProgram(bindStack.back());
 		GL_CHECK_ERROR;
 	}
 
 	void _Program::End() const
 	{
-		if (!begin)
+		if (bindStack.empty())
 		{
-			THROW_EXCEPTION("Call End without Begin");
+			THROW_EXCEPTION("Invalid End");
 		}
+		else if (bindStack.back() != GLuint(*this))
+		{
+			THROW_EXCEPTION("Invalid End");
+		}
+
+		bindStack.pop_back();
+		if (bindStack.empty())
 		{
 			glUseProgram(0);
 		}
-		*(bool*)(&begin) = false;
+		else
+		{
+			glUseProgram(bindStack.back());
+		}
 		GL_CHECK_ERROR;
 	}
 

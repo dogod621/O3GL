@@ -33,6 +33,9 @@ namespace O3GL
 		void AttribLFormat(GLuint attribindex, GLint size, GLenum type, GLuint relativeoffset) const;
 
 		void ElementBuffer(const Buffer& buffer) const;
+
+	protected:
+		static std::vector<GLuint> bindStack;
 	};
 
 	//

@@ -77,6 +77,7 @@ namespace O3GL
 	protected:
 		GLenum target;
 		GLuint unitID;
+		bool begin;
 		static bool initUnits;
 		static std::vector<GLuint> units;
 	};

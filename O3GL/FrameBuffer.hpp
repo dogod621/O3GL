@@ -48,6 +48,9 @@ namespace O3GL
 
 		template<>
 		GLint GetInfo<GLint>(GLenum attachment, GLenum pname) const;
+
+	protected:
+		static std::vector<GLuint> bindStack;
 	};
 
 	//

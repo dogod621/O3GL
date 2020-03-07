@@ -7,29 +7,35 @@
 // 
 namespace O3GL
 {
+	std::vector<GLuint> _FrameBuffer::bindStack = std::vector<GLuint>();
+
 	void _FrameBuffer::Begin() const
 	{
-		if (begin)
-		{
-			THROW_EXCEPTION("Call Begin without End");
-		}
-		{
-			glBindFramebuffer(GL_FRAMEBUFFER, *this);
-		}
-		*(bool*)(&begin) = true;
+		bindStack.push_back(*this);
+		glBindFramebuffer(GL_FRAMEBUFFER, bindStack.back());
 		GL_CHECK_ERROR;
 	}
 
 	void _FrameBuffer::End() const
 	{
-		if (!begin)
+		if (bindStack.empty())
 		{
-			THROW_EXCEPTION("Call End without Begin");
+			THROW_EXCEPTION("Invalid End");
 		}
+		else if (bindStack.back() != GLuint(*this))
+		{
+			THROW_EXCEPTION("Invalid End");
+		}
+
+		bindStack.pop_back();
+		if (bindStack.empty())
 		{
 			glBindFramebuffer(GL_FRAMEBUFFER, 0);
 		}
-		*(bool*)(&begin) = false;
+		else
+		{
+			glBindFramebuffer(GL_FRAMEBUFFER, bindStack.back());
+		}
 		GL_CHECK_ERROR;
 	}
 
