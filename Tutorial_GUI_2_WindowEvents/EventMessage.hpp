@@ -1,5 +1,5 @@
 // std
-#include<sstream>
+#include <sstream>
 
 // O3GL
 #include "O3GL/Utils.hpp"

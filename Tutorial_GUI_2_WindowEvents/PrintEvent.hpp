@@ -1,14 +1,71 @@
-#include "VisualizeEvent.hpp"
+// O3GL
+#include "O3GL/Utils.hpp"
+#include "O3GL/Window.hpp"
+#include "EventMessage.hpp"
 
 //
 namespace O3GL
 {
 	//
-	void _VisualizeEvent::InitGLStatusEvent() const
+	template<int key>
+	class _PrintEvent : public _Window<key>
 	{
-		glEnable(GL_DEPTH_TEST);
+	public:
+		_PrintEvent(int x, int y, int width, int height) :
+			_Window<key>("PrintEvent", GLUT_DOUBLE | GLUT_RGBA, x, y, width, height, 33)
+		{}
+
+	public:
+		virtual void InitGLStatusEvent() const;
+
+	public:
+		virtual void DisplayEvent();
+		virtual void OverlayDisplayEvent();
+		virtual void ReshapeEvent(int width, int height);
+		virtual void KeyboardEvent(unsigned char key, int x, int y);
+		virtual void KeyboardUpEvent(unsigned char key, int x, int y);
+		virtual void SpecialEvent(int key, int x, int y);
+		virtual void SpecialUpEvent(int key, int x, int y);
+		virtual void MouseEvent(int button, int state, int x, int y);
+		virtual void MotionEvent(int x, int y);
+		virtual void PassiveMotionEvent(int x, int y);
+		virtual void VisibilityEvent(int state);
+		virtual void EntryEvent(int state);
+		virtual void CloseEvent();
+		virtual void TimerEvent(int value);
+
+	protected:
+		DisplayEventMessage displayEventMessage;
+		OverlayDisplayEventMessage overlayDisplayEventMessage;
+		ReshapeEventMessage reshapeEventMessage;
+		KeyboardEventMessage keyboardEventMessage;
+		KeyboardUpEventMessage keyboardUpEventMessage;
+		SpecialEventMessage specialEventMessage;
+		SpecialUpEventMessage specialUpEventMessage;
+		MouseEventMessage mouseEventMessage;
+		MotionEventMessage motionEventMessage;
+		PassiveMotionEventMessage passiveMotionEventMessage;
+		VisibilityEventMessage visibilityEventMessage;
+		EntryEventMessage entryEventMessage;
+		CloseEventMessage closeEventMessage;
+		TimerEventMessage timerEventMessage;
+	};
+
+	template<int key>
+	class PrintEvent : public GLUTHandle<_PrintEvent<key>>
+	{
+	public:
+		PrintEvent(int x, int y, int width, int height) : GLUTHandle<_PrintEvent<key>>(new _PrintEvent<key>(x, y, width, height)) {}
+	};
+};
+
+namespace O3GL
+{
+	//
+	template<int key>
+	void _PrintEvent<key>::InitGLStatusEvent() const
+	{
 		glClearColor(1.0, 1.0, 1.0, 0.0);
-		glClearDepth(1.0);
 
 		glMatrixMode(GL_MODELVIEW);
 		glLoadIdentity();
@@ -17,12 +74,13 @@ namespace O3GL
 		glLoadIdentity();
 	}
 
-	void _VisualizeEvent::DisplayEvent()
+	template<int key>
+	void _PrintEvent<key>::DisplayEvent()
 	{
 		displayEventMessage.Active();
 
 		// Clear backbuffer
-		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+		glClear(GL_COLOR_BUFFER_BIT);
 
 		//
 		float lineHeight = 0.06f;
@@ -89,19 +147,22 @@ namespace O3GL
 		glutSwapBuffers();
 	}
 
-	void _VisualizeEvent::OverlayDisplayEvent()
+	template<int key>
+	void _PrintEvent<key>::OverlayDisplayEvent()
 	{
 		overlayDisplayEventMessage.Active();
 	}
 
-	void _VisualizeEvent::ReshapeEvent(int width, int height)
+	template<int key>
+	void _PrintEvent<key>::ReshapeEvent(int width, int height)
 	{
 		reshapeEventMessage.Active();
 		reshapeEventMessage.width = width;
 		reshapeEventMessage.height = height;
 	}
 
-	void _VisualizeEvent::KeyboardEvent(unsigned char key, int x, int y)
+	template<int key>
+	void _PrintEvent<key>::KeyboardEvent(unsigned char key, int x, int y)
 	{
 		keyboardEventMessage.Active();
 		keyboardEventMessage.key = key;
@@ -116,7 +177,8 @@ namespace O3GL
 		}
 	}
 
-	void _VisualizeEvent::KeyboardUpEvent(unsigned char key, int x, int y)
+	template<int key>
+	void _PrintEvent<key>::KeyboardUpEvent(unsigned char key, int x, int y)
 	{
 		keyboardUpEventMessage.Active();
 		keyboardUpEventMessage.key = key;
@@ -124,7 +186,8 @@ namespace O3GL
 		keyboardUpEventMessage.y = y;
 	}
 
-	void _VisualizeEvent::SpecialEvent(int key, int x, int y)
+	template<int key>
+	void _PrintEvent<key>::SpecialEvent(int key, int x, int y)
 	{
 		specialEventMessage.Active();
 		specialEventMessage.key = key;
@@ -132,7 +195,8 @@ namespace O3GL
 		specialEventMessage.y = y;
 	}
 
-	void _VisualizeEvent::SpecialUpEvent(int key, int x, int y)
+	template<int key>
+	void _PrintEvent<key>::SpecialUpEvent(int key, int x, int y)
 	{
 		specialUpEventMessage.Active();
 		specialUpEventMessage.key = key;
@@ -140,7 +204,8 @@ namespace O3GL
 		specialUpEventMessage.y = y;
 	}
 
-	void _VisualizeEvent::MouseEvent(int button, int state, int x, int y)
+	template<int key>
+	void _PrintEvent<key>::MouseEvent(int button, int state, int x, int y)
 	{
 		mouseEventMessage.Active();
 		mouseEventMessage.button = button;
@@ -149,38 +214,44 @@ namespace O3GL
 		mouseEventMessage.y = y;
 	}
 
-	void _VisualizeEvent::MotionEvent(int x, int y)
+	template<int key>
+	void _PrintEvent<key>::MotionEvent(int x, int y)
 	{
 		motionEventMessage.Active();
 		motionEventMessage.x = x;
 		motionEventMessage.y = y;
 	}
 
-	void _VisualizeEvent::PassiveMotionEvent(int x, int y)
+	template<int key>
+	void _PrintEvent<key>::PassiveMotionEvent(int x, int y)
 	{
 		passiveMotionEventMessage.Active();
 		passiveMotionEventMessage.x = x;
 		passiveMotionEventMessage.y = y;
 	}
 
-	void _VisualizeEvent::VisibilityEvent(int state)
+	template<int key>
+	void _PrintEvent<key>::VisibilityEvent(int state)
 	{
 		visibilityEventMessage.Active();
 		visibilityEventMessage.state = state;
 	}
 
-	void _VisualizeEvent::EntryEvent(int state)
+	template<int key>
+	void _PrintEvent<key>::EntryEvent(int state)
 	{
 		entryEventMessage.Active();
 		entryEventMessage.state = state;
 	}
 
-	void _VisualizeEvent::CloseEvent()
+	template<int key>
+	void _PrintEvent<key>::CloseEvent()
 	{
 		closeEventMessage.Active();
 	}
 
-	void _VisualizeEvent::TimerEvent(int value)
+	template<int key>
+	void _PrintEvent<key>::TimerEvent(int value)
 	{
 		timerEventMessage.Active();
 		timerEventMessage.value = value;
