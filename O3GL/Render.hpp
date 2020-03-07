@@ -46,6 +46,7 @@ namespace O3GL
 
 	public:
 		virtual void Init(); // inherit accumulate
+		virtual void Draw() const;
 
 	public:
 		virtual void InitSetupEvent() {} // inherit accumulate
@@ -64,7 +65,6 @@ namespace O3GL
 		virtual void InitProgramParametersEvent() const {} // inherit accumulate
 		virtual void InitFrameBuffersEvent() {} // inherit accumulate
 
-		virtual void DrawEvent() const;
 		virtual void PreDrawEvent() const {} // inherit accumulate
 		virtual void OnDrawEvent() const {}
 		virtual void PostDrawEvent() const {} // inherit accumulate

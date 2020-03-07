@@ -49,7 +49,7 @@ namespace O3GL
 		InitFrameBuffersEvent();
 	}
 
-	void Render::DrawEvent() const
+	void Render::Draw() const
 	{
 		PreDrawEvent();
 		OnDrawEvent();
