@@ -5,6 +5,7 @@
 
 // O3GL
 #include "O3GL/Utils.hpp"
+#include "O3GL/Window.hpp"
 
 // 
 namespace O3GL
@@ -13,12 +14,24 @@ namespace O3GL
 	template<int key>
 	class Menu;
 
+	class MenuBase
+	{
+	public:
+		MenuBase() {}
+
+	public:
+		virtual void ClickEvent(int option)
+		{
+		}
+	};
+
 	template<int key>
-	class _Menu : public GLUTObject
+	class _Menu : public MenuBase, public GLUTObject
 	{
 	public:
 		_Menu() :
-			GLUTObject(InitAndCreateMenu(), glutDestroyMenu)
+			GLUTObject(InitAndCreateMenu(), glutDestroyMenu),
+			MenuBase()
 		{
 			instance = this;
 		}
@@ -71,11 +84,6 @@ namespace O3GL
 			glutSetMenu(*this);
 			glutSetWindow(window);
 			glutAttachMenu(button);
-		}
-
-	public:
-		virtual void ClickEvent(int option)
-		{
 		}
 
 	protected:

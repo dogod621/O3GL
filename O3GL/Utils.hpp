@@ -246,6 +246,8 @@ namespace O3GL
 		GLHandle(T* t = nullptr) : obj(t) {};
 		T* operator ->() { return obj.get(); }
 		const T* operator ->() const { return obj.get(); }
+		T& operator *() { return *obj; }
+		const T& operator *() const { return *obj; }
 		operator const GLuint() const { return GLuint(*obj); }
 
 	protected:
@@ -275,6 +277,8 @@ namespace O3GL
 		GLUTHandle(T* t = nullptr) : obj(t) {};
 		T* operator ->() { return obj.get(); }
 		const T* operator ->() const { return obj.get(); }
+		T& operator *() { return *obj; }
+		const T& operator *() const { return *obj;}
 		operator const int() const { return int(*obj); }
 
 	protected:

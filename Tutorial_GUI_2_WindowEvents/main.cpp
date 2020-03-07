@@ -5,17 +5,24 @@
 // Main
 int main(int argc, char** argv)
 {
-	O3GL::PrintEvent<0> printEvent("PrintEvent", 0, 0, 500, 600);
+	try
+	{
+		O3GL::PrintEvent<0> printEvent("PrintEvent", 0, 0, 500, 600);
 
-	O3GL::Window<1> printAllInOne("PrintAllInOne", GLUT_DOUBLE | GLUT_RGBA, 500, 0, 810, 600, 33);
-	O3GL::PrintFrameCounter<3> subPrintFrameCounter(printAllInOne, 0, 0, 300, 600);
-	O3GL::PrintEvent<2> subPrintEvent(printAllInOne, 310, 0, 500, 600);
-	
-	printEvent->Init();
-	printAllInOne->Init();
-	subPrintFrameCounter->Init();
-	subPrintEvent->Init();
+		O3GL::Window<1> printAllInOne("PrintAllInOne", GLUT_DOUBLE | GLUT_RGBA, 500, 0, 810, 600, 33);
+		O3GL::PrintFrameCounter<3> subPrintFrameCounter(*printAllInOne, 0, 0, 300, 600);
+		O3GL::PrintEvent<2> subPrintEvent(*printAllInOne, 310, 0, 500, 600);
 
-	O3GL::EnterMainLoop();
+		printEvent->Init();
+		printAllInOne->Init();
+		subPrintFrameCounter->Init();
+		subPrintEvent->Init();
+
+		O3GL::EnterMainLoop();
+	}
+	catch (const std::exception & ex)
+	{
+		PRINT_ERROR(ex.what());
+	}
 	return EXIT_SUCCESS;
 }

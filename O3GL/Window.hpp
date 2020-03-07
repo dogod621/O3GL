@@ -15,26 +15,10 @@ namespace O3GL
 	void LeaveMainLoop();
 
 	//
-	class _WindowBase
+	class WindowBase
 	{
 	public:
-		_WindowBase() {}
-
-	protected:
-		static bool init;
-	};
-
-	//
-	template<int key>
-	class _Window : public GLUTObject, public _WindowBase
-	{
-	public:
-		_Window(const std::string& name, unsigned int displayMode, int x, int y, int width, int height, unsigned int tick);
-		_Window(int window, int x, int y, int width, int height, unsigned int tick);
-		~_Window();
-
-	public:
-		void Init() const;
+		WindowBase() {}
 
 	public:
 		virtual void InitGLStatusEvent() const;
@@ -54,6 +38,33 @@ namespace O3GL
 		virtual void EntryEvent(int state);
 		virtual void CloseEvent();
 		virtual void TimerEvent(int value);
+
+	protected:
+		static bool init;
+	};
+
+	//
+	template<int key>
+	class _Window : public GLUTObject, public WindowBase
+	{
+	public:
+		_Window(const std::string& name, unsigned int displayMode, int x, int y, int width, int height, unsigned int tick);
+		_Window(int window, int x, int y, int width, int height, unsigned int tick);
+		~_Window();
+
+	public:
+		void Init() const;
+
+		template<class T>
+		T GetInfo(GLenum state) const;
+
+	public:
+		template<>
+		int GetInfo<int>(GLenum state) const
+		{
+			glutSetWindow(*this);
+			return glutGet(state);
+		}
 
 	protected:
 		static int InitAndCreateWindow(const std::string& name, unsigned int displayMode, int x, int y, int width, int height);
@@ -99,7 +110,7 @@ namespace O3GL
 	template<int key>
 	_Window<key>::_Window(const std::string& name, unsigned int displayMode, int x, int y, int width, int height, unsigned int tick) :
 		GLUTObject(InitAndCreateWindow(name, displayMode, x, y, width, height), glutDestroyWindow),
-		_WindowBase(),
+		WindowBase(),
 		tick(tick),
 		subWindow(false)
 	{
@@ -109,7 +120,7 @@ namespace O3GL
 	template<int key>
 	_Window<key>::_Window(int window, int x, int y, int width, int height, unsigned int tick) :
 		GLUTObject(InitAndCreateSubWindow(window, x, y, width, height), glutDestroyWindow),
-		_WindowBase(),
+		WindowBase(),
 		tick(tick),
 		subWindow(true)
 	{
@@ -141,97 +152,6 @@ namespace O3GL
 		glutCloseFunc(_Window<key>::CloseCallback);
 		glutTimerFunc(tick, _Window<key>::TimerCallback, 0);
 		InitGLStatusEvent();
-	}
-
-	template<int key>
-	void _Window<key>::InitGLStatusEvent() const
-	{
-
-	}
-
-	template<int key>
-	void _Window<key>::DisplayEvent()
-	{
-		// Swap buffers
-		glutSwapBuffers();
-	}
-
-	template<int key>
-	void _Window<key>::OverlayDisplayEvent()
-	{
-
-	}
-
-	template<int key>
-	void _Window<key>::ReshapeEvent(int width, int height)
-	{
-
-	}
-
-	template<int key>
-	void _Window<key>::KeyboardEvent(unsigned char key, int x, int y)
-	{
-
-	}
-
-	template<int key>
-	void _Window<key>::KeyboardUpEvent(unsigned char key, int x, int y)
-	{
-
-	}
-
-	template<int key>
-	void _Window<key>::SpecialEvent(int key, int x, int y)
-	{
-
-	}
-
-	template<int key>
-	void _Window<key>::SpecialUpEvent(int key, int x, int y)
-	{
-
-	}
-
-	template<int key>
-	void _Window<key>::MouseEvent(int button, int state, int x, int y)
-	{
-
-	}
-
-	template<int key>
-	void _Window<key>::MotionEvent(int x, int y)
-	{
-
-	}
-
-	template<int key>
-	void _Window<key>::PassiveMotionEvent(int x, int y)
-	{
-
-	}
-
-	template<int key>
-	void _Window<key>::VisibilityEvent(int state)
-	{
-
-	}
-
-	template<int key>
-	void _Window<key>::EntryEvent(int state)
-	{
-
-	}
-
-	template<int key>
-	void _Window<key>::CloseEvent()
-	{
-
-	}
-
-	template<int key>
-	void _Window<key>::TimerEvent(int value)
-	{
-		glutPostRedisplay();
 	}
 
 	template<int key>
