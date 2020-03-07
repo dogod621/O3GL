@@ -118,11 +118,13 @@ namespace O3GL
 int main()
 {
 	O3GL::PrintFrameCounter<0> printFrameCounter("PrintFrameCounter", 0, 0, 400, 600);
+	O3GL::PrintGLVersion<1> printGLVersion("PrintGLVersion", 500, 0, 400, 600);
 	O3GL::ModifyFrameCounterMenu<0, O3GL::PrintFrameCounter<0>> modifyFrameCounterMenu(printFrameCounter);
 	O3GL::FrameCounterMenu<1, O3GL::PrintFrameCounter<0>> frameCounterMenu(printFrameCounter);
 	frameCounterMenu->AddMenu("Modify Frame Counter", modifyFrameCounterMenu);
 	printFrameCounter->Init();
-	frameCounterMenu->Attach(GLUT_RIGHT_BUTTON);
+	printGLVersion->Init();
+	frameCounterMenu->Attach(printFrameCounter, GLUT_RIGHT_BUTTON);
 	O3GL::EnterMainLoop();
 	return EXIT_SUCCESS;
 }

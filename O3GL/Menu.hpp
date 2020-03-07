@@ -59,15 +59,17 @@ namespace O3GL
 			glutRemoveMenuItem(entry);
 		}
 
-		void Attach(int button) 
+		void Attach(int window, int button)
 		{
 			glutSetMenu(*this);
+			glutSetWindow(window);
 			glutAttachMenu(button);
 		}
 
-		void Detach(int button) 
+		void Detach(int window, int button)
 		{
 			glutSetMenu(*this);
+			glutSetWindow(window);
 			glutAttachMenu(button);
 		}
 
