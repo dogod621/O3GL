@@ -14,15 +14,17 @@ namespace O3GL
 	void EnterMainLoop();
 	void LeaveMainLoop();
 
+	//
 	class _WindowBase
 	{
 	public:
 		_WindowBase() {}
 
 	protected:
-		static std::vector<int> bindStack;
+		static bool init;
 	};
 
+	//
 	template<int key>
 	class _Window : public GLUTObject, public _WindowBase
 	{
@@ -31,12 +33,9 @@ namespace O3GL
 		~_Window();
 
 	public:
-		void Begin() const;
-		void End() const;
 		void Init() const;
 
 	public:
-		virtual void RegisterCallbackEvent() const;
 		virtual void InitGLStatusEvent() const;
 
 	public:
@@ -109,44 +108,9 @@ namespace O3GL
 	}
 
 	template<int key>
-	void _Window<key>::Begin() const
-	{
-		_WindowBase::bindStack.push_back(*this);
-		glutSetWindow(bindStack.back());
-	}
-
-	template<int key>
-	void _Window<key>::End() const
-	{
-		if (_WindowBase::bindStack.empty())
-		{
-			THROW_EXCEPTION("Invalid End");
-		}
-		else if (bindStack.back() != int(*this))
-		{
-			THROW_EXCEPTION("Invalid End");
-		}
-
-		_WindowBase::bindStack.pop_back();
-		if (_WindowBase::bindStack.empty())
-		{
-			THROW_EXCEPTION("This should not be happend");
-		}
-		glutSetWindow(bindStack.back());
-	}
-
-	template<int key>
 	void _Window<key>::Init() const
 	{
-		Begin();
-		RegisterCallbackEvent();
-		InitGLStatusEvent();
-		End();
-	}
-
-	template<int key>
-	void _Window<key>::RegisterCallbackEvent() const
-	{
+		glutSetWindow(*this);
 		glutDisplayFunc(_Window<key>::DisplayCallback);
 		glutOverlayDisplayFunc(_Window<key>::OverlayDisplayCallback);
 		glutReshapeFunc(_Window<key>::ReshapeCallback);
@@ -161,6 +125,7 @@ namespace O3GL
 		glutEntryFunc(_Window<key>::EntryCallback);
 		glutCloseFunc(_Window<key>::CloseCallback);
 		glutTimerFunc(tick, _Window<key>::TimerCallback, 0);
+		InitGLStatusEvent();
 	}
 
 	template<int key>
@@ -263,7 +228,7 @@ namespace O3GL
 		}
 		else
 		{
-			if (_WindowBase::bindStack.empty())
+			if (!init)
 			{
 				int argc2 = 1;
 				std::string s = "";
@@ -274,7 +239,7 @@ namespace O3GL
 			glutInitWindowPosition(x, y);
 			glutInitWindowSize(width, height);
 			int winID = glutCreateWindow(name.c_str());
-			if (_WindowBase::bindStack.empty())
+			if (!init)
 			{
 				GLenum err = glewInit();
 				if (err != GLEW_OK)
@@ -283,7 +248,7 @@ namespace O3GL
 					std::cout << glewGetErrorString(err);
 					THROW_EXCEPTION(ss.str());
 				}
-				_WindowBase::bindStack.push_back(winID);
+				init = true;
 			}
 			return winID;
 		}
@@ -294,9 +259,8 @@ namespace O3GL
 	{
 		if (instance)
 		{
-			instance->Begin();
+			glutSetWindow(*instance);
 			instance->DisplayEvent();
-			instance->End();
 		}
 	}
 
@@ -305,9 +269,8 @@ namespace O3GL
 	{
 		if (instance)
 		{
-			instance->Begin();
+			glutSetWindow(*instance);
 			instance->OverlayDisplayEvent();
-			instance->End();
 		}
 	}
 
@@ -316,9 +279,8 @@ namespace O3GL
 	{
 		if (instance)
 		{
-			instance->Begin();
+			glutSetWindow(*instance);
 			instance->ReshapeEvent(width, height);
-			instance->End();
 		}
 	}
 
@@ -327,9 +289,8 @@ namespace O3GL
 	{
 		if (instance)
 		{
-			instance->Begin();
+			glutSetWindow(*instance);
 			instance->KeyboardEvent(key, x, y);
-			instance->End();
 		}
 	}
 
@@ -338,9 +299,8 @@ namespace O3GL
 	{
 		if (instance)
 		{
-			instance->Begin();
+			glutSetWindow(*instance);
 			instance->KeyboardUpEvent(key, x, y);
-			instance->End();
 		}
 	}
 
@@ -349,9 +309,8 @@ namespace O3GL
 	{
 		if (instance)
 		{
-			instance->Begin();
+			glutSetWindow(*instance);
 			instance->SpecialEvent(key, x, y);
-			instance->End();
 		}
 	}
 
@@ -360,9 +319,8 @@ namespace O3GL
 	{
 		if (instance)
 		{
-			instance->Begin();
+			glutSetWindow(*instance);
 			instance->SpecialUpEvent(key, x, y);
-			instance->End();
 		}
 	}
 
@@ -371,9 +329,8 @@ namespace O3GL
 	{
 		if (instance)
 		{
-			instance->Begin();
+			glutSetWindow(*instance);
 			instance->MouseEvent(button, state, x, y);
-			instance->End();
 		}
 	}
 
@@ -382,9 +339,8 @@ namespace O3GL
 	{
 		if (instance)
 		{
-			instance->Begin();
+			glutSetWindow(*instance);
 			instance->MotionEvent(x, y);
-			instance->End();
 		}
 	}
 
@@ -393,9 +349,8 @@ namespace O3GL
 	{
 		if (instance)
 		{
-			instance->Begin();
+			glutSetWindow(*instance);
 			instance->PassiveMotionEvent(x, y);
-			instance->End();
 		}
 	}
 
@@ -404,9 +359,8 @@ namespace O3GL
 	{
 		if (instance)
 		{
-			instance->Begin();
+			glutSetWindow(*instance);
 			instance->VisibilityEvent(state);
-			instance->End();
 		}
 	}
 
@@ -415,9 +369,8 @@ namespace O3GL
 	{
 		if (instance)
 		{
-			instance->Begin();
+			glutSetWindow(*instance);
 			instance->EntryEvent(state);
-			instance->End();
 		}
 	}
 
@@ -426,9 +379,8 @@ namespace O3GL
 	{
 		if (instance)
 		{
-			instance->Begin();
+			glutSetWindow(*instance);
 			instance->CloseEvent();
-			instance->End();
 		}
 	}
 
@@ -437,10 +389,9 @@ namespace O3GL
 	{
 		if (instance)
 		{
-			instance->Begin();
+			glutSetWindow(*instance);
 			instance->TimerEvent(value);
 			glutTimerFunc(instance->tick, TimerCallback, 0);
-			instance->End();
 		}
 	}
 };

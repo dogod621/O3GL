@@ -21,7 +21,7 @@ namespace O3GL
 		virtual void DisplayEvent();
 		virtual void TimerEvent(int value);
 
-	protected:
+	public:
 		unsigned int frameCounter;
 	};
 

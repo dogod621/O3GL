@@ -14,5 +14,5 @@ namespace O3GL
 		glutLeaveMainLoop();
 	}
 
-	std::vector<int> _WindowBase::bindStack = std::vector<int>();
+	bool _WindowBase::init = false;
 };
