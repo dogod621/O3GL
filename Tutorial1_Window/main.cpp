@@ -1,10 +1,10 @@
 // O3GL
-#include "VisCallbacks.hpp"
+#include "VisualizeEvent.hpp"
 
 // Main
 int main(int argc, char** argv)
 {
-	O3GL::VisCallbacks visCallbacks(0, 0, 800, 600);
-	visCallbacks->Start();
+	O3GL::VisualizeEvent visualizeEvent(0, 0, 800, 600);
+	visualizeEvent->Start();
 	return EXIT_SUCCESS;
 }

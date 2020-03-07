@@ -8,12 +8,12 @@
 namespace O3GL
 {
 	//
-	class CallbackMessage
+	class EventMessage
 	{
 	public:
 		int life;
 
-		CallbackMessage() : life(0) {}
+		EventMessage() : life(0) {}
 
 		void Active()
 		{
@@ -27,39 +27,39 @@ namespace O3GL
 		void Draw(float wx, float wy);
 	};
 
-	class DisplayCallbackMessage : public CallbackMessage
+	class DisplayEventMessage : public EventMessage
 	{
 	public:
-		DisplayCallbackMessage() : CallbackMessage() {}
+		DisplayEventMessage() : EventMessage() {}
 
 		virtual std::string PrintName() const
 		{
-			return "Display";
+			return "Display Event";
 		}
 	};
 
-	class OverlayDisplayCallbackMessage : public CallbackMessage
+	class OverlayDisplayEventMessage : public EventMessage
 	{
 	public:
-		OverlayDisplayCallbackMessage() : CallbackMessage() {}
+		OverlayDisplayEventMessage() : EventMessage() {}
 
 		virtual std::string PrintName() const
 		{
-			return "OverlayDisplay";
+			return "OverlayDisplay Event";
 		}
 	};
 
-	class ReshapeCallbackMessage : public CallbackMessage
+	class ReshapeEventMessage : public EventMessage
 	{
 	public:
 		int width;
 		int height;
 
-		ReshapeCallbackMessage() : CallbackMessage(), width(0), height(0) {}
+		ReshapeEventMessage() : EventMessage(), width(0), height(0) {}
 
 		virtual std::string PrintName() const
 		{
-			return "Reshape";
+			return "Reshape Event";
 		}
 
 		virtual std::string PrintFormat() const
@@ -75,14 +75,14 @@ namespace O3GL
 		}
 	};
 
-	class KeyboardCallbackMessage : public CallbackMessage
+	class KeyboardEventMessage : public EventMessage
 	{
 	public:
 		unsigned char key;
 		int x;
 		int y;
 
-		KeyboardCallbackMessage() : CallbackMessage(), key(0), x(0), y(0) {}
+		KeyboardEventMessage() : EventMessage(), key(0), x(0), y(0) {}
 
 		std::string KeyStr() const
 		{
@@ -94,7 +94,7 @@ namespace O3GL
 
 		virtual std::string PrintName() const
 		{
-			return "Keyboard";
+			return "Keyboard Event";
 		}
 
 		virtual std::string PrintFormat() const
@@ -110,31 +110,31 @@ namespace O3GL
 		}
 	};
 
-	class KeyboardUpCallbackMessage : public KeyboardCallbackMessage
+	class KeyboardUpEventMessage : public KeyboardEventMessage
 	{
 	public:
-		KeyboardUpCallbackMessage() : KeyboardCallbackMessage() {}
+		KeyboardUpEventMessage() : KeyboardEventMessage() {}
 
 		virtual std::string PrintName() const
 		{
-			return "KeyboardUp";
+			return "KeyboardUp Event";
 		}
 	};
 
-	class SpecialCallbackMessage : public CallbackMessage
+	class SpecialEventMessage : public EventMessage
 	{
 	public:
 		int key;
 		int x;
 		int y;
 
-		SpecialCallbackMessage() : CallbackMessage(), key(0), x(0), y(0) {}
+		SpecialEventMessage() : EventMessage(), key(0), x(0), y(0) {}
 
 		std::string KeyStr() const;
 
 		virtual std::string PrintName() const
 		{
-			return "Special";
+			return "Special Event";
 		}
 
 		virtual std::string PrintFormat() const
@@ -150,18 +150,18 @@ namespace O3GL
 		}
 	};
 
-	class SpecialUpCallbackMessage : public SpecialCallbackMessage
+	class SpecialUpEventMessage : public SpecialEventMessage
 	{
 	public:
-		SpecialUpCallbackMessage() : SpecialCallbackMessage() {}
+		SpecialUpEventMessage() : SpecialEventMessage() {}
 
 		virtual std::string PrintName() const
 		{
-			return "SpecialUp";
+			return "SpecialUp Event";
 		}
 	};
 
-	class MouseCallbackMessage : public CallbackMessage
+	class MouseEventMessage : public EventMessage
 	{
 	public:
 		int button;
@@ -169,7 +169,7 @@ namespace O3GL
 		int x;
 		int y;
 
-		MouseCallbackMessage() : CallbackMessage(), button(0), state(0), x(0), y(0) {}
+		MouseEventMessage() : EventMessage(), button(0), state(0), x(0), y(0) {}
 
 		std::string ButtonStr() const;
 
@@ -177,7 +177,7 @@ namespace O3GL
 
 		virtual std::string PrintName() const
 		{
-			return "Mouse";
+			return "Mouse Event";
 		}
 
 		virtual std::string PrintFormat() const
@@ -193,17 +193,17 @@ namespace O3GL
 		}
 	};
 
-	class MotionCallbackMessage : public CallbackMessage
+	class MotionEventMessage : public EventMessage
 	{
 	public:
 		int x;
 		int y;
 
-		MotionCallbackMessage() : CallbackMessage(), x(0), y(0) {}
+		MotionEventMessage() : EventMessage(), x(0), y(0) {}
 
 		virtual std::string PrintName() const
 		{
-			return "Motion";
+			return "Motion Event";
 		}
 
 		virtual std::string PrintFormat() const
@@ -219,29 +219,29 @@ namespace O3GL
 		}
 	};
 
-	class PassiveMotionCallbackMessage : public MotionCallbackMessage
+	class PassiveMotionEventMessage : public MotionEventMessage
 	{
 	public:
-		PassiveMotionCallbackMessage() : MotionCallbackMessage() {}
+		PassiveMotionEventMessage() : MotionEventMessage() {}
 
 		virtual std::string PrintName() const
 		{
-			return "PassiveMotion";
+			return "PassiveMotion Event";
 		}
 	};
 
-	class VisibilityCallbackMessage : public CallbackMessage
+	class VisibilityEventMessage : public EventMessage
 	{
 	public:
 		int state;
 
-		VisibilityCallbackMessage() : CallbackMessage(), state(0) {}
+		VisibilityEventMessage() : EventMessage(), state(0) {}
 
 		std::string StateStr() const;
 
 		virtual std::string PrintName() const
 		{
-			return "Visibility";
+			return "Visibility Event";
 		}
 
 		virtual std::string PrintFormat() const
@@ -257,18 +257,18 @@ namespace O3GL
 		}
 	};
 
-	class EntryCallbackMessage : public CallbackMessage
+	class EntryEventMessage : public EventMessage
 	{
 	public:
 		int state;
 
-		EntryCallbackMessage() : CallbackMessage(), state(0) {}
+		EntryEventMessage() : EventMessage(), state(0) {}
 
 		std::string StateStr() const;
 
 		virtual std::string PrintName() const
 		{
-			return "Entry";
+			return "Entry Event";
 		}
 
 		virtual std::string PrintFormat() const
@@ -284,27 +284,27 @@ namespace O3GL
 		}
 	};
 
-	class CloseCallbackMessage : public CallbackMessage
+	class CloseEventMessage : public EventMessage
 	{
 	public:
-		CloseCallbackMessage() : CallbackMessage() {}
+		CloseEventMessage() : EventMessage() {}
 
 		virtual std::string PrintName() const
 		{
-			return "Close";
+			return "Close Event";
 		}
 	};
 
-	class TimerCallbackMessage : public CallbackMessage
+	class TimerEventMessage : public EventMessage
 	{
 	public:
 		int value;
 
-		TimerCallbackMessage() : CallbackMessage(), value(0) {}
+		TimerEventMessage() : EventMessage(), value(0) {}
 
 		virtual std::string PrintName() const
 		{
-			return "Timer";
+			return "Timer Event";
 		}
 
 		virtual std::string PrintFormat() const

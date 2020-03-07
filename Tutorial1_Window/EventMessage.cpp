@@ -1,10 +1,10 @@
 //O3GL
-#include "CallbackMessage.hpp"
+#include "EventMessage.hpp"
 
 //
 namespace O3GL
 {
-	void CallbackMessage::Draw(float wx, float wy)
+	void EventMessage::Draw(float wx, float wy)
 	{
 		if (life > 0)
 		{
@@ -17,7 +17,7 @@ namespace O3GL
 		}
 	}
 
-	std::string SpecialCallbackMessage::KeyStr() const
+	std::string SpecialEventMessage::KeyStr() const
 	{
 		switch (key)
 		{
@@ -46,7 +46,7 @@ namespace O3GL
 		}
 	}
 
-	std::string MouseCallbackMessage::ButtonStr() const
+	std::string MouseEventMessage::ButtonStr() const
 	{
 		switch (button)
 		{
@@ -57,7 +57,7 @@ namespace O3GL
 		}
 	}
 
-	std::string MouseCallbackMessage::StateStr() const
+	std::string MouseEventMessage::StateStr() const
 	{
 		switch (state)
 		{
@@ -67,7 +67,7 @@ namespace O3GL
 		}
 	}
 
-	std::string VisibilityCallbackMessage::StateStr() const
+	std::string VisibilityEventMessage::StateStr() const
 	{
 		switch (state)
 		{
@@ -77,7 +77,7 @@ namespace O3GL
 		}
 	}
 
-	std::string EntryCallbackMessage::StateStr() const
+	std::string EntryEventMessage::StateStr() const
 	{
 		switch (state)
 		{

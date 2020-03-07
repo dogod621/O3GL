@@ -21,29 +21,31 @@ namespace O3GL
 		virtual void Start() const;
 
 	public:
-		virtual void InitGLStatusCallback() const
+		virtual void RegisterCallbackEvent() const;
+
+		virtual void InitGLStatusEvent() const
 		{
 
 		}
 
 	public:
-		virtual void DisplayCallback()
+		virtual void DisplayEvent()
 		{
 			// Swap buffers
 			glutSwapBuffers();
 		}
 
-		virtual void OverlayDisplayCallback()
+		virtual void OverlayDisplayEvent()
 		{
 
 		}
 
-		virtual void ReshapeCallback(int width, int height)
+		virtual void ReshapeEvent(int width, int height)
 		{
 
 		}
 
-		virtual void KeyboardCallback(unsigned char key, int x, int y)
+		virtual void KeyboardEvent(unsigned char key, int x, int y)
 		{
 			switch (key)
 			{
@@ -53,52 +55,52 @@ namespace O3GL
 			}
 		}
 
-		virtual void KeyboardUpCallback(unsigned char key, int x, int y)
+		virtual void KeyboardUpEvent(unsigned char key, int x, int y)
 		{
 
 		}
 
-		virtual void SpecialCallback(int key, int x, int y)
+		virtual void SpecialEvent(int key, int x, int y)
 		{
 
 		}
 
-		virtual void SpecialUpCallback(int key, int x, int y)
+		virtual void SpecialUpEvent(int key, int x, int y)
 		{
 
 		}
 
-		virtual void MouseCallback(int button, int state, int x, int y)
+		virtual void MouseEvent(int button, int state, int x, int y)
 		{
 
 		}
 
-		virtual void MotionCallback(int x, int y)
+		virtual void MotionEvent(int x, int y)
 		{
 
 		}
 
-		virtual void PassiveMotionCallback(int x, int y)
+		virtual void PassiveMotionEvent(int x, int y)
 		{
 
 		}
 
-		virtual void VisibilityCallback(int state)
+		virtual void VisibilityEvent(int state)
 		{
 
 		}
 
-		virtual void EntryCallback(int state)
+		virtual void EntryEvent(int state)
 		{
 
 		}
 
-		virtual void CloseCallback()
+		virtual void CloseEvent()
 		{
 
 		}
 
-		virtual void TimerCallback(int value)
+		virtual void TimerEvent(int value)
 		{
 			glutPostRedisplay();
 		}

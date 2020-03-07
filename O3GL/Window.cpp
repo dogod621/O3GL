@@ -42,117 +42,117 @@ namespace O3GL
 		}
 	}
 
-	void _DisplayCallback()
+	void DisplayCallback()
 	{
 		if (_Window::Instance())
 		{
-			_Window::Instance()->DisplayCallback();
+			_Window::Instance()->DisplayEvent();
 		}
 	}
 
-	void _OverlayDisplayCallback()
+	void OverlayDisplayCallback()
 	{
 		if (_Window::Instance())
 		{
-			_Window::Instance()->OverlayDisplayCallback();
+			_Window::Instance()->OverlayDisplayEvent();
 		}
 	}
 
-	void _ReshapeCallback(int width, int height)
+	void ReshapeCallback(int width, int height)
 	{
 		if (_Window::Instance())
 		{
-			_Window::Instance()->ReshapeCallback(width, height);
+			_Window::Instance()->ReshapeEvent(width, height);
 		}
 	}
 
-	void _KeyboardCallback(unsigned char key, int x, int y)
+	void KeyboardCallback(unsigned char key, int x, int y)
 	{
 		if (_Window::Instance())
 		{
-			_Window::Instance()->KeyboardCallback(key, x, y);
+			_Window::Instance()->KeyboardEvent(key, x, y);
 		}
 	}
 
-	void _KeyboardUpCallback(unsigned char key, int x, int y)
+	void KeyboardUpCallback(unsigned char key, int x, int y)
 	{
 		if (_Window::Instance())
 		{
-			_Window::Instance()->KeyboardUpCallback(key, x, y);
+			_Window::Instance()->KeyboardUpEvent(key, x, y);
 		}
 	}
 
-	void _SpecialCallback(int key, int x, int y)
+	void SpecialCallback(int key, int x, int y)
 	{
 		if (_Window::Instance())
 		{
-			_Window::Instance()->SpecialCallback(key, x, y);
+			_Window::Instance()->SpecialEvent(key, x, y);
 		}
 	}
 
-	void _SpecialUpCallback(int key, int x, int y)
+	void SpecialUpCallback(int key, int x, int y)
 	{
 		if (_Window::Instance())
 		{
-			_Window::Instance()->SpecialUpCallback(key, x, y);
+			_Window::Instance()->SpecialUpEvent(key, x, y);
 		}
 	}
 
-	void _MouseCallback(int button, int state, int x, int y)
+	void MouseCallback(int button, int state, int x, int y)
 	{
 		if (_Window::Instance())
 		{
-			_Window::Instance()->MouseCallback(button, state, x, y);
+			_Window::Instance()->MouseEvent(button, state, x, y);
 		}
 	}
 
-	void _MotionCallback(int x, int y)
+	void MotionCallback(int x, int y)
 	{
 		if (_Window::Instance())
 		{
-			_Window::Instance()->MotionCallback(x, y);
+			_Window::Instance()->MotionEvent(x, y);
 		}
 	}
 
-	void _PassiveMotionCallback(int x, int y)
+	void PassiveMotionCallback(int x, int y)
 	{
 		if (_Window::Instance())
 		{
-			_Window::Instance()->PassiveMotionCallback(x, y);
+			_Window::Instance()->PassiveMotionEvent(x, y);
 		}
 	}
 
-	void _VisibilityCallback(int state)
+	void VisibilityCallback(int state)
 	{
 		if (_Window::Instance())
 		{
-			_Window::Instance()->VisibilityCallback(state);
+			_Window::Instance()->VisibilityEvent(state);
 		}
 	}
 
-	void _EntryCallback(int state)
+	void EntryCallback(int state)
 	{
 		if (_Window::Instance())
 		{
-			_Window::Instance()->EntryCallback(state);
+			_Window::Instance()->EntryEvent(state);
 		}
 	}
 
-	void _CloseCallback()
+	void CloseCallback()
 	{
 		if (_Window::Instance())
 		{
-			_Window::Instance()->CloseCallback();
+			_Window::Instance()->CloseEvent();
 		}
 	}
 
-	void _TimerCallback(int value)
+	void TimerCallback(int value)
 	{
 		if (_Window::Instance())
 		{
-			_Window::Instance()->TimerCallback(value);
+			_Window::Instance()->TimerEvent(value);
 		}
-		glutTimerFunc(_Window::Instance()->Tick(), _TimerCallback, 0);
+		glutTimerFunc(_Window::Instance()->Tick(), TimerCallback, 0);
 	}
 
 	//
@@ -196,24 +196,28 @@ namespace O3GL
 
 	void _Window::Start() const
 	{
-		Begin();
-		InitGLStatusCallback();
-		glutDisplayFunc(_DisplayCallback);
-		glutOverlayDisplayFunc(_OverlayDisplayCallback);
-		glutReshapeFunc(_ReshapeCallback);
-		glutKeyboardFunc(_KeyboardCallback);
-		glutKeyboardUpFunc(_KeyboardUpCallback);
-		glutSpecialFunc(_SpecialCallback);
-		glutSpecialUpFunc(_SpecialUpCallback);
-		glutMouseFunc(_MouseCallback);
-		glutMotionFunc(_MotionCallback);
-		glutPassiveMotionFunc(_PassiveMotionCallback);
-		glutVisibilityFunc(_VisibilityCallback);
-		glutEntryFunc(_EntryCallback);
-		glutCloseFunc(_CloseCallback);
-		glutTimerFunc(tick, _TimerCallback, 0);
-		End();
-
+		RegisterCallbackEvent();
+		InitGLStatusEvent();
 		glutMainLoop();
+	}
+
+	void _Window::RegisterCallbackEvent() const
+	{
+		Begin();
+		glutDisplayFunc(DisplayCallback);
+		glutOverlayDisplayFunc(OverlayDisplayCallback);
+		glutReshapeFunc(ReshapeCallback);
+		glutKeyboardFunc(KeyboardCallback);
+		glutKeyboardUpFunc(KeyboardUpCallback);
+		glutSpecialFunc(SpecialCallback);
+		glutSpecialUpFunc(SpecialUpCallback);
+		glutMouseFunc(MouseCallback);
+		glutMotionFunc(MotionCallback);
+		glutPassiveMotionFunc(PassiveMotionCallback);
+		glutVisibilityFunc(VisibilityCallback);
+		glutEntryFunc(EntryCallback);
+		glutCloseFunc(CloseCallback);
+		glutTimerFunc(tick, TimerCallback, 0);
+		End();
 	}
 };
