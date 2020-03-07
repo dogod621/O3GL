@@ -76,6 +76,8 @@
 	}\
 }\
 
+#define ANISOTROPIC_FILTER_SAMPLES 16.0f
+
 // O3GL
 namespace O3GL
 {
@@ -278,11 +280,22 @@ namespace O3GL
 		T* operator ->() { return obj.get(); }
 		const T* operator ->() const { return obj.get(); }
 		T& operator *() { return *obj; }
-		const T& operator *() const { return *obj;}
+		const T& operator *() const { return *obj; }
 		operator const int() const { return int(*obj); }
 
 	protected:
 		PTR<T> obj;
+	};
+
+	struct Camera
+	{
+		Mat44 transform;
+		Mat44 projection;
+
+		Camera() :
+			transform(glm::identity<Mat44>()),
+			projection(glm::identity<Mat44>())
+		{}
 	};
 
 	// Template Definitions
