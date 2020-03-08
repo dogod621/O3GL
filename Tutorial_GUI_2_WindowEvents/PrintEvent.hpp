@@ -13,12 +13,12 @@ namespace O3GL
 	class PrintEventWindow : public Window<key>
 	{
 	public:
-		PrintEventWindow(const std::string& name, int x, int y, int width, int height) :
-			Window<key>(name, GLUT_DOUBLE | GLUT_RGBA, x, y, width, height, 33)
+		PrintEventWindow(const std::string& name, int x, int y, int width, int height, unsigned int tick) :
+			Window<key>(name, GLUT_DOUBLE | GLUT_RGBA, x, y, width, height, tick)
 		{}
 
-		PrintEventWindow(int window, int x, int y, int width, int height) :
-			Window<key>(window, x, y, width, height, 33)
+		PrintEventWindow(int window, int x, int y, int width, int height, unsigned int tick) :
+			Window<key>(window, x, y, width, height, tick)
 		{}
 
 	public:
@@ -82,6 +82,9 @@ namespace O3GL
 		float lineHeight = 0.06f;
 		float wx = -1.0f;
 		float wy = -1.0f;
+
+		Text(wx, wy, 0.0f, "Time elapsed: " + std::to_string(timeElapsed) + " ms", 1.0f, 0.0f, 0.0f, 1.0f);
+		wy += lineHeight;
 
 		displayEventMessage.Draw(wx, wy);
 		wy += lineHeight;

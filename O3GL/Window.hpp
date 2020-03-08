@@ -90,6 +90,9 @@ namespace O3GL
 
 	protected:
 		unsigned int tick;
+		bool firstTick;
+		std::chrono::steady_clock::time_point timeStamp;
+		double timeElapsed;
 		bool subWindow;
 		static Window* instance;
 	};
@@ -103,6 +106,9 @@ namespace O3GL
 		GLUTHandle(new GLUTObject(InitAndCreateWindow(name, displayMode, x, y, width, height), glutDestroyWindow)),
 		WindowBase(),
 		tick(tick),
+		firstTick(true),
+		timeStamp(),
+		timeElapsed(0.0),
 		subWindow(false)
 	{
 		instance = this;
@@ -113,6 +119,9 @@ namespace O3GL
 		GLUTHandle(new GLUTObject(InitAndCreateSubWindow(window, x, y, width, height), glutDestroyWindow)),
 		WindowBase(),
 		tick(tick),
+		firstTick(true),
+		timeStamp(),
+		timeElapsed(0.0),
 		subWindow(true)
 	{
 		instance = this;
@@ -333,6 +342,21 @@ namespace O3GL
 		if (instance)
 		{
 			glutSetWindow(*instance);
+
+			if (instance->firstTick)
+			{
+				instance->timeStamp = std::chrono::high_resolution_clock::now();
+				instance->timeElapsed = 0.0;
+				instance->firstTick = false;
+			}
+			else
+			{
+				std::chrono::steady_clock::time_point timeStamp2 = std::chrono::high_resolution_clock::now();
+				std::chrono::duration<double, std::milli> _timeElapsed = timeStamp2 - instance->timeStamp;
+				instance->timeElapsed = _timeElapsed.count();
+				instance->timeStamp = timeStamp2;
+			}
+
 			instance->TimerEvent(value);
 			glutTimerFunc(instance->tick, TimerCallback, 0);
 		}

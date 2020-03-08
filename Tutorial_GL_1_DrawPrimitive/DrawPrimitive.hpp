@@ -12,7 +12,6 @@ namespace O3GL
 	{
 	public:
 		virtual void SetupEvent();
-		virtual void UpdateEvent();
 
 	public:
 		virtual void InitSamplersEvent();
@@ -36,8 +35,19 @@ namespace O3GL
 		virtual void PostDrawEvent() const;
 
 	public:
-		QuadRender() : viewing(), modelling(), projection()
+		QuadRender() :
+			viewing(glm::lookAt(Vec3(0.f, 0.f, 0.f), Vec3(0.f, 0.f, -1.f), Vec3(0.f, 1.f, 0.f))),
+			modelling(glm::translate(glm::identity<Mat44>(), Vec3(0.f, 0.f, -2.f))),
+			projection(glm::perspective(glm::radians(60.0f), 4.0f / 3.0f, 0.1f, 100.0f))
 		{}
+
+		Mat44 Viewing() const { return viewing; }
+		Mat44 Modelling() const { return modelling; }
+		Mat44 Projection() const { return projection; }
+
+		void SetViewing(const Mat44& m) { viewing = m; InitProgramParametersEvent(); }
+		void SetModelling(const Mat44& m) { modelling = m; InitProgramParametersEvent(); }
+		void SetProjection(const Mat44& m) { projection = m; InitProgramParametersEvent(); }
 
 	protected:
 		Mat44 viewing;
@@ -57,6 +67,11 @@ namespace O3GL
 
 	public:
 		virtual void DisplayEvent();
+		virtual void ReshapeEvent(int width, int height)
+		{
+			quadRender.SetProjection(glm::perspective(glm::radians(60.0f), (float)(width) / (float)(height), 0.1f, 100.0f));
+		}
+
 		virtual void TimerEvent(int value);
 
 	protected:
@@ -102,6 +117,8 @@ namespace O3GL
 		float wx = -1.0f;
 		float wy = -1.0f;
 
+		Text(wx, wy, 0.0f, "Time elapsed: " + std::to_string(timeElapsed) + " ms", 1.0f, 0.0f, 0.0f, 1.0f);
+		wy += lineHeight;
 		Text(wx, wy, 0.0f, "Draw cost: " + std::to_string(costTime) + " ms", 0.0f, 1.0f, 0.0f, 1.0f);
 
 		// Swap buffers

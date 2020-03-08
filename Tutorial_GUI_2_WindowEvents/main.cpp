@@ -7,11 +7,11 @@ int main(int argc, char** argv)
 {
 	try
 	{
-		O3GL::PrintEventWindow<0> printEventWindow("PrintEvent", 0, 0, 500, 600);
+		O3GL::PrintEventWindow<0> printEventWindow("PrintEvent", 0, 0, 500, 600, 33);
 
 		O3GL::Window<1> printAllInOneWindow("PrintAllInOne", GLUT_DOUBLE | GLUT_RGBA, 500, 0, 810, 600, 33);
-		O3GL::PrintFrameCounterWindow<3> printFrameCounterSubWindow(*printAllInOneWindow, 0, 0, 300, 600);
-		O3GL::PrintEventWindow<2> printEventSubWindow(*printAllInOneWindow, 310, 0, 500, 600);
+		O3GL::PrintFrameCounterWindow<3> printFrameCounterSubWindow(*printAllInOneWindow, 0, 0, 300, 600, 33);
+		O3GL::PrintEventWindow<2> printEventSubWindow(*printAllInOneWindow, 310, 0, 500, 600, 33);
 
 		printEventWindow.Init();
 		printAllInOneWindow.Init();

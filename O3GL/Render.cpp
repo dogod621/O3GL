@@ -24,7 +24,6 @@ namespace O3GL
 	{
 		//
 		SetupEvent();
-		UpdateEvent();
 
 		//
 		InitSamplersEvent();

@@ -323,11 +323,6 @@ namespace O3GL
 			}
 			break;
 		}
-	}
-
-	void PanoRenderBase::UpdateEvent()
-	{
-		CanvasRender::UpdateEvent();
 
 		//
 		for (std::size_t i = 0; i < rigW2V.size(); ++i)

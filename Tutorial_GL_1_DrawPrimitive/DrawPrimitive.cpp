@@ -31,16 +31,6 @@ namespace O3GL
 		programs["unlit"] = Program();
 	}
 
-	void QuadRender::UpdateEvent()
-	{
-		Render::UpdateEvent();
-
-		//
-		viewing = glm::lookAt(Vec3(0.f, 0.f, 0.f), Vec3(0.f, 0.f, -1.f), Vec3(0.f, 1.f, 0.f));
-		modelling = glm::translate(glm::identity<Mat44>(), Vec3(0.f, 0.f, -2.f));
-		projection = glm::perspective(glm::radians(60.0f), ((R32)CurrentWindowWidth()) / ((R32)CurrentWindowHeight()), 0.1f, 100.0f);
-	}
-
 	void QuadRender::InitSamplersEvent()
 	{
 		Render::InitSamplersEvent();

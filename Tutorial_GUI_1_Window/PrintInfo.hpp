@@ -12,12 +12,12 @@ namespace O3GL
 	class PrintFrameCounterWindow : public Window<key>
 	{
 	public:
-		PrintFrameCounterWindow(const std::string& name, int x, int y, int width, int height) :
-			Window<key>(name, GLUT_DOUBLE | GLUT_RGBA, x, y, width, height, 33), frameCounter(0)
+		PrintFrameCounterWindow(const std::string& name, int x, int y, int width, int height, unsigned int tick) :
+			Window<key>(name, GLUT_DOUBLE | GLUT_RGBA, x, y, width, height, tick), frameCounter(0)
 		{}
 
-		PrintFrameCounterWindow(int window, int x, int y, int width, int height) :
-			Window<key>(window, x, y, width, height, 33), frameCounter(0)
+		PrintFrameCounterWindow(int window, int x, int y, int width, int height, unsigned int tick) :
+			Window<key>(window, x, y, width, height, tick), frameCounter(0)
 		{}
 
 	public:
@@ -36,12 +36,12 @@ namespace O3GL
 	class PrintGLVersionWindow : public PrintFrameCounterWindow<key>
 	{
 	public:
-		PrintGLVersionWindow(const std::string& name, int x, int y, int width, int height) :
-			PrintFrameCounterWindow<key>(name, x, y, width, height)
+		PrintGLVersionWindow(const std::string& name, int x, int y, int width, int height, unsigned int tick) :
+			PrintFrameCounterWindow<key>(name, x, y, width, height, tick)
 		{}
 
-		PrintGLVersionWindow(int window, int x, int y, int width, int height) :
-			PrintFrameCounterWindow<key>(window, x, y, width, height)
+		PrintGLVersionWindow(int window, int x, int y, int width, int height, unsigned int tick) :
+			PrintFrameCounterWindow<key>(window, x, y, width, height, tick)
 		{}
 
 	public:
@@ -75,8 +75,10 @@ namespace O3GL
 		float wx = -1.0f;
 		float wy = -1.0f;
 
+		Text(wx, wy, 0.0f, "Time elapsed: " + std::to_string(timeElapsed) + " ms", 1.0f, 0.0f, 0.0f, 1.0f);
+		wy += lineHeight;
 		Text(wx, wy, 0.0f, "This is the " + std::to_string(frameCounter) + "-th frame", 1.0f, 0.0f, 0.0f, 1.0f);
-
+		
 		// Swap buffers
 		glutSwapBuffers();
 	}
@@ -100,6 +102,11 @@ namespace O3GL
 		float wx = -1.0f;
 		float wy = -1.0f;
 
+		Text(wx, wy, 0.0f, "Time elapsed: " + std::to_string(timeElapsed) + " ms", 1.0f, 0.0f, 0.0f, 1.0f);
+		wy += lineHeight;
+		Text(wx, wy, 0.0f, "This is the " + std::to_string(frameCounter) + "-th frame", 1.0f, 0.0f, 0.0f, 1.0f);
+		wy += lineHeight;
+		
 		Text(wx, wy, 0.0f, "\t\t" + std::string((char*)glGetString(GL_EXTENSIONS)), 0.0f, 0.0f, 0.0f, 1.0f);
 		wy += lineHeight;
 		Text(wx, wy, 0.0f, "GL_EXTENSIONS: ", 0.0f, 1.0f, 0.0f, 1.0f);
@@ -123,10 +130,7 @@ namespace O3GL
 		Text(wx, wy, 0.0f, "\t\t" + std::string((char*)glGetString(GL_VERSION)), 0.0f, 0.0f, 0.0f, 1.0f);
 		wy += lineHeight;
 		Text(wx, wy, 0.0f, "GL_VERSION: ", 0.0f, 1.0f, 0.0f, 1.0f);
-		wy += lineHeight;
-
-		Text(wx, wy, 0.0f, "This is the " + std::to_string(frameCounter) + "-th frame", 1.0f, 0.0f, 0.0f, 1.0f);
-
+		
 		// Swap buffers
 		glutSwapBuffers();
 	}

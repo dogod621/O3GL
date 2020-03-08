@@ -30,7 +30,6 @@ namespace O3GL
 	{
 	public:
 		virtual void SetupEvent();
-		virtual void UpdateEvent();
 
 	public:
 		virtual void InitGeometryShaderHeadersEvent();

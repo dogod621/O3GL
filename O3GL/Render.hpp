@@ -18,7 +18,6 @@ namespace O3GL
 	{
 	public:
 		virtual void SetupEvent() {} // inherit accumulate
-		virtual void UpdateEvent() {} // inherit accumulate
 
 	public:
 		virtual void InitSamplersEvent() {} // inherit accumulate
