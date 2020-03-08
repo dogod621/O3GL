@@ -28,87 +28,43 @@ namespace O3GL
 	//
 	class PanoRenderBase : public CanvasRender
 	{
-	protected:
-		const bool enableField;
-		const bool enableDepth;
-		const bool enableMask;
-
-		const Sampler panoFieldSampler;
-		const Sampler panoDepthSampler;
-		const Sampler panoMaskSampler;
-
-		const Texture panoFieldTexture;
-		const Texture panoDepthTexture;
-		const Texture panoMaskTexture;
-
-		const std::size_t layers;
-
-	protected:
-		const ProjectionMode inProjMode;
-		const Mat44 inProjTransform;
-
-		// for inProjMode: MULTI_PERSPECTIVE, CUBEMAP, JOSH1, JOSH2
-		const std::vector<Camera> inProjCamera;
-		const std::vector<Mat44> inProjW2V;
-		const std::vector<Mat44> inProjW2C;
-		const std::vector<Mat44> inProjV2W;
-		const std::vector<Mat44> inProjC2W;
-
-	protected:
-		const ProjectionMode outProjMode;
-		const Mat44 outProjTransform;
-
-		// for outProjMode: PERSPECTIVE, MULTI_PERSPECTIVE, CUBEMAP, JOSH1, JOSH2
-		const std::vector<Camera> outProjCamera;
-		const std::vector<Mat44> outProjW2V;
-		const std::vector<Mat44> outProjW2C;
-		const std::vector<Mat44> outProjV2W;
-		const std::vector<Mat44> outProjC2W;
-
-	protected:
-		const RigMode rigMode;
-		const std::vector<Mat44> rigW2V;
-		const std::vector<Mat44> rigV2W;
+	public:
+		virtual void SetupEvent();
+		virtual void UpdateEvent();
 
 	public:
-		virtual void InitSetupEvent();
 		virtual void InitGeometryShaderHeadersEvent();
 		virtual void InitGeometryShaderMainsEvent();
 		virtual void InitFragmentShaderHeadersEvent();
 		virtual void InitProgramParametersEvent() const;
 
+	public:
 		virtual void PreDrawEvent() const;
 		virtual void PostDrawEvent() const;
 
-		virtual void UpdateEvent();
-
-	public:
-		virtual void DrawInfo(float& wx, float& wy, float lineHeight = 0.06f) const;
-
-	public:
+	protected:
 		static void InitCamera_CUBEMAP(const std::vector<Camera>& cameras);
 		static void InitCamera_JOSH1(const std::vector<Camera>& cameras);
 		static void InitCamera_JOSH2(const std::vector<Camera>& cameras);
 		static void InitCamera_JOSH3(const std::vector<Camera>& cameras);
 
-	protected:
-		void PanoRender_InitSetupEvent__rigMode_MONO__inProjMode_PERSPECTIVE();
-		void PanoRender_InitSetupEvent__rigMode_MONO__inProjMode_EQUIRECTANGULAR();
-		void PanoRender_InitSetupEvent__rigMode_MONO__inProjMode_MERCATOR();
-		void PanoRender_InitSetupEvent__rigMode_MONO__inProjMode_MULTI_PERSPECTIVE();
-		void PanoRender_InitSetupEvent__rigMode_MONO__inProjMode_CUBEMAP();
-		void PanoRender_InitSetupEvent__rigMode_MONO__inProjMode_JOSH1();
-		void PanoRender_InitSetupEvent__rigMode_MONO__inProjMode_JOSH2();
-		void PanoRender_InitSetupEvent__rigMode_MONO__inProjMode_JOSH3();
+		void PanoRender_SetupEvent__rigMode_MONO__inProjMode_PERSPECTIVE();
+		void PanoRender_SetupEvent__rigMode_MONO__inProjMode_EQUIRECTANGULAR();
+		void PanoRender_SetupEvent__rigMode_MONO__inProjMode_MERCATOR();
+		void PanoRender_SetupEvent__rigMode_MONO__inProjMode_MULTI_PERSPECTIVE();
+		void PanoRender_SetupEvent__rigMode_MONO__inProjMode_CUBEMAP();
+		void PanoRender_SetupEvent__rigMode_MONO__inProjMode_JOSH1();
+		void PanoRender_SetupEvent__rigMode_MONO__inProjMode_JOSH2();
+		void PanoRender_SetupEvent__rigMode_MONO__inProjMode_JOSH3();
 
-		void PanoRender_InitSetupEvent__rigMode_MULTI__inProjMode_PERSPECTIVE();
-		void PanoRender_InitSetupEvent__rigMode_MULTI__inProjMode_EQUIRECTANGULAR();
-		void PanoRender_InitSetupEvent__rigMode_MULTI__inProjMode_MERCATOR();
-		void PanoRender_InitSetupEvent__rigMode_MULTI__inProjMode_MULTI_PERSPECTIVE();
-		void PanoRender_InitSetupEvent__rigMode_MULTI__inProjMode_CUBEMAP();
-		void PanoRender_InitSetupEvent__rigMode_MULTI__inProjMode_JOSH1();
-		void PanoRender_InitSetupEvent__rigMode_MULTI__inProjMode_JOSH2();
-		void PanoRender_InitSetupEvent__rigMode_MULTI__inProjMode_JOSH3();
+		void PanoRender_SetupEvent__rigMode_MULTI__inProjMode_PERSPECTIVE();
+		void PanoRender_SetupEvent__rigMode_MULTI__inProjMode_EQUIRECTANGULAR();
+		void PanoRender_SetupEvent__rigMode_MULTI__inProjMode_MERCATOR();
+		void PanoRender_SetupEvent__rigMode_MULTI__inProjMode_MULTI_PERSPECTIVE();
+		void PanoRender_SetupEvent__rigMode_MULTI__inProjMode_CUBEMAP();
+		void PanoRender_SetupEvent__rigMode_MULTI__inProjMode_JOSH1();
+		void PanoRender_SetupEvent__rigMode_MULTI__inProjMode_JOSH2();
+		void PanoRender_SetupEvent__rigMode_MULTI__inProjMode_JOSH3();
 
 		//
 		void PanoRender_InitFragmentShaderHeadersEvent__rigMode_MONO__inProjMode_PERSPECTIVE();
@@ -146,6 +102,9 @@ namespace O3GL
 		void PanoRender_InitFragmentShaderHeadersEvent__rigMode_MULTI__outProjMode_JOSH1();
 		void PanoRender_InitFragmentShaderHeadersEvent__rigMode_MULTI__outProjMode_JOSH2();
 		void PanoRender_InitFragmentShaderHeadersEvent__rigMode_MULTI__outProjMode_JOSH3();
+
+		void CreateTexture(const std::string& name);
+		void AllocateTexture(const std::string& name, GLint f, GLint w, GLint h);
 
 	public:
 		PanoRenderBase(
@@ -209,21 +168,62 @@ namespace O3GL
 			*((Mat44*)&this->outProjTransform) = outProjTransform;
 		}
 
-	public:
-		void CreateTexture(const std::string& name);
-		void AllocateTexture(const std::string& name, GLint f, GLint w, GLint h);
+	protected:
+		const bool enableField;
+		const bool enableDepth;
+		const bool enableMask;
+
+		const Sampler panoFieldSampler;
+		const Sampler panoDepthSampler;
+		const Sampler panoMaskSampler;
+
+		const Texture panoFieldTexture;
+		const Texture panoDepthTexture;
+		const Texture panoMaskTexture;
+
+		const std::size_t layers;
+
+	protected:
+		const ProjectionMode inProjMode;
+		const Mat44 inProjTransform;
+
+		// for inProjMode: MULTI_PERSPECTIVE, CUBEMAP, JOSH1, JOSH2
+		const std::vector<Camera> inProjCamera;
+		const std::vector<Mat44> inProjW2V;
+		const std::vector<Mat44> inProjW2C;
+		const std::vector<Mat44> inProjV2W;
+		const std::vector<Mat44> inProjC2W;
+
+	protected:
+		const ProjectionMode outProjMode;
+		const Mat44 outProjTransform;
+
+		// for outProjMode: PERSPECTIVE, MULTI_PERSPECTIVE, CUBEMAP, JOSH1, JOSH2
+		const std::vector<Camera> outProjCamera;
+		const std::vector<Mat44> outProjW2V;
+		const std::vector<Mat44> outProjW2C;
+		const std::vector<Mat44> outProjV2W;
+		const std::vector<Mat44> outProjC2W;
+
+	protected:
+		const RigMode rigMode;
+		const std::vector<Mat44> rigW2V;
+		const std::vector<Mat44> rigV2W;
 	};
 
 	//
 	class PanoConverterRender : public PanoRenderBase
 	{
 	public:
-		virtual void InitSetupEvent();
+		virtual void SetupEvent();
+
+	public:
 		virtual void InitTexturesEvent();
 		virtual void InitFragmentShaderHeadersEvent();
 		virtual void InitFragmentShaderMainsEvent();
 		virtual void InitFrameBuffersEvent();
 
+	public:
 		virtual void PostDrawEvent() const;
 
 	public:

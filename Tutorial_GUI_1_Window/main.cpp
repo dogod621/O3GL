@@ -6,18 +6,18 @@ int main(int argc, char** argv)
 {
 	try
 	{
-		O3GL::PrintFrameCounter<0> printFrameCounter("PrintFrameCounter", 0, 0, 300, 600);
-		O3GL::PrintGLVersion<1> printGLVersion("PrintGLVersion", 300, 0, 300, 600);
+		O3GL::PrintFrameCounterWindow<0> printFrameCounterWindow("PrintFrameCounter", 0, 0, 300, 600);
+		O3GL::PrintGLVersionWindow<1> printGLVersionWindow("PrintGLVersionWindow", 300, 0, 300, 600);
 
-		O3GL::Window<2> printAllInOne("PrintAllInOne", GLUT_DOUBLE | GLUT_RGBA, 600, 0, 610, 600, 33);
-		O3GL::PrintFrameCounter<3> subPrintFrameCounter(printAllInOne, 0, 0, 300, 600);
-		O3GL::PrintGLVersion<4> subPrintGLVersion(printAllInOne, 310, 0, 300, 600);
+		O3GL::Window<2> printAllInOneWindow("PrintAllInOne", GLUT_DOUBLE | GLUT_RGBA, 600, 0, 610, 600, 33);
+		O3GL::PrintFrameCounterWindow<3> printFrameCounterSubWindow(printAllInOneWindow, 0, 0, 300, 600);
+		O3GL::PrintGLVersionWindow<4> printGLVersionSubWindow(printAllInOneWindow, 310, 0, 300, 600);
 
-		printFrameCounter.Init();
-		printGLVersion.Init();
-		printAllInOne.Init();
-		subPrintFrameCounter.Init();
-		subPrintGLVersion.Init();
+		printFrameCounterWindow.Init();
+		printGLVersionWindow.Init();
+		printAllInOneWindow.Init();
+		printFrameCounterSubWindow.Init();
+		printGLVersionSubWindow.Init();
 
 		O3GL::EnterMainLoop();
 	}

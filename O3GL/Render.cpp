@@ -16,22 +16,21 @@ namespace O3GL
 		shaderSources(),
 		shaders(),
 		programs(),
-		frameBuffers(),
-
-		costTimeMS(0.0)
+		frameBuffers()
 	{
 	}
 
 	void Render::Init()
 	{
-		InitSetupEvent();
+		//
+		SetupEvent();
 		UpdateEvent();
 
+		//
 		InitSamplersEvent();
 		InitTexturesEvent();
 		InitBuffersEvent();
-		InitVertexArraysEvent();
-
+		
 		InitVertexShaderHeadersEvent();
 		InitVertexShaderMainsEvent();
 
@@ -46,14 +45,29 @@ namespace O3GL
 		InitProgramsEvent();
 		InitProgramParametersEvent();
 
+		InitVertexArraysEvent();
+
 		InitFrameBuffersEvent();
 	}
 
-	void Render::Draw() const
+	double Render::Draw() const
 	{
 		PreDrawEvent();
+
+		// Compute time
+		glFinish(); // Wait
+		std::chrono::steady_clock::time_point timeStart = std::chrono::high_resolution_clock::now();
+
 		OnDrawEvent();
+
+		// Compute time
+		glFinish(); // Wait
+		std::chrono::steady_clock::time_point timeEnd = std::chrono::high_resolution_clock::now();
+		std::chrono::duration<double, std::milli> timeElapsed = timeEnd - timeStart;
+
 		PostDrawEvent();
+
+		return timeElapsed.count();
 	}
 
 	void Render::PrintShaderSources(const std::string& name) const

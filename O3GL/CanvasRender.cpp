@@ -8,9 +8,9 @@
 namespace O3GL
 {
 	//
-	void CanvasRender::InitSetupEvent()
+	void CanvasRender::SetupEvent()
 	{
-		Render::InitSetupEvent();
+		Render::SetupEvent();
 
 		//
 		samplers["plane_nearest"] = Sampler();
@@ -33,8 +33,8 @@ namespace O3GL
 		samplers["mercator_trilinear"] = Sampler();
 		samplers["mercator_anisotropy"] = Sampler();
 
-		buffers["pos"] = Buffer();
-		buffers["index"] = Buffer();
+		buffers["canvas_pos"] = Buffer();
+		buffers["canvas_index"] = Buffer();
 
 		vertexArrays["canvas"] = VertexArray();
 
@@ -197,25 +197,8 @@ namespace O3GL
 		-1.f, 1.0f, 0.99999f };
 		std::vector<UI32> indexData = { 0,1,2,2,3,0 };
 
-		buffers["pos"].Data(posData, GL_STATIC_DRAW);
-		buffers["index"].Data(indexData, GL_STATIC_DRAW);
-	}
-
-	void CanvasRender::InitVertexArraysEvent()
-	{
-		Render::InitVertexArraysEvent();
-
-		// Set pos
-		GLint attribLocation = 0;
-		GLuint bindingIndex = 0;
-
-		vertexArrays["canvas"].EnableAttrib(attribLocation);
-		vertexArrays["canvas"].VertexBuffer<GLfloat>(bindingIndex, buffers["pos"], 0, 3);
-		vertexArrays["canvas"].AttribBinding(attribLocation, bindingIndex);
-		vertexArrays["canvas"].AttribFormat(attribLocation, 3, GL_FLOAT, GL_FALSE, 0);
-
-		// Set index
-		vertexArrays["canvas"].ElementBuffer(buffers["index"]);
+		buffers["canvas_pos"].Data(posData, GL_STATIC_DRAW);
+		buffers["canvas_index"].Data(indexData, GL_STATIC_DRAW);
 	}
 
 	void CanvasRender::InitVertexShaderHeadersEvent()
@@ -223,25 +206,21 @@ namespace O3GL
 		Render::InitVertexShaderHeadersEvent();
 
 		//
-		shaderSources["canvas_vert"].push_back(\
-			R"(
+		shaderSources["canvas_vert"].push_back(R"(
 #version 460 core
 
 layout(location = 0) in vec3 a_pos;
-			)"
-		);
+			)");
 	}
 
 	void CanvasRender::InitVertexShaderMainsEvent()
 	{
-		shaderSources["canvas_vert"].push_back(\
-			R"(
+		shaderSources["canvas_vert"].push_back(R"(
 void main(void)
 {
 	gl_Position	= vec4(a_pos, 1.0f);
 }
-			)"
-		);
+			)");
 	}
 
 	void CanvasRender::InitFragmentShaderHeadersEvent()
@@ -249,8 +228,7 @@ void main(void)
 		Render::InitFragmentShaderHeadersEvent();
 
 		//
-		shaderSources["canvas_frag"].push_back(\
-			R"(	
+		shaderSources["canvas_frag"].push_back(R"(	
 #version 460 core
 //#extension GL_EXT_texture_array : enable
 
@@ -364,20 +342,17 @@ float RaycastSphere(float radius, Ray2D ray)
 	float c = dot(ray.o,ray.o) - radius*radius;
 	return sqrt(b*b - c) - b;
 }
-			)"
-		);
+			)");
 	}
 
 	void CanvasRender::InitFragmentShaderMainsEvent()
 	{
-		shaderSources["canvas_frag"].push_back(\
-			R"(
+		shaderSources["canvas_frag"].push_back(R"(
 void main(void)
 {
 	gl_FragColor  = vec4(1.0f, 0.0f, 1.0f, 1.0f);
 }
-			)"
-		);
+			)");
 	}
 
 	void CanvasRender::InitShadersEvent()
@@ -437,7 +412,7 @@ void main(void)
 		std::string log;
 		std::tie(success, log) = programs["canvas"].Link();
 		if (!success)
-			THROW_EXCEPTION("Program link fail - " + log);
+			THROW_EXCEPTION("canvas link fail - " + log);
 
 		programs["canvas"].DetachShader(shaders["canvas_vert"]);
 		if (shaderSources["canvas_geom"].size() > 0)
@@ -454,6 +429,23 @@ void main(void)
 		programs.at("canvas").Uniform<GLint, 1>("u_canvasHeight", CanvasHeight());
 	}
 
+	void CanvasRender::InitVertexArraysEvent()
+	{
+		Render::InitVertexArraysEvent();
+
+		// Set pos
+		GLint attribLocation = 0;
+		GLuint bindingIndex = 0;
+
+		vertexArrays["canvas"].EnableAttrib(attribLocation);
+		vertexArrays["canvas"].VertexBuffer<GLfloat>(bindingIndex, buffers["canvas_pos"], 0, 3);
+		vertexArrays["canvas"].AttribBinding(attribLocation, bindingIndex);
+		vertexArrays["canvas"].AttribFormat(attribLocation, 3, GL_FLOAT, GL_FALSE, 0);
+
+		// Set index
+		vertexArrays["canvas"].ElementBuffer(buffers["canvas_index"]);
+	}
+
 	void CanvasRender::PreDrawEvent() const
 	{
 		Render::PreDrawEvent();
@@ -461,6 +453,9 @@ void main(void)
 		//
 		if (!windowMode)
 			frameBuffers.at("canvas").Begin();
+
+		programs.at("canvas").Begin();
+		vertexArrays.at("canvas").Begin();
 	}
 
 	void CanvasRender::OnDrawEvent() const
@@ -468,11 +463,14 @@ void main(void)
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 		glViewport(0, 0, CanvasWidth(), CanvasHeight());
 
-		LaunchEvent();
+		glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, NULL);
 	}
 
 	void CanvasRender::PostDrawEvent() const
 	{
+		vertexArrays.at("canvas").End();
+		programs.at("canvas").End();
+
 		if (!windowMode)
 			frameBuffers.at("canvas").End();
 
@@ -480,32 +478,10 @@ void main(void)
 		Render::PostDrawEvent();
 	}
 
-	void CanvasRender::LaunchEvent() const
-	{
-		programs.at("canvas").Begin();
-		vertexArrays.at("canvas").Begin();
-
-		// Compute time
-		glFinish(); // Wait
-		std::chrono::steady_clock::time_point timeStart = std::chrono::high_resolution_clock::now();
-
-		// Draw
-		glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, NULL);
-
-		// Compute time
-		glFinish(); // Wait
-		std::chrono::steady_clock::time_point timeEnd = std::chrono::high_resolution_clock::now();
-		std::chrono::duration<double, std::milli> timeElapsed = timeEnd - timeStart;
-		*(double*)(&costTimeMS) = timeElapsed.count();
-
-		vertexArrays.at("canvas").End();
-		programs.at("canvas").End();
-	}
-
 	GLint CanvasRender::CanvasWidth() const
 	{
 		if (windowMode)
-			return glutGet(GLUT_WINDOW_WIDTH);
+			return CurrentWindowWidth();
 		else
 			return canvasWidth;
 	}
@@ -513,7 +489,7 @@ void main(void)
 	GLint CanvasRender::CanvasHeight() const
 	{
 		if (windowMode)
-			return glutGet(GLUT_WINDOW_HEIGHT);
+			return CurrentWindowHeight();
 		else
 			return canvasHeight;
 	}

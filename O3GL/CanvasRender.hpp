@@ -2,6 +2,7 @@
 
 // O3GL
 #include "O3GL/Render.hpp"
+#include "O3GL/Window.hpp"
 
 // 
 namespace O3GL
@@ -9,16 +10,12 @@ namespace O3GL
 	//
 	class CanvasRender : public Render
 	{
-	protected:
-		const GLint canvasWidth;
-		const GLint canvasHeight;
-		const bool windowMode;
+	public:
+		virtual void SetupEvent();
 
 	public:
-		virtual void InitSetupEvent();
 		virtual void InitSamplersEvent();
 		virtual void InitBuffersEvent();
-		virtual void InitVertexArraysEvent();
 		virtual void InitVertexShaderHeadersEvent();
 		virtual void InitVertexShaderMainsEvent();
 		virtual void InitFragmentShaderHeadersEvent();
@@ -26,15 +23,12 @@ namespace O3GL
 		virtual void InitShadersEvent();
 		virtual void InitProgramsEvent();
 		virtual void InitProgramParametersEvent() const;
+		virtual void InitVertexArraysEvent();
 
+	public:
 		virtual void PreDrawEvent() const;
 		virtual void OnDrawEvent() const;
 		virtual void PostDrawEvent() const;
-		virtual void LaunchEvent() const;
-
-	public:
-		virtual GLint CanvasWidth() const;
-		virtual GLint CanvasHeight() const;
 
 	public:
 		CanvasRender() :
@@ -49,5 +43,14 @@ namespace O3GL
 			canvasWidth(canvasWidth), canvasHeight(canvasHeight),
 			windowMode(false)
 		{}
+
+	protected:
+		const GLint canvasWidth;
+		const GLint canvasHeight;
+		const bool windowMode;
+
+	public:
+		GLint CanvasWidth() const;
+		GLint CanvasHeight() const;
 	};
 };

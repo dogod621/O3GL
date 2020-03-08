@@ -10,14 +10,14 @@ namespace O3GL
 {
 	//
 	template<int key>
-	class PrintEvent : public Window<key>
+	class PrintEventWindow : public Window<key>
 	{
 	public:
-		PrintEvent(const std::string& name, int x, int y, int width, int height) :
+		PrintEventWindow(const std::string& name, int x, int y, int width, int height) :
 			Window<key>(name, GLUT_DOUBLE | GLUT_RGBA, x, y, width, height, 33)
 		{}
 
-		PrintEvent(int window, int x, int y, int width, int height) :
+		PrintEventWindow(int window, int x, int y, int width, int height) :
 			Window<key>(window, x, y, width, height, 33)
 		{}
 
@@ -59,7 +59,7 @@ namespace O3GL
 
 	//
 	template<int key>
-	void PrintEvent<key>::InitGLStatusEvent() const
+	void PrintEventWindow<key>::InitGLStatusEvent() const
 	{
 		glClearColor(1.0, 1.0, 1.0, 0.0);
 
@@ -71,7 +71,7 @@ namespace O3GL
 	}
 
 	template<int key>
-	void PrintEvent<key>::DisplayEvent()
+	void PrintEventWindow<key>::DisplayEvent()
 	{
 		displayEventMessage.Active();
 
@@ -116,13 +116,13 @@ namespace O3GL
 	}
 
 	template<int key>
-	void PrintEvent<key>::OverlayDisplayEvent()
+	void PrintEventWindow<key>::OverlayDisplayEvent()
 	{
 		overlayDisplayEventMessage.Active();
 	}
 
 	template<int key>
-	void PrintEvent<key>::ReshapeEvent(int width, int height)
+	void PrintEventWindow<key>::ReshapeEvent(int width, int height)
 	{
 		reshapeEventMessage.Active();
 		reshapeEventMessage.width = width;
@@ -130,7 +130,7 @@ namespace O3GL
 	}
 
 	template<int key>
-	void PrintEvent<key>::KeyboardEvent(unsigned char key, int x, int y)
+	void PrintEventWindow<key>::KeyboardEvent(unsigned char key, int x, int y)
 	{
 		keyboardEventMessage.Active();
 		keyboardEventMessage.key = key;
@@ -139,7 +139,7 @@ namespace O3GL
 	}
 
 	template<int key>
-	void PrintEvent<key>::KeyboardUpEvent(unsigned char key, int x, int y)
+	void PrintEventWindow<key>::KeyboardUpEvent(unsigned char key, int x, int y)
 	{
 		keyboardUpEventMessage.Active();
 		keyboardUpEventMessage.key = key;
@@ -148,7 +148,7 @@ namespace O3GL
 	}
 
 	template<int key>
-	void PrintEvent<key>::SpecialEvent(int key, int x, int y)
+	void PrintEventWindow<key>::SpecialEvent(int key, int x, int y)
 	{
 		specialEventMessage.Active();
 		specialEventMessage.key = key;
@@ -157,7 +157,7 @@ namespace O3GL
 	}
 
 	template<int key>
-	void PrintEvent<key>::SpecialUpEvent(int key, int x, int y)
+	void PrintEventWindow<key>::SpecialUpEvent(int key, int x, int y)
 	{
 		specialUpEventMessage.Active();
 		specialUpEventMessage.key = key;
@@ -166,7 +166,7 @@ namespace O3GL
 	}
 
 	template<int key>
-	void PrintEvent<key>::MouseEvent(int button, int state, int x, int y)
+	void PrintEventWindow<key>::MouseEvent(int button, int state, int x, int y)
 	{
 		mouseEventMessage.Active();
 		mouseEventMessage.button = button;
@@ -176,7 +176,7 @@ namespace O3GL
 	}
 
 	template<int key>
-	void PrintEvent<key>::MotionEvent(int x, int y)
+	void PrintEventWindow<key>::MotionEvent(int x, int y)
 	{
 		motionEventMessage.Active();
 		motionEventMessage.x = x;
@@ -184,7 +184,7 @@ namespace O3GL
 	}
 
 	template<int key>
-	void PrintEvent<key>::PassiveMotionEvent(int x, int y)
+	void PrintEventWindow<key>::PassiveMotionEvent(int x, int y)
 	{
 		passiveMotionEventMessage.Active();
 		passiveMotionEventMessage.x = x;
@@ -192,27 +192,27 @@ namespace O3GL
 	}
 
 	template<int key>
-	void PrintEvent<key>::VisibilityEvent(int state)
+	void PrintEventWindow<key>::VisibilityEvent(int state)
 	{
 		visibilityEventMessage.Active();
 		visibilityEventMessage.state = state;
 	}
 
 	template<int key>
-	void PrintEvent<key>::EntryEvent(int state)
+	void PrintEventWindow<key>::EntryEvent(int state)
 	{
 		entryEventMessage.Active();
 		entryEventMessage.state = state;
 	}
 
 	template<int key>
-	void PrintEvent<key>::CloseEvent()
+	void PrintEventWindow<key>::CloseEvent()
 	{
 		closeEventMessage.Active();
 	}
 
 	template<int key>
-	void PrintEvent<key>::TimerEvent(int value)
+	void PrintEventWindow<key>::TimerEvent(int value)
 	{
 		timerEventMessage.Active();
 		timerEventMessage.value = value;

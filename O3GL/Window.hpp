@@ -13,6 +13,9 @@ namespace O3GL
 	//
 	void EnterMainLoop();
 	void LeaveMainLoop();
+	int CurrentWindowWidth();
+	int CurrentWindowHeight();
+
 
 	//
 	class WindowBase

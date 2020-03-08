@@ -9,14 +9,14 @@ namespace O3GL
 {
 	// Simply Print FrameCounter
 	template<int key>
-	class PrintFrameCounter : public Window<key>
+	class PrintFrameCounterWindow : public Window<key>
 	{
 	public:
-		PrintFrameCounter(const std::string& name, int x, int y, int width, int height) :
+		PrintFrameCounterWindow(const std::string& name, int x, int y, int width, int height) :
 			Window<key>(name, GLUT_DOUBLE | GLUT_RGBA, x, y, width, height, 33), frameCounter(0)
 		{}
 
-		PrintFrameCounter(int window, int x, int y, int width, int height) :
+		PrintFrameCounterWindow(int window, int x, int y, int width, int height) :
 			Window<key>(window, x, y, width, height, 33), frameCounter(0)
 		{}
 
@@ -33,15 +33,15 @@ namespace O3GL
 
 	// Simply Print OpenGL Version
 	template<int key>
-	class PrintGLVersion : public PrintFrameCounter<key>
+	class PrintGLVersionWindow : public PrintFrameCounterWindow<key>
 	{
 	public:
-		PrintGLVersion(const std::string& name, int x, int y, int width, int height) :
-			PrintFrameCounter<key>(name, x, y, width, height)
+		PrintGLVersionWindow(const std::string& name, int x, int y, int width, int height) :
+			PrintFrameCounterWindow<key>(name, x, y, width, height)
 		{}
 
-		PrintGLVersion(int window, int x, int y, int width, int height) :
-			PrintFrameCounter<key>(window, x, y, width, height)
+		PrintGLVersionWindow(int window, int x, int y, int width, int height) :
+			PrintFrameCounterWindow<key>(window, x, y, width, height)
 		{}
 
 	public:
@@ -53,7 +53,7 @@ namespace O3GL
 {
 	//
 	template<int key>
-	void PrintFrameCounter<key>::InitGLStatusEvent() const
+	void PrintFrameCounterWindow<key>::InitGLStatusEvent() const
 	{
 		glClearColor(1.0, 1.0, 1.0, 0.0);
 
@@ -65,7 +65,7 @@ namespace O3GL
 	}
 
 	template<int key>
-	void PrintFrameCounter<key>::DisplayEvent()
+	void PrintFrameCounterWindow<key>::DisplayEvent()
 	{
 		// Clear backbuffer
 		glClear(GL_COLOR_BUFFER_BIT);
@@ -82,7 +82,7 @@ namespace O3GL
 	}
 
 	template<int key>
-	void PrintFrameCounter<key>::TimerEvent(int value)
+	void PrintFrameCounterWindow<key>::TimerEvent(int value)
 	{
 		frameCounter++;
 		glutPostRedisplay();
@@ -90,7 +90,7 @@ namespace O3GL
 
 	//
 	template<int key>
-	void PrintGLVersion<key>::DisplayEvent()
+	void PrintGLVersionWindow<key>::DisplayEvent()
 	{
 		// Clear backbuffer
 		glClear(GL_COLOR_BUFFER_BIT);

@@ -14,6 +14,16 @@ namespace O3GL
 		glutLeaveMainLoop();
 	}
 
+	int CurrentWindowWidth()
+	{
+		return glutGet(GLUT_WINDOW_WIDTH);
+	}
+
+	int CurrentWindowHeight()
+	{
+		return glutGet(GLUT_WINDOW_HEIGHT);
+	}
+
 	bool WindowBase::init = false;
 
 	void WindowBase::InitGLStatusEvent() const

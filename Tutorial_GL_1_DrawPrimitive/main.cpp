@@ -6,8 +6,8 @@ int main()
 {
 	try
 	{
-		O3GL::DrawPrimitive<0> drawPrimitive("DrawPrimitive", 0, 0, 800, 600);
-		drawPrimitive.Init();
+		O3GL::DrawPrimitiveWindow<0> drawPrimitiveWindow("DrawPrimitiveWindow", 0, 0, 800, 600);
+		drawPrimitiveWindow.Init();
 		O3GL::EnterMainLoop();
 	}
 	catch (const std::exception & ex)

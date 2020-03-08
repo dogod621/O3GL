@@ -17,38 +17,13 @@ namespace O3GL
 	class Render
 	{
 	public:
-		using Samplers = std::map<std::string, Sampler>;
-		using Textures = std::map<std::string, Texture>;
-		using Buffers = std::map<std::string, Buffer>;
-		using VertexArrays = std::map<std::string, VertexArray>;
-		using ShaderSources = std::map<std::string, ShaderSource>;
-		using Shaders = std::map<std::string, Shader>;
-		using Programs = std::map<std::string, Program>;
-		using FrameBuffers = std::map<std::string, FrameBuffer>;
-
-	protected:
-		double costTimeMS;
+		virtual void SetupEvent() {} // inherit accumulate
+		virtual void UpdateEvent() {} // inherit accumulate
 
 	public:
-		Samplers		samplers;
-		Textures		textures;
-		Buffers			buffers;
-		VertexArrays	vertexArrays;
-		ShaderSources	shaderSources;
-		Shaders			shaders;
-		Programs		programs;
-		FrameBuffers	frameBuffers;
-
-	public:
-		virtual void Init(); // inherit accumulate
-		virtual void Draw() const;
-
-	public:
-		virtual void InitSetupEvent() {} // inherit accumulate
 		virtual void InitSamplersEvent() {} // inherit accumulate
 		virtual void InitTexturesEvent() {} // inherit accumulate
 		virtual void InitBuffersEvent() {} // inherit accumulate
-		virtual void InitVertexArraysEvent() {} // inherit accumulate
 		virtual void InitVertexShaderHeadersEvent() {} // inherit accumulate
 		virtual void InitVertexShaderMainsEvent() {}
 		virtual void InitGeometryShaderHeadersEvent() {} // inherit accumulate
@@ -58,20 +33,30 @@ namespace O3GL
 		virtual void InitShadersEvent() {} // inherit accumulate
 		virtual void InitProgramsEvent() {} // inherit accumulate
 		virtual void InitProgramParametersEvent() const {} // inherit accumulate
+		virtual void InitVertexArraysEvent() {} // inherit accumulate
 		virtual void InitFrameBuffersEvent() {} // inherit accumulate
 
+	public:
 		virtual void PreDrawEvent() const {} // inherit accumulate
 		virtual void OnDrawEvent() const {}
 		virtual void PostDrawEvent() const {} // inherit accumulate
-		virtual void LaunchEvent() const { *(double*)(&costTimeMS) = 0.0; }
-
-		// inherit accumulate
-		virtual void UpdateEvent() {}
-
-	public:
-		void PrintShaderSources(const std::string& name) const;
 
 	public:
 		Render();
+
+	public:
+		void Init();
+		double Draw() const;
+		void PrintShaderSources(const std::string& name) const;
+
+	protected:
+		std::map<std::string, Sampler		> samplers;
+		std::map<std::string, Texture		> textures;
+		std::map<std::string, Buffer		> buffers;
+		std::map<std::string, VertexArray	> vertexArrays;
+		std::map<std::string, ShaderSource	> shaderSources;
+		std::map<std::string, Shader		> shaders;
+		std::map<std::string, Program		> programs;
+		std::map<std::string, FrameBuffer	> frameBuffers;
 	};
 };
