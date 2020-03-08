@@ -15,11 +15,11 @@ namespace O3GL
 {
 	// Simply Print FrameCounter
 	template<int key>
-	class _DrawPrimitive : public _Window<key>
+	class DrawPrimitive : public Window<key>
 	{
 	public:
-		_DrawPrimitive(const std::string& name, int x, int y, int width, int height);
-		_DrawPrimitive(int window, int x, int y, int width, int height);
+		DrawPrimitive(const std::string& name, int x, int y, int width, int height);
+		DrawPrimitive(int window, int x, int y, int width, int height);
 
 	public:
 		virtual void InitGLStatusEvent() const;
@@ -53,24 +53,10 @@ namespace O3GL
 		void InitTexture();
 	};
 
+	//
 	template<int key>
-	class DrawPrimitive : public GLUTHandle<_DrawPrimitive<key>>
-	{
-	public:
-		DrawPrimitive(const std::string& name, int x, int y, int width, int height) :
-			GLUTHandle<_DrawPrimitive<key>>(new _DrawPrimitive<key>(name, x, y, width, height)) {}
-
-		DrawPrimitive(int window, int x, int y, int width, int height) :
-			GLUTHandle<_DrawPrimitive<key>>(new _DrawPrimitive<key>(window, x, y, width, height)) {}
-	};
-};
-
-//
-namespace O3GL
-{
-	template<int key>
-	_DrawPrimitive<key>::_DrawPrimitive(const std::string& name, int x, int y, int width, int height) :
-		_Window<key>(name, GLUT_DOUBLE | GLUT_RGBA | GLUT_DEPTH, x, y, width, height, 33)
+	DrawPrimitive<key>::DrawPrimitive(const std::string& name, int x, int y, int width, int height) :
+		Window<key>(name, GLUT_DOUBLE | GLUT_RGBA | GLUT_DEPTH, x, y, width, height, 33)
 	{
 		InitProgram();
 		InitBuffer();
@@ -81,14 +67,14 @@ namespace O3GL
 		viewing = glm::lookAt(Vec3(0.f, 0.f, 0.f), Vec3(0.f, 0.f, -1.f), Vec3(0.f, 1.f, 0.f));
 		modelling = glm::translate(glm::identity<Mat44>(), Vec3(0.f, 0.f, -2.f));
 		projection = glm::perspective(glm::radians(60.0f), ((R32)GetInfo<int>(GLUT_WINDOW_WIDTH)) / ((R32)GetInfo<int>(GLUT_WINDOW_HEIGHT)), 0.1f, 100.0f);
-		(*program)->Uniform<GLfloat, 4, 4>("u_modelView", viewing * modelling);
-		(*program)->Uniform<GLfloat, 4, 4>("u_projection", projection);
-		(*program)->Uniform<GLuint, 1>("u_mode", (GLuint)0);
+		program->Uniform<GLfloat, 4, 4>("u_modelView", viewing * modelling);
+		program->Uniform<GLfloat, 4, 4>("u_projection", projection);
+		program->Uniform<GLuint, 1>("u_mode", (GLuint)0);
 	}
 
 	template<int key>
-	_DrawPrimitive<key>::_DrawPrimitive(int window, int x, int y, int width, int height) :
-		_Window<key>(window, x, y, width, height, 33)
+	DrawPrimitive<key>::DrawPrimitive(int window, int x, int y, int width, int height) :
+		Window<key>(window, x, y, width, height, 33)
 	{
 		InitProgram();
 		InitBuffer();
@@ -99,13 +85,13 @@ namespace O3GL
 		viewing = glm::lookAt(Vec3(0.f, 0.f, 0.f), Vec3(0.f, 0.f, -1.f), Vec3(0.f, 1.f, 0.f));
 		modelling = glm::translate(glm::identity<Mat44>(), Vec3(0.f, 0.f, -2.f));
 		projection = glm::perspective(glm::radians(60.0f), ((R32)GetInfo<int>(GLUT_WINDOW_WIDTH)) / ((R32)GetInfo<int>(GLUT_WINDOW_HEIGHT)), 0.1f, 100.0f);
-		(*program)->Uniform<GLfloat, 4, 4>("u_modelView", viewing * modelling);
-		(*program)->Uniform<GLfloat, 4, 4>("u_projection", projection);
-		(*program)->Uniform<GLuint, 1>("u_mode", (GLuint)0);
+		program->Uniform<GLfloat, 4, 4>("u_modelView", viewing * modelling);
+		program->Uniform<GLfloat, 4, 4>("u_projection", projection);
+		program->Uniform<GLuint, 1>("u_mode", (GLuint)0);
 	}
 
 	template<int key>
-	void _DrawPrimitive<key>::InitGLStatusEvent() const
+	void DrawPrimitive<key>::InitGLStatusEvent() const
 	{
 		glEnable(GL_DEPTH_TEST);
 		glEnable(GL_BLEND);
@@ -119,38 +105,38 @@ namespace O3GL
 	}
 
 	template<int key>
-	void _DrawPrimitive<key>::DisplayEvent()
+	void DrawPrimitive<key>::DisplayEvent()
 	{
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
 		// Draw
-		(*program)->Begin();
-		(*vertexArray)->Begin();
-		(*texture)->Begin(*sampler);
+		program->Begin();
+		vertexArray->Begin();
+		texture->Begin(*sampler);
 
-		(*program)->Uniform<GLint, 1>("u_tex", (GLint)(*texture)->Unit());
+		program->Uniform<GLint, 1>("u_tex", (GLint)texture->Unit());
 		glDrawElements(GL_QUADS, 4, GL_UNSIGNED_INT, NULL);
 
-		(*texture)->End();
-		(*vertexArray)->End();
-		(*program)->End();
+		texture->End();
+		vertexArray->End();
+		program->End();
 
 		// Swap buffers
 		glutSwapBuffers();
 	}
 
 	template<int key>
-	void _DrawPrimitive<key>::TimerEvent(int value)
+	void DrawPrimitive<key>::TimerEvent(int value)
 	{
 		glutPostRedisplay();
 	}
 
 	template<int key>
-	Shader _DrawPrimitive<key>::CreateVertexShader() const
+	Shader DrawPrimitive<key>::CreateVertexShader() const
 	{
 		Shader vertexShader(GL_VERTEX_SHADER);
 
-		vertexShader->Source(R"(
+		vertexShader.Source(R"(
 #version 460 core
 
 uniform mat4 u_modelView;
@@ -174,7 +160,7 @@ void main(void)
 
 		GLboolean success;
 		std::string log;
-		std::tie(success, log) = vertexShader->Compile();
+		std::tie(success, log) = vertexShader.Compile();
 		if (!success)
 			THROW_EXCEPTION("Shader compile fail: " + log);
 
@@ -182,11 +168,11 @@ void main(void)
 	}
 
 	template<int key>
-	Shader _DrawPrimitive<key>::CreateFragmentShader() const
+	Shader DrawPrimitive<key>::CreateFragmentShader() const
 	{
 		Shader fragmentShader(GL_FRAGMENT_SHADER);
 
-		fragmentShader->Source(R"(
+		fragmentShader.Source(R"(
 #version 460 core
 
 uniform sampler2D u_tex;
@@ -216,7 +202,7 @@ void main(void)
 
 		GLboolean success;
 		std::string log;
-		std::tie(success, log) = fragmentShader->Compile();
+		std::tie(success, log) = fragmentShader.Compile();
 		if (!success)
 			THROW_EXCEPTION("Shader compile fail: " + log);
 
@@ -224,28 +210,28 @@ void main(void)
 	}
 
 	template<int key>
-	void _DrawPrimitive<key>::InitProgram()
+	void DrawPrimitive<key>::InitProgram()
 	{
 		program = PTR<Program>(new Program());
 
 		Shader vertexShader = CreateVertexShader();
 		Shader fragmentShader = CreateFragmentShader();
 
-		(*program)->AttachShader(vertexShader);
-		(*program)->AttachShader(fragmentShader);
+		program->AttachShader(vertexShader);
+		program->AttachShader(fragmentShader);
 
 		GLboolean success;
 		std::string log;
-		std::tie(success, log) = (*program)->Link();
+		std::tie(success, log) = program->Link();
 		if (!success)
 			THROW_EXCEPTION("Program link fail - " + log);
 
-		(*program)->DetachShader(vertexShader);
-		(*program)->DetachShader(fragmentShader);
+		program->DetachShader(vertexShader);
+		program->DetachShader(fragmentShader);
 	}
 
 	template<int key>
-	void _DrawPrimitive<key>::InitBuffer()
+	void DrawPrimitive<key>::InitBuffer()
 	{
 		posBuffer = PTR<Buffer>(new Buffer());
 		normalBuffer = PTR<Buffer>(new Buffer());
@@ -269,56 +255,56 @@ void main(void)
 			0.f, 1.f };
 		std::vector<UI32> indexData = { 0,1,2,3 };
 
-		(*posBuffer)->Data(posData, GL_STATIC_DRAW);
-		(*normalBuffer)->Data(normalData, GL_STATIC_DRAW);
-		(*uvBuffer)->Data(uvData, GL_STATIC_DRAW);
-		(*indexBuffer)->Data(indexData, GL_STATIC_DRAW);
+		posBuffer->Data(posData, GL_STATIC_DRAW);
+		normalBuffer->Data(normalData, GL_STATIC_DRAW);
+		uvBuffer->Data(uvData, GL_STATIC_DRAW);
+		indexBuffer->Data(indexData, GL_STATIC_DRAW);
 	}
 
 	template<int key>
-	void _DrawPrimitive<key>::InitVertexArray()
+	void DrawPrimitive<key>::InitVertexArray()
 	{
 		vertexArray = PTR<VertexArray>(new VertexArray());
 
 		// Set pos
 		{
-			GLint attribLocation = (*program)->GetAttribLocation("a_pos");
+			GLint attribLocation = program->GetAttribLocation("a_pos");
 			GLuint bindingIndex = 0;
 
-			(*vertexArray)->EnableAttrib(attribLocation);
-			(*vertexArray)->VertexBuffer<GLfloat>(bindingIndex, (*posBuffer), 0, 3);
-			(*vertexArray)->AttribBinding(attribLocation, bindingIndex);
-			(*vertexArray)->AttribFormat(attribLocation, 3, GL_FLOAT, GL_FALSE, 0);
+			vertexArray->EnableAttrib(attribLocation);
+			vertexArray->VertexBuffer<GLfloat>(bindingIndex, (*posBuffer), 0, 3);
+			vertexArray->AttribBinding(attribLocation, bindingIndex);
+			vertexArray->AttribFormat(attribLocation, 3, GL_FLOAT, GL_FALSE, 0);
 		}
 
 		// Set normal
 		{
-			GLint attribLocation = (*program)->GetAttribLocation("a_normal");
+			GLint attribLocation = program->GetAttribLocation("a_normal");
 			GLuint bindingIndex = 1;
 
-			(*vertexArray)->EnableAttrib(attribLocation);
-			(*vertexArray)->VertexBuffer<GLfloat>(bindingIndex, (*normalBuffer), 0, 3);
-			(*vertexArray)->AttribBinding(attribLocation, bindingIndex);
-			(*vertexArray)->AttribFormat(attribLocation, 3, GL_FLOAT, GL_FALSE, 0);
+			vertexArray->EnableAttrib(attribLocation);
+			vertexArray->VertexBuffer<GLfloat>(bindingIndex, *normalBuffer, 0, 3);
+			vertexArray->AttribBinding(attribLocation, bindingIndex);
+			vertexArray->AttribFormat(attribLocation, 3, GL_FLOAT, GL_FALSE, 0);
 		}
 
 		// Set uv
 		{
-			GLint attribLocation = (*program)->GetAttribLocation("a_uv");
+			GLint attribLocation = program->GetAttribLocation("a_uv");
 			GLuint bindingIndex = 2;
 
-			(*vertexArray)->EnableAttrib(attribLocation);
-			(*vertexArray)->VertexBuffer<GLfloat>(bindingIndex, (*uvBuffer), 0, 2);
-			(*vertexArray)->AttribBinding(attribLocation, bindingIndex);
-			(*vertexArray)->AttribFormat(attribLocation, 2, GL_FLOAT, GL_FALSE, 0);
+			vertexArray->EnableAttrib(attribLocation);
+			vertexArray->VertexBuffer<GLfloat>(bindingIndex, *uvBuffer, 0, 2);
+			vertexArray->AttribBinding(attribLocation, bindingIndex);
+			vertexArray->AttribFormat(attribLocation, 2, GL_FLOAT, GL_FALSE, 0);
 		}
 
 		// Set index
-		(*vertexArray)->ElementBuffer((*indexBuffer));
+		vertexArray->ElementBuffer(*indexBuffer);
 	}
 
 	template<int key>
-	void _DrawPrimitive<key>::InitTexture()
+	void DrawPrimitive<key>::InitTexture()
 	{
 		texture = PTR<Texture>(new Texture(GL_TEXTURE_2D));
 		sampler = PTR<Sampler>(new Sampler());
@@ -339,11 +325,11 @@ void main(void)
 				c += 4u;
 			}
 		}
-		(*texture)->Image2D(GL_TEXTURE_2D, 0, GL_RGBA, texW, texH, GL_RGBA, GL_UNSIGNED_BYTE, texData.data());
+		texture->Image2D(GL_TEXTURE_2D, 0, GL_RGBA, texW, texH, GL_RGBA, GL_UNSIGNED_BYTE, texData.data());
 
-		(*sampler)->SetInfo<GLint>(GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
-		(*sampler)->SetInfo<GLint>(GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
-		(*sampler)->SetInfo<GLint>(GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-		(*sampler)->SetInfo<GLint>(GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+		sampler->SetInfo<GLint>(GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+		sampler->SetInfo<GLint>(GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+		sampler->SetInfo<GLint>(GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+		sampler->SetInfo<GLint>(GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 	}
 };

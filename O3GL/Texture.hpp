@@ -11,10 +11,10 @@
 namespace O3GL
 {
 	//
-	class _Texture : public GLObject
+	class Texture : public GLHandle
 	{
 	public:
-		_Texture(GLenum target = GL_TEXTURE_2D);
+		Texture(GLenum target = GL_TEXTURE_2D);
 
 	public:
 		inline const GLenum& Target() const { return target; }
@@ -83,15 +83,8 @@ namespace O3GL
 	};
 
 	//
-	class Texture : public GLHandle<_Texture>
-	{
-	public:
-		Texture(GLenum target = GL_TEXTURE_2D) : GLHandle<_Texture>(new _Texture(target)) {}
-	};
-
-	//
 	template<>
-	GLfloat _Texture::GetInfo<GLfloat>(GLenum pname) const
+	GLfloat Texture::GetInfo<GLfloat>(GLenum pname) const
 	{
 		GLfloat rf(0.f);
 		glGetTextureParameterfv(*this, pname, &rf);
@@ -100,7 +93,7 @@ namespace O3GL
 	}
 
 	template<>
-	GLint _Texture::GetInfo<GLint>(GLenum pname) const
+	GLint Texture::GetInfo<GLint>(GLenum pname) const
 	{
 		GLint ri(0);
 		glGetTextureParameteriv(*this, pname, &ri);
@@ -109,7 +102,7 @@ namespace O3GL
 	}
 
 	template<>
-	GLfloat _Texture::GetInfo<GLfloat>(GLint level, GLenum pname) const
+	GLfloat Texture::GetInfo<GLfloat>(GLint level, GLenum pname) const
 	{
 		GLfloat rf(0.f);
 		glGetTextureLevelParameterfv(*this, level, pname, &rf);
@@ -118,7 +111,7 @@ namespace O3GL
 	}
 
 	template<>
-	GLint _Texture::GetInfo<GLint>(GLint level, GLenum pname) const
+	GLint Texture::GetInfo<GLint>(GLint level, GLenum pname) const
 	{
 		GLint ri(0);
 		glGetTextureLevelParameteriv(*this, level, pname, &ri);
@@ -127,14 +120,14 @@ namespace O3GL
 	}
 
 	template<>
-	void _Texture::SetInfo<GLfloat>(GLenum pname, GLfloat params) const
+	void Texture::SetInfo<GLfloat>(GLenum pname, GLfloat params) const
 	{
 		glTextureParameterf(*this, pname, params);
 		GL_CHECK_ERROR;
 	}
 
 	template<>
-	void _Texture::SetInfo<GLint>(GLenum pname, GLint params) const
+	void Texture::SetInfo<GLint>(GLenum pname, GLint params) const
 	{
 		glTextureParameteri(*this, pname, params);
 		GL_CHECK_ERROR;

@@ -9,9 +9,6 @@ namespace O3GL
 	//
 	class CanvasRender : public Render
 	{
-	public:
-		virtual std::string Name() const { return "CanvasRender"; }
-
 	protected:
 		const GLint canvasWidth;
 		const GLint canvasHeight;
@@ -36,8 +33,6 @@ namespace O3GL
 		virtual void LaunchEvent() const;
 
 	public:
-		virtual void DrawInfo(float& wx, float& wy, float lineHeight = 0.06f) const;
-
 		virtual GLint CanvasWidth() const;
 		virtual GLint CanvasHeight() const;
 

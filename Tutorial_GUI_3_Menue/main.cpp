@@ -14,21 +14,21 @@ int main()
 		O3GL::PrintFrameCounter<3> subPrintFrameCounter(printAllInOne, 0, 0, 300, 600);
 		O3GL::PrintGLVersion<4> subPrintGLVersion(printAllInOne, 310, 0, 300, 600);
 
-		printFrameCounter->Init();
-		printGLVersion->Init();
-		printAllInOne->Init();
-		subPrintFrameCounter->Init();
-		subPrintGLVersion->Init();
+		printFrameCounter.Init();
+		printGLVersion.Init();
+		printAllInOne.Init();
+		subPrintFrameCounter.Init();
+		subPrintGLVersion.Init();
 
-		O3GL::ModifyFrameCounterMenu<0, O3GL::PrintFrameCounter<0>> modifyFrameCounterMenu(printFrameCounter);
-		O3GL::FrameCounterMenu<1, O3GL::PrintFrameCounter<0>> frameCounterMenu(printFrameCounter);
-		O3GL::ModifyFrameCounterMenu<2, O3GL::PrintFrameCounter<3>> modifyFrameCounterMenu2(subPrintFrameCounter);
-		O3GL::FrameCounterMenu<3, O3GL::PrintFrameCounter<3>> frameCounterMenu2(subPrintFrameCounter);
+		O3GL::ModifyFrameCounterMenu<0> modifyFrameCounterMenu(&printFrameCounter.frameCounter);
+		O3GL::FrameCounterMenu<1> frameCounterMenu(&printFrameCounter.frameCounter);
+		O3GL::ModifyFrameCounterMenu<2> modifyFrameCounterMenu2(&subPrintFrameCounter.frameCounter);
+		O3GL::FrameCounterMenu<3> frameCounterMenu2(&subPrintFrameCounter.frameCounter);
 
-		frameCounterMenu->AddMenu("Modify Frame Counter", modifyFrameCounterMenu);
-		frameCounterMenu->Attach(*printFrameCounter, GLUT_RIGHT_BUTTON);
-		frameCounterMenu2->AddMenu("Modify Frame Counter", modifyFrameCounterMenu2);
-		frameCounterMenu2->Attach(*subPrintFrameCounter, GLUT_RIGHT_BUTTON);
+		frameCounterMenu.AddMenu("Modify Frame Counter", modifyFrameCounterMenu);
+		frameCounterMenu.Attach(*printFrameCounter, GLUT_RIGHT_BUTTON);
+		frameCounterMenu2.AddMenu("Modify Frame Counter", modifyFrameCounterMenu2);
+		frameCounterMenu2.Attach(*subPrintFrameCounter, GLUT_RIGHT_BUTTON);
 
 		O3GL::EnterMainLoop();
 	}

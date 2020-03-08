@@ -12,10 +12,10 @@
 namespace O3GL
 {
 	//
-	class _FrameBuffer : public GLObject
+	class FrameBuffer : public GLHandle
 	{
 	public:
-		_FrameBuffer() : GLObject(glCreateFramebuffer(), glDeleteFramebuffers) {}
+		FrameBuffer() : GLHandle(new GLObject(glCreateFramebuffer(), glDeleteFramebuffers)) {}
 
 	public:
 		void Begin() const;
@@ -54,15 +54,8 @@ namespace O3GL
 	};
 
 	//
-	class FrameBuffer : public GLHandle<_FrameBuffer>
-	{
-	public:
-		FrameBuffer() : GLHandle<_FrameBuffer>(new _FrameBuffer()) {}
-	};
-
-	//
 	template<>
-	GLint _FrameBuffer::GetInfo<GLint>(GLenum pname) const
+	GLint FrameBuffer::GetInfo<GLint>(GLenum pname) const
 	{
 		GLint ri(0);
 		glGetNamedFramebufferParameteriv(*this, pname, &ri);
@@ -71,14 +64,14 @@ namespace O3GL
 	}
 
 	template<>
-	void _FrameBuffer::SetInfo<GLint>(GLenum pname, GLint params) const
+	void FrameBuffer::SetInfo<GLint>(GLenum pname, GLint params) const
 	{
 		glNamedFramebufferParameteri(*this, pname, params);
 		GL_CHECK_ERROR;
 	}
 
 	template<>
-	GLint _FrameBuffer::GetInfo<GLint>(GLenum attachment, GLenum pname) const
+	GLint FrameBuffer::GetInfo<GLint>(GLenum attachment, GLenum pname) const
 	{
 		GLint ri(0);
 		glGetNamedFramebufferAttachmentParameteriv(*this, attachment, pname, &ri);

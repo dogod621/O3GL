@@ -28,9 +28,6 @@ namespace O3GL
 	//
 	class PanoRenderBase : public CanvasRender
 	{
-	public:
-		virtual std::string Name() const { return "PanoRenderBase"; }
-
 	protected:
 		const bool enableField;
 		const bool enableDepth;
@@ -220,9 +217,6 @@ namespace O3GL
 	//
 	class PanoConverterRender : public PanoRenderBase
 	{
-	public:
-		virtual std::string Name() const { return "PanoConverterRender"; }
-
 	public:
 		virtual void InitSetupEvent();
 		virtual void InitTexturesEvent();

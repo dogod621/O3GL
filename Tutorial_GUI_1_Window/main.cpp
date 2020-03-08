@@ -13,11 +13,11 @@ int main(int argc, char** argv)
 		O3GL::PrintFrameCounter<3> subPrintFrameCounter(printAllInOne, 0, 0, 300, 600);
 		O3GL::PrintGLVersion<4> subPrintGLVersion(printAllInOne, 310, 0, 300, 600);
 
-		printFrameCounter->Init();
-		printGLVersion->Init();
-		printAllInOne->Init();
-		subPrintFrameCounter->Init();
-		subPrintGLVersion->Init();
+		printFrameCounter.Init();
+		printGLVersion.Init();
+		printAllInOne.Init();
+		subPrintFrameCounter.Init();
+		subPrintGLVersion.Init();
 
 		O3GL::EnterMainLoop();
 	}

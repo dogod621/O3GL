@@ -4,16 +4,16 @@
 // 
 namespace O3GL
 {
-	std::vector<GLuint> _Program::bindStack = std::vector<GLuint>();
+	std::vector<GLuint> Program::bindStack = std::vector<GLuint>();
 
-	void _Program::Begin() const
+	void Program::Begin() const
 	{
 		bindStack.push_back(*this);
 		glUseProgram(bindStack.back());
 		GL_CHECK_ERROR;
 	}
 
-	void _Program::End() const
+	void Program::End() const
 	{
 		if (bindStack.empty())
 		{
@@ -36,7 +36,7 @@ namespace O3GL
 		GL_CHECK_ERROR;
 	}
 
-	std::tuple<GLenum, std::vector<GLbyte>> _Program::GetBinary() const
+	std::tuple<GLenum, std::vector<GLbyte>> Program::GetBinary() const
 	{
 		std::vector<GLbyte> buffer;
 		buffer.resize(GetInfo<GLint>(GL_PROGRAM_BINARY_LENGTH));
@@ -47,7 +47,7 @@ namespace O3GL
 		return std::make_tuple(format, buffer);
 	}
 
-	void _Program::LoadBinary(const std::tuple<GLenum, std::vector<GLbyte>>& binary) const
+	void Program::LoadBinary(const std::tuple<GLenum, std::vector<GLbyte>>& binary) const
 	{
 		GLenum format(0);
 		std::vector<GLbyte> buffer;
@@ -57,7 +57,7 @@ namespace O3GL
 		GL_CHECK_ERROR;
 	}
 
-	std::string _Program::GetLog() const
+	std::string Program::GetLog() const
 	{
 		std::string log(GetInfo<GLint>(GL_INFO_LOG_LENGTH), NULL);
 		GLsizei loadSize(0);
@@ -66,46 +66,46 @@ namespace O3GL
 		return log;
 	}
 
-	std::tuple<GLboolean, std::string> _Program::Validate() const
+	std::tuple<GLboolean, std::string> Program::Validate() const
 	{
 		glValidateProgram(*this);
 		GL_CHECK_ERROR;
 		return std::make_tuple(GetInfo<GLboolean>(GL_VALIDATE_STATUS), GetLog());
 	}
 
-	void _Program::AttachShader(const Shader& shader) const
+	void Program::AttachShader(const Shader& shader) const
 	{
 		glAttachShader(*this, shader);
 		GL_CHECK_ERROR;
 	}
 
-	void _Program::DetachShader(const Shader& shader) const
+	void Program::DetachShader(const Shader& shader) const
 	{
 		glDetachShader(*this, shader);
 		GL_CHECK_ERROR;
 	}
 
-	std::tuple<GLboolean, std::string> _Program::Link() const
+	std::tuple<GLboolean, std::string> Program::Link() const
 	{
 		glLinkProgram(*this);
 		GL_CHECK_ERROR;
 		return std::make_tuple(GetInfo<GLboolean>(GL_LINK_STATUS), GetLog());
 	}
 
-	void _Program::BindAttribLocation(GLuint index, const std::string& name) const
+	void Program::BindAttribLocation(GLuint index, const std::string& name) const
 	{
 		glBindAttribLocation(*this, index, name.c_str());
 		GL_CHECK_ERROR;
 	}
 
-	GLint _Program::GetAttribLocation(const std::string& name) const
+	GLint Program::GetAttribLocation(const std::string& name) const
 	{
 		GLint ri = glGetAttribLocation(*this, name.c_str());
 		GL_CHECK_ERROR;
 		return ri;
 	}
 
-	GLint _Program::GetUniformLocation(const std::string& name) const
+	GLint Program::GetUniformLocation(const std::string& name) const
 	{
 		GLint location = glGetUniformLocation(*this, name.c_str());
 		GL_CHECK_ERROR;

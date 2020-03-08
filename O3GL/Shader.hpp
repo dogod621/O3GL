@@ -10,10 +10,12 @@
 // 
 namespace O3GL
 {
-	class _Shader : public GLObject
+	using ShaderSource = std::vector<std::string>;
+
+	class Shader : public GLHandle
 	{
 	public:
-		_Shader(GLenum type = GL_VERTEX_SHADER) : GLObject(glCreateShader(type), glDeleteShader), type(type) {}
+		Shader(GLenum type = GL_VERTEX_SHADER) : GLHandle(new GLObject(glCreateShader(type), glDeleteShader)), type(type) {}
 
 	public:
 		inline const GLenum& Type() const { return type; }
@@ -25,7 +27,7 @@ namespace O3GL
 
 		std::string GetSource() const;
 
-		void Source(const std::vector<std::string>& srcs) const;
+		void Source(const ShaderSource& srcs) const;
 
 		void Source(const std::string& src) const;
 
@@ -47,15 +49,8 @@ namespace O3GL
 	};
 
 	//
-	class Shader : public GLHandle<_Shader>
-	{
-	public:
-		Shader(GLenum type = GL_VERTEX_SHADER) : GLHandle<_Shader>(new _Shader(type)) {}
-	};
-
-	//
 	template<>
-	GLint _Shader::GetInfo<GLint>(GLenum pname) const
+	GLint Shader::GetInfo<GLint>(GLenum pname) const
 	{
 		GLint ri(0);
 		glGetShaderiv(*this, pname, &ri);
@@ -64,7 +59,7 @@ namespace O3GL
 	}
 
 	template<>
-	GLboolean _Shader::GetInfo<GLboolean>(GLenum pname) const
+	GLboolean Shader::GetInfo<GLboolean>(GLenum pname) const
 	{
 		return (GLboolean)GetInfo<GLint>(pname);
 	}

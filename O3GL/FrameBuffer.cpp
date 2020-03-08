@@ -7,16 +7,16 @@
 // 
 namespace O3GL
 {
-	std::vector<GLuint> _FrameBuffer::bindStack = std::vector<GLuint>();
+	std::vector<GLuint> FrameBuffer::bindStack = std::vector<GLuint>();
 
-	void _FrameBuffer::Begin() const
+	void FrameBuffer::Begin() const
 	{
 		bindStack.push_back(*this);
 		glBindFramebuffer(GL_FRAMEBUFFER, bindStack.back());
 		GL_CHECK_ERROR;
 	}
 
-	void _FrameBuffer::End() const
+	void FrameBuffer::End() const
 	{
 		if (bindStack.empty())
 		{
@@ -39,7 +39,7 @@ namespace O3GL
 		GL_CHECK_ERROR;
 	}
 
-	void _FrameBuffer::Attach(GLenum attachment, const Texture& texture, GLint level)
+	void FrameBuffer::Attach(GLenum attachment, const Texture& texture, GLint level)
 	{
 		glNamedFramebufferTexture(*this, attachment, texture, level);
 
@@ -49,13 +49,13 @@ namespace O3GL
 		GL_CHECK_ERROR;
 	}
 
-	void _FrameBuffer::DrawBuffer(GLenum attachment) const
+	void FrameBuffer::DrawBuffer(GLenum attachment) const
 	{
 		glNamedFramebufferDrawBuffer(*this, attachment);
 		GL_CHECK_ERROR;
 	}
 
-	void _FrameBuffer::DrawBuffer(const std::vector<GLenum>& attachments) const
+	void FrameBuffer::DrawBuffer(const std::vector<GLenum>& attachments) const
 	{
 		GLint n = 0;
 		glGetIntegerv(GL_MAX_DRAW_BUFFERS, &n);
@@ -67,7 +67,7 @@ namespace O3GL
 		GL_CHECK_ERROR;
 	}
 
-	std::string _FrameBuffer::AttachmentInformation() const
+	std::string FrameBuffer::AttachmentInformation() const
 	{
 		std::stringstream ss;
 

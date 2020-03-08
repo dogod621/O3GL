@@ -7,10 +7,10 @@
 // 
 namespace O3GL
 {
-	class _VertexArray : public GLObject
+	class VertexArray : public GLHandle
 	{
 	public:
-		_VertexArray() : GLObject(glCreateVertexArray(), glDeleteVertexArrays) {}
+		VertexArray() : GLHandle(new GLObject(glCreateVertexArray(), glDeleteVertexArrays)) {}
 
 	public:
 		void Begin() const;
@@ -39,15 +39,8 @@ namespace O3GL
 	};
 
 	//
-	class VertexArray : public GLHandle<_VertexArray>
-	{
-	public:
-		VertexArray() : GLHandle<_VertexArray>(new _VertexArray()) {}
-	};
-
-	//
 	template<class T>
-	void _VertexArray::VertexBuffer(GLuint bindingindex, GLuint buffer, std::size_t offset, std::size_t stride) const
+	void VertexArray::VertexBuffer(GLuint bindingindex, GLuint buffer, std::size_t offset, std::size_t stride) const
 	{
 		glVertexArrayVertexBuffer(*this, bindingindex, buffer, (GLintptr)(offset * sizeof(T)), (GLsizei)(stride * sizeof(T)));
 		GL_CHECK_ERROR;

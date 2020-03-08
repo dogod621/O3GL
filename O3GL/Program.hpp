@@ -10,17 +10,17 @@
 //
 namespace O3GL
 {
-	class _Program : public GLObject
+	class Program : public GLHandle
 	{
 	public:
-		_Program() : GLObject(glCreateProgram(), glDeleteProgram) {}
+		Program() : GLHandle(new GLObject(glCreateProgram(), glDeleteProgram)) {}
 
 	public:
 		void Begin() const;
 
 		void End() const;
 
-		template<class T> 
+		template<class T>
 		T GetInfo(GLenum pname) const;
 
 		std::tuple<GLenum, std::vector<GLbyte>> GetBinary() const;
@@ -383,21 +383,14 @@ namespace O3GL
 		template<> void Uniform<GLfloat	, 4, 4	>(GLint location, const Mat44& v, GLboolean transpose						) const { glProgramUniformMatrix4fv		(*this, location, 1, transpose, &v[0][0]					); GL_CHECK_ERROR; }
 		template<> void Uniform<GLfloat	, 4, 4	>(GLint location, const std::vector<Mat44>& v								) const { glProgramUniformMatrix4fv		(*this, location, (GLsizei)v.size(), GL_FALSE, &v[0][0][0]	); GL_CHECK_ERROR; }
 		template<> void Uniform<GLfloat	, 4, 4	>(GLint location, const std::vector<Mat44>& v, GLboolean transpose			) const { glProgramUniformMatrix4fv		(*this, location, (GLsizei)v.size(), transpose, &v[0][0][0]	); GL_CHECK_ERROR; }
-	
+
 	protected:
 		static std::vector<GLuint> bindStack;
 	};
 
 	//
-	class Program : public GLHandle<_Program>
-	{
-	public:
-		Program() : GLHandle<_Program>(new _Program()) {}
-	};
-
-	//
-	template<> 
-	GLint _Program::GetInfo<GLint>(GLenum pname) const
+	template<>
+	GLint Program::GetInfo<GLint>(GLenum pname) const
 	{
 		GLint ri(0);
 		glGetProgramiv(*this, pname, &ri);
@@ -405,10 +398,9 @@ namespace O3GL
 		return ri;
 	}
 
-	template<> 
-	GLboolean _Program::GetInfo<GLboolean>(GLenum pname) const
-	{ 
-		return (GLboolean)GetInfo<GLint>(pname); 
+	template<>
+	GLboolean Program::GetInfo<GLboolean>(GLenum pname) const
+	{
+		return (GLboolean)GetInfo<GLint>(pname);
 	}
 };
-

@@ -10,10 +10,10 @@
 namespace O3GL
 {
 	//
-	class _Buffer : public GLObject
+	class Buffer : public GLHandle
 	{
 	public:
-		_Buffer() : GLObject(glCreateBuffer(), glDeleteBuffers) {}
+		Buffer() : GLHandle(new GLObject(glCreateBuffer(), glDeleteBuffers)) {}
 
 		template<class T>
 		T GetInfo(GLenum pname) const;
@@ -50,15 +50,8 @@ namespace O3GL
 	};
 
 	//
-	class Buffer : public GLHandle<_Buffer>
-	{
-	public:
-		Buffer() : GLHandle<_Buffer>(new _Buffer()) {}
-	};
-
-	//
 	template<>
-	GLint _Buffer::GetInfo<GLint>(GLenum pname) const
+	GLint Buffer::GetInfo<GLint>(GLenum pname) const
 	{
 		GLint ri(0);
 		glGetNamedBufferParameteriv(*this, pname, &ri);
@@ -67,7 +60,7 @@ namespace O3GL
 	}
 
 	template<>
-	GLint64 _Buffer::GetInfo<GLint64>(GLenum pname) const
+	GLint64 Buffer::GetInfo<GLint64>(GLenum pname) const
 	{
 		GLint64 ri(0);
 		glGetNamedBufferParameteri64v(*this, pname, &ri);
@@ -76,28 +69,28 @@ namespace O3GL
 	}
 
 	template<class T>
-	void _Buffer::Data(const std::vector<T>& data, GLenum usage) const
+	void Buffer::Data(const std::vector<T>& data, GLenum usage) const
 	{
 		glNamedBufferData(*this, data.size() * sizeof(T), (const void*)&data[0], usage);
 		GL_CHECK_ERROR;
 	}
 
 	template<class T>
-	void _Buffer::Data(const std::size_t& size, GLenum usage) const
+	void Buffer::Data(const std::size_t& size, GLenum usage) const
 	{
 		glNamedBufferData(*this, size * sizeof(T), 0, usage);
 		GL_CHECK_ERROR;
 	}
 
 	template<class T>
-	void _Buffer::SubData(std::size_t offset, const std::vector<T>& data) const
+	void Buffer::SubData(std::size_t offset, const std::vector<T>& data) const
 	{
 		glNamedBufferSubData(*this, offset * sizeof(T), data.size() * sizeof(T), (const void*)&data[0]);
 		GL_CHECK_ERROR;
 	}
 
 	template<class T>
-	std::vector<T> _Buffer::GetSubData(std::size_t offset, std::size_t size) const
+	std::vector<T> Buffer::GetSubData(std::size_t offset, std::size_t size) const
 	{
 		std::vector<T> data;
 		data.resize(size);
@@ -107,7 +100,7 @@ namespace O3GL
 	}
 
 	template<class T>
-	T* _Buffer::Map(GLenum access) const
+	T* Buffer::Map(GLenum access) const
 	{
 		void* rp = glMapNamedBuffer(*this, access);
 		GL_CHECK_ERROR;
@@ -115,7 +108,7 @@ namespace O3GL
 	}
 
 	template<class T>
-	T* _Buffer::MapRange(std::size_t offset, std::size_t length, GLbitfield access) const
+	T* Buffer::MapRange(std::size_t offset, std::size_t length, GLbitfield access) const
 	{
 		void* rp = glMapNamedBufferRange(*this, offset * sizeof(T), length * sizeof(T), access);
 		GL_CHECK_ERROR;
@@ -123,7 +116,7 @@ namespace O3GL
 	}
 
 	template<class T>
-	void _Buffer::FlushMapRange(std::size_t offset, std::size_t length, GLbitfield access) const
+	void Buffer::FlushMapRange(std::size_t offset, std::size_t length, GLbitfield access) const
 	{
 		glFlushMappedNamedBufferRange(*this, offset * sizeof(T), length * sizeof(T));
 		GL_CHECK_ERROR;

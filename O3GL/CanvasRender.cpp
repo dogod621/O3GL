@@ -61,29 +61,29 @@ namespace O3GL
 		glGetFloatv(GL_MAX_TEXTURE_MAX_ANISOTROPY, &maxNumSamples);
 
 		//
-		samplers["plane_nearest"]->SetInfo<GLint>(GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
-		samplers["plane_nearest"]->SetInfo<GLint>(GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
-		samplers["plane_nearest"]->SetInfo<GLint>(GL_TEXTURE_MIN_FILTER, GL_NEAREST);
-		samplers["plane_nearest"]->SetInfo<GLint>(GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+		samplers["plane_nearest"].SetInfo<GLint>(GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+		samplers["plane_nearest"].SetInfo<GLint>(GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+		samplers["plane_nearest"].SetInfo<GLint>(GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+		samplers["plane_nearest"].SetInfo<GLint>(GL_TEXTURE_MAG_FILTER, GL_NEAREST);
 
-		samplers["plane_bilinear"]->SetInfo<GLint>(GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
-		samplers["plane_bilinear"]->SetInfo<GLint>(GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
-		samplers["plane_bilinear"]->SetInfo<GLint>(GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-		samplers["plane_bilinear"]->SetInfo<GLint>(GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+		samplers["plane_bilinear"].SetInfo<GLint>(GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+		samplers["plane_bilinear"].SetInfo<GLint>(GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+		samplers["plane_bilinear"].SetInfo<GLint>(GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+		samplers["plane_bilinear"].SetInfo<GLint>(GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 
-		samplers["plane_trilinear"]->SetInfo<GLint>(GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
-		samplers["plane_trilinear"]->SetInfo<GLint>(GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
-		samplers["plane_trilinear"]->SetInfo<GLint>(GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
-		samplers["plane_trilinear"]->SetInfo<GLint>(GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+		samplers["plane_trilinear"].SetInfo<GLint>(GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+		samplers["plane_trilinear"].SetInfo<GLint>(GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+		samplers["plane_trilinear"].SetInfo<GLint>(GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
+		samplers["plane_trilinear"].SetInfo<GLint>(GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 
 		if (ANISOTROPIC_FILTER_SAMPLES > 1.0f)
 		{
-			samplers["plane_anisotropy"]->SetInfo<GLint>(GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
-			samplers["plane_anisotropy"]->SetInfo<GLint>(GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
-			samplers["plane_anisotropy"]->SetInfo<GLint>(GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
-			samplers["plane_anisotropy"]->SetInfo<GLint>(GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+			samplers["plane_anisotropy"].SetInfo<GLint>(GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+			samplers["plane_anisotropy"].SetInfo<GLint>(GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+			samplers["plane_anisotropy"].SetInfo<GLint>(GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
+			samplers["plane_anisotropy"].SetInfo<GLint>(GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 
-			samplers["plane_anisotropy"]->SetInfo<GLfloat>(GL_TEXTURE_MAX_ANISOTROPY, CLAMP(ANISOTROPIC_FILTER_SAMPLES, 1.0f, maxNumSamples));
+			samplers["plane_anisotropy"].SetInfo<GLfloat>(GL_TEXTURE_MAX_ANISOTROPY, CLAMP(ANISOTROPIC_FILTER_SAMPLES, 1.0f, maxNumSamples));
 		}
 		else
 		{
@@ -91,33 +91,33 @@ namespace O3GL
 		}
 
 		//
-		samplers["cube_nearest"]->SetInfo<GLint>(GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
-		samplers["cube_nearest"]->SetInfo<GLint>(GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
-		samplers["cube_nearest"]->SetInfo<GLint>(GL_TEXTURE_WRAP_R, GL_CLAMP_TO_EDGE);
-		samplers["cube_nearest"]->SetInfo<GLint>(GL_TEXTURE_MIN_FILTER, GL_NEAREST);
-		samplers["cube_nearest"]->SetInfo<GLint>(GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+		samplers["cube_nearest"].SetInfo<GLint>(GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+		samplers["cube_nearest"].SetInfo<GLint>(GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+		samplers["cube_nearest"].SetInfo<GLint>(GL_TEXTURE_WRAP_R, GL_CLAMP_TO_EDGE);
+		samplers["cube_nearest"].SetInfo<GLint>(GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+		samplers["cube_nearest"].SetInfo<GLint>(GL_TEXTURE_MAG_FILTER, GL_NEAREST);
 
-		samplers["cube_bilinear"]->SetInfo<GLint>(GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
-		samplers["cube_bilinear"]->SetInfo<GLint>(GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
-		samplers["cube_bilinear"]->SetInfo<GLint>(GL_TEXTURE_WRAP_R, GL_CLAMP_TO_EDGE);
-		samplers["cube_bilinear"]->SetInfo<GLint>(GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-		samplers["cube_bilinear"]->SetInfo<GLint>(GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+		samplers["cube_bilinear"].SetInfo<GLint>(GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+		samplers["cube_bilinear"].SetInfo<GLint>(GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+		samplers["cube_bilinear"].SetInfo<GLint>(GL_TEXTURE_WRAP_R, GL_CLAMP_TO_EDGE);
+		samplers["cube_bilinear"].SetInfo<GLint>(GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+		samplers["cube_bilinear"].SetInfo<GLint>(GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 
-		samplers["cube_trilinear"]->SetInfo<GLint>(GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
-		samplers["cube_trilinear"]->SetInfo<GLint>(GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
-		samplers["cube_trilinear"]->SetInfo<GLint>(GL_TEXTURE_WRAP_R, GL_CLAMP_TO_EDGE);
-		samplers["cube_trilinear"]->SetInfo<GLint>(GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
-		samplers["cube_trilinear"]->SetInfo<GLint>(GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+		samplers["cube_trilinear"].SetInfo<GLint>(GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+		samplers["cube_trilinear"].SetInfo<GLint>(GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+		samplers["cube_trilinear"].SetInfo<GLint>(GL_TEXTURE_WRAP_R, GL_CLAMP_TO_EDGE);
+		samplers["cube_trilinear"].SetInfo<GLint>(GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
+		samplers["cube_trilinear"].SetInfo<GLint>(GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 
 		if (ANISOTROPIC_FILTER_SAMPLES > 1.0f)
 		{
-			samplers["cube_anisotropy"]->SetInfo<GLint>(GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
-			samplers["cube_anisotropy"]->SetInfo<GLint>(GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
-			samplers["cube_anisotropy"]->SetInfo<GLint>(GL_TEXTURE_WRAP_R, GL_CLAMP_TO_EDGE);
-			samplers["cube_anisotropy"]->SetInfo<GLint>(GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
-			samplers["cube_anisotropy"]->SetInfo<GLint>(GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+			samplers["cube_anisotropy"].SetInfo<GLint>(GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+			samplers["cube_anisotropy"].SetInfo<GLint>(GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+			samplers["cube_anisotropy"].SetInfo<GLint>(GL_TEXTURE_WRAP_R, GL_CLAMP_TO_EDGE);
+			samplers["cube_anisotropy"].SetInfo<GLint>(GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
+			samplers["cube_anisotropy"].SetInfo<GLint>(GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 
-			samplers["cube_anisotropy"]->SetInfo<GLfloat>(GL_TEXTURE_MAX_ANISOTROPY, CLAMP(ANISOTROPIC_FILTER_SAMPLES, 1.0f, maxNumSamples));
+			samplers["cube_anisotropy"].SetInfo<GLfloat>(GL_TEXTURE_MAX_ANISOTROPY, CLAMP(ANISOTROPIC_FILTER_SAMPLES, 1.0f, maxNumSamples));
 		}
 		else
 		{
@@ -125,29 +125,29 @@ namespace O3GL
 		}
 
 		//
-		samplers["equirectangular_nearest"]->SetInfo<GLint>(GL_TEXTURE_WRAP_S, GL_REPEAT);
-		samplers["equirectangular_nearest"]->SetInfo<GLint>(GL_TEXTURE_WRAP_T, GL_MIRRORED_REPEAT);
-		samplers["equirectangular_nearest"]->SetInfo<GLint>(GL_TEXTURE_MIN_FILTER, GL_NEAREST);
-		samplers["equirectangular_nearest"]->SetInfo<GLint>(GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+		samplers["equirectangular_nearest"].SetInfo<GLint>(GL_TEXTURE_WRAP_S, GL_REPEAT);
+		samplers["equirectangular_nearest"].SetInfo<GLint>(GL_TEXTURE_WRAP_T, GL_MIRRORED_REPEAT);
+		samplers["equirectangular_nearest"].SetInfo<GLint>(GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+		samplers["equirectangular_nearest"].SetInfo<GLint>(GL_TEXTURE_MAG_FILTER, GL_NEAREST);
 
-		samplers["equirectangular_bilinear"]->SetInfo<GLint>(GL_TEXTURE_WRAP_S, GL_REPEAT);
-		samplers["equirectangular_bilinear"]->SetInfo<GLint>(GL_TEXTURE_WRAP_T, GL_MIRRORED_REPEAT);
-		samplers["equirectangular_bilinear"]->SetInfo<GLint>(GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-		samplers["equirectangular_bilinear"]->SetInfo<GLint>(GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+		samplers["equirectangular_bilinear"].SetInfo<GLint>(GL_TEXTURE_WRAP_S, GL_REPEAT);
+		samplers["equirectangular_bilinear"].SetInfo<GLint>(GL_TEXTURE_WRAP_T, GL_MIRRORED_REPEAT);
+		samplers["equirectangular_bilinear"].SetInfo<GLint>(GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+		samplers["equirectangular_bilinear"].SetInfo<GLint>(GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 
-		samplers["equirectangular_trilinear"]->SetInfo<GLint>(GL_TEXTURE_WRAP_S, GL_REPEAT);
-		samplers["equirectangular_trilinear"]->SetInfo<GLint>(GL_TEXTURE_WRAP_T, GL_MIRRORED_REPEAT);
-		samplers["equirectangular_trilinear"]->SetInfo<GLint>(GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
-		samplers["equirectangular_trilinear"]->SetInfo<GLint>(GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+		samplers["equirectangular_trilinear"].SetInfo<GLint>(GL_TEXTURE_WRAP_S, GL_REPEAT);
+		samplers["equirectangular_trilinear"].SetInfo<GLint>(GL_TEXTURE_WRAP_T, GL_MIRRORED_REPEAT);
+		samplers["equirectangular_trilinear"].SetInfo<GLint>(GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
+		samplers["equirectangular_trilinear"].SetInfo<GLint>(GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 
 		if (ANISOTROPIC_FILTER_SAMPLES > 1.0f)
 		{
-			samplers["equirectangular_anisotropy"]->SetInfo<GLint>(GL_TEXTURE_WRAP_S, GL_REPEAT);
-			samplers["equirectangular_anisotropy"]->SetInfo<GLint>(GL_TEXTURE_WRAP_T, GL_MIRRORED_REPEAT);
-			samplers["equirectangular_anisotropy"]->SetInfo<GLint>(GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
-			samplers["equirectangular_anisotropy"]->SetInfo<GLint>(GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+			samplers["equirectangular_anisotropy"].SetInfo<GLint>(GL_TEXTURE_WRAP_S, GL_REPEAT);
+			samplers["equirectangular_anisotropy"].SetInfo<GLint>(GL_TEXTURE_WRAP_T, GL_MIRRORED_REPEAT);
+			samplers["equirectangular_anisotropy"].SetInfo<GLint>(GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
+			samplers["equirectangular_anisotropy"].SetInfo<GLint>(GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 
-			samplers["equirectangular_anisotropy"]->SetInfo<GLfloat>(GL_TEXTURE_MAX_ANISOTROPY, CLAMP(ANISOTROPIC_FILTER_SAMPLES, 1.0f, maxNumSamples));
+			samplers["equirectangular_anisotropy"].SetInfo<GLfloat>(GL_TEXTURE_MAX_ANISOTROPY, CLAMP(ANISOTROPIC_FILTER_SAMPLES, 1.0f, maxNumSamples));
 		}
 		else
 		{
@@ -155,29 +155,29 @@ namespace O3GL
 		}
 
 		//
-		samplers["mercator_nearest"]->SetInfo<GLint>(GL_TEXTURE_WRAP_S, GL_REPEAT);
-		samplers["mercator_nearest"]->SetInfo<GLint>(GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
-		samplers["mercator_nearest"]->SetInfo<GLint>(GL_TEXTURE_MIN_FILTER, GL_NEAREST);
-		samplers["mercator_nearest"]->SetInfo<GLint>(GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+		samplers["mercator_nearest"].SetInfo<GLint>(GL_TEXTURE_WRAP_S, GL_REPEAT);
+		samplers["mercator_nearest"].SetInfo<GLint>(GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+		samplers["mercator_nearest"].SetInfo<GLint>(GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+		samplers["mercator_nearest"].SetInfo<GLint>(GL_TEXTURE_MAG_FILTER, GL_NEAREST);
 
-		samplers["mercator_bilinear"]->SetInfo<GLint>(GL_TEXTURE_WRAP_S, GL_REPEAT);
-		samplers["mercator_bilinear"]->SetInfo<GLint>(GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
-		samplers["mercator_bilinear"]->SetInfo<GLint>(GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-		samplers["mercator_bilinear"]->SetInfo<GLint>(GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+		samplers["mercator_bilinear"].SetInfo<GLint>(GL_TEXTURE_WRAP_S, GL_REPEAT);
+		samplers["mercator_bilinear"].SetInfo<GLint>(GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+		samplers["mercator_bilinear"].SetInfo<GLint>(GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+		samplers["mercator_bilinear"].SetInfo<GLint>(GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 
-		samplers["mercator_trilinear"]->SetInfo<GLint>(GL_TEXTURE_WRAP_S, GL_REPEAT);
-		samplers["mercator_trilinear"]->SetInfo<GLint>(GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
-		samplers["mercator_trilinear"]->SetInfo<GLint>(GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
-		samplers["mercator_trilinear"]->SetInfo<GLint>(GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+		samplers["mercator_trilinear"].SetInfo<GLint>(GL_TEXTURE_WRAP_S, GL_REPEAT);
+		samplers["mercator_trilinear"].SetInfo<GLint>(GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+		samplers["mercator_trilinear"].SetInfo<GLint>(GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
+		samplers["mercator_trilinear"].SetInfo<GLint>(GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 
 		if (ANISOTROPIC_FILTER_SAMPLES > 1.0f)
 		{
-			samplers["mercator_anisotropy"]->SetInfo<GLint>(GL_TEXTURE_WRAP_S, GL_REPEAT);
-			samplers["mercator_anisotropy"]->SetInfo<GLint>(GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
-			samplers["mercator_anisotropy"]->SetInfo<GLint>(GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
-			samplers["mercator_anisotropy"]->SetInfo<GLint>(GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+			samplers["mercator_anisotropy"].SetInfo<GLint>(GL_TEXTURE_WRAP_S, GL_REPEAT);
+			samplers["mercator_anisotropy"].SetInfo<GLint>(GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+			samplers["mercator_anisotropy"].SetInfo<GLint>(GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
+			samplers["mercator_anisotropy"].SetInfo<GLint>(GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 
-			samplers["mercator_anisotropy"]->SetInfo<GLfloat>(GL_TEXTURE_MAX_ANISOTROPY, CLAMP(ANISOTROPIC_FILTER_SAMPLES, 1.0f, maxNumSamples));
+			samplers["mercator_anisotropy"].SetInfo<GLfloat>(GL_TEXTURE_MAX_ANISOTROPY, CLAMP(ANISOTROPIC_FILTER_SAMPLES, 1.0f, maxNumSamples));
 		}
 		else
 		{
@@ -197,8 +197,8 @@ namespace O3GL
 		-1.f, 1.0f, 0.99999f };
 		std::vector<UI32> indexData = { 0,1,2,2,3,0 };
 
-		buffers["pos"]->Data(posData, GL_STATIC_DRAW);
-		buffers["index"]->Data(indexData, GL_STATIC_DRAW);
+		buffers["pos"].Data(posData, GL_STATIC_DRAW);
+		buffers["index"].Data(indexData, GL_STATIC_DRAW);
 	}
 
 	void CanvasRender::InitVertexArraysEvent()
@@ -209,13 +209,13 @@ namespace O3GL
 		GLint attribLocation = 0;
 		GLuint bindingIndex = 0;
 
-		vertexArrays["canvas"]->EnableAttrib(attribLocation);
-		vertexArrays["canvas"]->VertexBuffer<GLfloat>(bindingIndex, buffers["pos"], 0, 3);
-		vertexArrays["canvas"]->AttribBinding(attribLocation, bindingIndex);
-		vertexArrays["canvas"]->AttribFormat(attribLocation, 3, GL_FLOAT, GL_FALSE, 0);
+		vertexArrays["canvas"].EnableAttrib(attribLocation);
+		vertexArrays["canvas"].VertexBuffer<GLfloat>(bindingIndex, buffers["pos"], 0, 3);
+		vertexArrays["canvas"].AttribBinding(attribLocation, bindingIndex);
+		vertexArrays["canvas"].AttribFormat(attribLocation, 3, GL_FLOAT, GL_FALSE, 0);
 
 		// Set index
-		vertexArrays["canvas"]->ElementBuffer(buffers["index"]);
+		vertexArrays["canvas"].ElementBuffer(buffers["index"]);
 	}
 
 	void CanvasRender::InitVertexShaderHeadersEvent()
@@ -385,11 +385,11 @@ void main(void)
 		Render::InitShadersEvent();
 
 		//
-		shaders["canvas_vert"]->Source(shaderSources["canvas_vert"]);
+		shaders["canvas_vert"].Source(shaderSources["canvas_vert"]);
 		{
 			GLboolean success;
 			std::string log;
-			std::tie(success, log) = shaders["canvas_vert"]->Compile();
+			std::tie(success, log) = shaders["canvas_vert"].Compile();
 			if (!success)
 			{
 				PrintShaderSources("canvas_vert");
@@ -399,10 +399,10 @@ void main(void)
 
 		if (shaderSources["canvas_geom"].size() > 0)
 		{
-			shaders["canvas_geom"]->Source(shaderSources["canvas_geom"]);
+			shaders["canvas_geom"].Source(shaderSources["canvas_geom"]);
 			GLboolean success;
 			std::string log;
-			std::tie(success, log) = shaders["canvas_geom"]->Compile();
+			std::tie(success, log) = shaders["canvas_geom"].Compile();
 			if (!success)
 			{
 				PrintShaderSources("canvas_geom");
@@ -410,11 +410,11 @@ void main(void)
 			}
 		}
 
-		shaders["canvas_frag"]->Source(shaderSources["canvas_frag"]);
+		shaders["canvas_frag"].Source(shaderSources["canvas_frag"]);
 		{
 			GLboolean success;
 			std::string log;
-			std::tie(success, log) = shaders["canvas_frag"]->Compile();
+			std::tie(success, log) = shaders["canvas_frag"].Compile();
 			if (!success)
 			{
 				PrintShaderSources("canvas_frag");
@@ -428,21 +428,21 @@ void main(void)
 		Render::InitProgramsEvent();
 
 		//
-		programs["canvas"]->AttachShader(shaders["canvas_vert"]);
+		programs["canvas"].AttachShader(shaders["canvas_vert"]);
 		if (shaderSources["canvas_geom"].size() > 0)
-			programs["canvas"]->AttachShader(shaders["canvas_geom"]);
-		programs["canvas"]->AttachShader(shaders["canvas_frag"]);
+			programs["canvas"].AttachShader(shaders["canvas_geom"]);
+		programs["canvas"].AttachShader(shaders["canvas_frag"]);
 
 		GLboolean success;
 		std::string log;
-		std::tie(success, log) = programs["canvas"]->Link();
+		std::tie(success, log) = programs["canvas"].Link();
 		if (!success)
 			THROW_EXCEPTION("Program link fail - " + log);
 
-		programs["canvas"]->DetachShader(shaders["canvas_vert"]);
+		programs["canvas"].DetachShader(shaders["canvas_vert"]);
 		if (shaderSources["canvas_geom"].size() > 0)
-			programs["canvas"]->DetachShader(shaders["canvas_geom"]);
-		programs["canvas"]->DetachShader(shaders["canvas_frag"]);
+			programs["canvas"].DetachShader(shaders["canvas_geom"]);
+		programs["canvas"].DetachShader(shaders["canvas_frag"]);
 	}
 
 	void CanvasRender::InitProgramParametersEvent() const
@@ -450,8 +450,8 @@ void main(void)
 		Render::InitProgramParametersEvent();
 
 		//
-		programs.at("canvas")->Uniform<GLint, 1>("u_canvasWidth", CanvasWidth());
-		programs.at("canvas")->Uniform<GLint, 1>("u_canvasHeight", CanvasHeight());
+		programs.at("canvas").Uniform<GLint, 1>("u_canvasWidth", CanvasWidth());
+		programs.at("canvas").Uniform<GLint, 1>("u_canvasHeight", CanvasHeight());
 	}
 
 	void CanvasRender::PreDrawEvent() const
@@ -460,7 +460,7 @@ void main(void)
 
 		//
 		if (!windowMode)
-			frameBuffers.at("canvas")->Begin();
+			frameBuffers.at("canvas").Begin();
 	}
 
 	void CanvasRender::OnDrawEvent() const
@@ -474,7 +474,7 @@ void main(void)
 	void CanvasRender::PostDrawEvent() const
 	{
 		if (!windowMode)
-			frameBuffers.at("canvas")->End();
+			frameBuffers.at("canvas").End();
 
 		//
 		Render::PostDrawEvent();
@@ -482,8 +482,8 @@ void main(void)
 
 	void CanvasRender::LaunchEvent() const
 	{
-		programs.at("canvas")->Begin();
-		vertexArrays.at("canvas")->Begin();
+		programs.at("canvas").Begin();
+		vertexArrays.at("canvas").Begin();
 
 		// Compute time
 		glFinish(); // Wait
@@ -498,29 +498,8 @@ void main(void)
 		std::chrono::duration<double, std::milli> timeElapsed = timeEnd - timeStart;
 		*(double*)(&costTimeMS) = timeElapsed.count();
 
-		vertexArrays.at("canvas")->End();
-		programs.at("canvas")->End();
-	}
-
-	void CanvasRender::DrawInfo(float& wx, float& wy, float lineHeight) const
-	{
-		if (windowMode)
-		{
-			std::stringstream ss;
-			ss << "\tcanvasWidth, canvasHeight: " << CanvasWidth() << ", " << CanvasHeight();
-			Text(wx, wy, 0.0f, ss.str(), 0.0f, 1.0f, 0.0f, 1.0f);
-			wy += lineHeight;
-		}
-		else
-		{
-			std::stringstream ss;
-			ss << "\tcanvasWidth, canvasHeight, framebuffer: " << CanvasWidth() << ", " << CanvasHeight() << ", " << frameBuffers.at("canvas")->AttachmentInformation();
-			Text(wx, wy, 0.0f, ss.str(), 0.0f, 1.0f, 0.0f, 1.0f);
-			wy += lineHeight;
-		}
-
-		//
-		Render::DrawInfo(wx, wy, lineHeight);
+		vertexArrays.at("canvas").End();
+		programs.at("canvas").End();
 	}
 
 	GLint CanvasRender::CanvasWidth() const

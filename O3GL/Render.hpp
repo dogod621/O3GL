@@ -17,11 +17,6 @@ namespace O3GL
 	class Render
 	{
 	public:
-		virtual std::string Name() const { return "Render"; }
-
-	public:
-		using ShaderSource = std::vector<std::string>;
-
 		using Samplers = std::map<std::string, Sampler>;
 		using Textures = std::map<std::string, Texture>;
 		using Buffers = std::map<std::string, Buffer>;
@@ -72,18 +67,9 @@ namespace O3GL
 
 		// inherit accumulate
 		virtual void UpdateEvent() {}
-		virtual bool KeyboardEvent(unsigned char key, int x, int y) { return false; }
-		virtual bool KeyboardUpEvent(unsigned char key, int x, int y) { return false; }
-		virtual bool SpecialEvent(int key, int x, int y) { return false; }
-		virtual bool SpecialUpEvent(int key, int x, int y) { return false; }
-		virtual bool MouseEvent(int button, int state, int x, int y) { return false; }
-		virtual bool MotionEvent(int x, int y) { return false; }
-		virtual bool PassiveMotionEvent(int x, int y) { return false; }
 
 	public:
 		void PrintShaderSources(const std::string& name) const;
-		virtual void DrawInfo(float& wx, float& wy, float lineHeight = 0.06f) const;
-		virtual void DrawName(float& wx, float& wy, float lineHeight = 0.06f) const;
 
 	public:
 		Render();

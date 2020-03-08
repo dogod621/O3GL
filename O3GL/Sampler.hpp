@@ -7,10 +7,10 @@
 namespace O3GL
 {
 	//
-	class _Sampler : public GLObject
+	class Sampler : public GLHandle
 	{
 	public:
-		_Sampler() : GLObject(glCreateSampler(), glDeleteSamplers) {}
+		Sampler() : GLHandle(new GLObject(glCreateSampler(), glDeleteSamplers)) {}
 
 	public:
 		template<class T>
@@ -34,15 +34,8 @@ namespace O3GL
 	};
 
 	//
-	class Sampler : public GLHandle<_Sampler>
-	{
-	public:
-		Sampler() : GLHandle<_Sampler>(new _Sampler()) {}
-	};
-
-	//
 	template<>
-	GLfloat _Sampler::GetInfo<GLfloat>(GLenum pname) const
+	GLfloat Sampler::GetInfo<GLfloat>(GLenum pname) const
 	{
 		GLfloat rf(0.f);
 		glGetSamplerParameterfv(*this, pname, &rf);
@@ -51,7 +44,7 @@ namespace O3GL
 	}
 
 	template<>
-	GLint _Sampler::GetInfo<GLint>(GLenum pname) const
+	GLint Sampler::GetInfo<GLint>(GLenum pname) const
 	{
 		GLint ri(0);
 		glGetSamplerParameteriv(*this, pname, &ri);
@@ -60,14 +53,14 @@ namespace O3GL
 	}
 
 	template<>
-	void _Sampler::SetInfo<GLfloat>(GLenum pname, GLfloat params) const
+	void Sampler::SetInfo<GLfloat>(GLenum pname, GLfloat params) const
 	{
 		glSamplerParameterf(*this, pname, params);
 		GL_CHECK_ERROR;
 	}
 
 	template<>
-	void _Sampler::SetInfo<GLint>(GLenum pname, GLint params) const
+	void Sampler::SetInfo<GLint>(GLenum pname, GLint params) const
 	{
 		glSamplerParameteri(*this, pname, params);
 		GL_CHECK_ERROR;

@@ -7,7 +7,7 @@
 // 
 namespace O3GL
 {
-	std::string _Shader::GetLog() const
+	std::string Shader::GetLog() const
 	{
 		std::string log(GetInfo<GLint>(GL_INFO_LOG_LENGTH), NULL);
 		GLsizei loadSize(0);
@@ -16,7 +16,7 @@ namespace O3GL
 		return log;
 	}
 
-	std::string _Shader::GetSource() const
+	std::string Shader::GetSource() const
 	{
 		std::string ss(GetInfo<GLint>(GL_SHADER_SOURCE_LENGTH), NULL);
 		GLsizei loadSize(0);
@@ -25,7 +25,7 @@ namespace O3GL
 		return ss;
 	}
 
-	void _Shader::Source(const std::vector<std::string>& srcs) const
+	void Shader::Source(const ShaderSource& srcs) const
 	{
 		std::vector<GLint> length;
 		std::vector<const GLchar*> srcsPtr;
@@ -40,7 +40,7 @@ namespace O3GL
 		GL_CHECK_ERROR;
 	}
 
-	void _Shader::Source(const std::string& src) const
+	void Shader::Source(const std::string& src) const
 	{
 		std::vector<GLint> length;
 		std::vector<const GLchar*> srcsPtr;
@@ -52,9 +52,9 @@ namespace O3GL
 		GL_CHECK_ERROR;
 	}
 
-	void _Shader::SourceFile(const std::vector<std::string>& fileNames) const
+	void Shader::SourceFile(const std::vector<std::string>& fileNames) const
 	{
-		std::vector<std::string> srcs(fileNames.size());
+		ShaderSource srcs(fileNames.size());
 		for (std::size_t i = 0; i < fileNames.size(); ++i)
 		{
 			std::ifstream file;
@@ -72,7 +72,7 @@ namespace O3GL
 		Source(srcs);
 	}
 
-	void _Shader::SourceFile(const std::string& fileName) const
+	void Shader::SourceFile(const std::string& fileName) const
 	{
 		std::ifstream file;
 		file.open(fileName, std::ios::in | std::ios::ate);
@@ -88,7 +88,7 @@ namespace O3GL
 		Source(src);
 	}
 
-	std::tuple<GLboolean, std::string> _Shader::Compile() const
+	std::tuple<GLboolean, std::string> Shader::Compile() const
 	{
 		glCompileShader(*this);
 		GL_CHECK_ERROR;

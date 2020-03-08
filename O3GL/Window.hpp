@@ -45,12 +45,12 @@ namespace O3GL
 
 	//
 	template<int key>
-	class _Window : public GLUTObject, public WindowBase
+	class Window : public GLUTHandle, public WindowBase
 	{
 	public:
-		_Window(const std::string& name, unsigned int displayMode, int x, int y, int width, int height, unsigned int tick);
-		_Window(int window, int x, int y, int width, int height, unsigned int tick);
-		~_Window();
+		Window(const std::string& name, unsigned int displayMode, int x, int y, int width, int height, unsigned int tick);
+		Window(int window, int x, int y, int width, int height, unsigned int tick);
+		~Window();
 
 	public:
 		void Init() const;
@@ -88,28 +88,16 @@ namespace O3GL
 	protected:
 		unsigned int tick;
 		bool subWindow;
-		static _Window* instance;
+		static Window* instance;
 	};
 
 	//
 	template<int key>
-	class Window : public GLUTHandle<_Window<key>>
-	{
-	public:
-		Window(const std::string& name, unsigned int displayMode, int x, int y, int width, int height, unsigned int tick) : GLUTHandle<_Window<key>>(new _Window<key>(name, displayMode, x, y, width, height, tick)) {}
-		Window(int window, int x, int y, int width, int height, unsigned int tick) : GLUTHandle<_Window<key>>(new _Window<key>(window, x, y, width, height, tick)) {}
-	};
-};
+	Window<key>* Window<key>::instance = nullptr;
 
-namespace O3GL
-{
 	template<int key>
-	_Window<key>* _Window<key>::instance = nullptr;
-
-	//
-	template<int key>
-	_Window<key>::_Window(const std::string& name, unsigned int displayMode, int x, int y, int width, int height, unsigned int tick) :
-		GLUTObject(InitAndCreateWindow(name, displayMode, x, y, width, height), glutDestroyWindow),
+	Window<key>::Window(const std::string& name, unsigned int displayMode, int x, int y, int width, int height, unsigned int tick) :
+		GLUTHandle(new GLUTObject(InitAndCreateWindow(name, displayMode, x, y, width, height), glutDestroyWindow)),
 		WindowBase(),
 		tick(tick),
 		subWindow(false)
@@ -118,8 +106,8 @@ namespace O3GL
 	}
 
 	template<int key>
-	_Window<key>::_Window(int window, int x, int y, int width, int height, unsigned int tick) :
-		GLUTObject(InitAndCreateSubWindow(window, x, y, width, height), glutDestroyWindow),
+	Window<key>::Window(int window, int x, int y, int width, int height, unsigned int tick) :
+		GLUTHandle(new GLUTObject(InitAndCreateSubWindow(window, x, y, width, height), glutDestroyWindow)),
 		WindowBase(),
 		tick(tick),
 		subWindow(true)
@@ -128,34 +116,34 @@ namespace O3GL
 	}
 
 	template<int key>
-	_Window<key>::~_Window()
+	Window<key>::~Window()
 	{
 		instance = nullptr;
 	}
 
 	template<int key>
-	void _Window<key>::Init() const
+	void Window<key>::Init() const
 	{
 		glutSetWindow(*this);
-		glutDisplayFunc(_Window<key>::DisplayCallback);
-		glutOverlayDisplayFunc(_Window<key>::OverlayDisplayCallback);
-		glutReshapeFunc(_Window<key>::ReshapeCallback);
-		glutKeyboardFunc(_Window<key>::KeyboardCallback);
-		glutKeyboardUpFunc(_Window<key>::KeyboardUpCallback);
-		glutSpecialFunc(_Window<key>::SpecialCallback);
-		glutSpecialUpFunc(_Window<key>::SpecialUpCallback);
-		glutMouseFunc(_Window<key>::MouseCallback);
-		glutMotionFunc(_Window<key>::MotionCallback);
-		glutPassiveMotionFunc(_Window<key>::PassiveMotionCallback);
-		glutVisibilityFunc(_Window<key>::VisibilityCallback);
-		glutEntryFunc(_Window<key>::EntryCallback);
-		glutCloseFunc(_Window<key>::CloseCallback);
-		glutTimerFunc(tick, _Window<key>::TimerCallback, 0);
+		glutDisplayFunc(Window<key>::DisplayCallback);
+		glutOverlayDisplayFunc(Window<key>::OverlayDisplayCallback);
+		glutReshapeFunc(Window<key>::ReshapeCallback);
+		glutKeyboardFunc(Window<key>::KeyboardCallback);
+		glutKeyboardUpFunc(Window<key>::KeyboardUpCallback);
+		glutSpecialFunc(Window<key>::SpecialCallback);
+		glutSpecialUpFunc(Window<key>::SpecialUpCallback);
+		glutMouseFunc(Window<key>::MouseCallback);
+		glutMotionFunc(Window<key>::MotionCallback);
+		glutPassiveMotionFunc(Window<key>::PassiveMotionCallback);
+		glutVisibilityFunc(Window<key>::VisibilityCallback);
+		glutEntryFunc(Window<key>::EntryCallback);
+		glutCloseFunc(Window<key>::CloseCallback);
+		glutTimerFunc(tick, Window<key>::TimerCallback, 0);
 		InitGLStatusEvent();
 	}
 
 	template<int key>
-	int _Window<key>::InitAndCreateWindow(const std::string& name, unsigned int displayMode, int x, int y, int width, int height)
+	int Window<key>::InitAndCreateWindow(const std::string& name, unsigned int displayMode, int x, int y, int width, int height)
 	{
 		if (instance)
 		{
@@ -190,7 +178,7 @@ namespace O3GL
 	}
 
 	template<int key>
-	int _Window<key>::InitAndCreateSubWindow(int window, int x, int y, int width, int height)
+	int Window<key>::InitAndCreateSubWindow(int window, int x, int y, int width, int height)
 	{
 		if (instance)
 		{
@@ -207,7 +195,7 @@ namespace O3GL
 	}
 
 	template<int key>
-	void _Window<key>::DisplayCallback()
+	void Window<key>::DisplayCallback()
 	{
 		if (instance)
 		{
@@ -217,7 +205,7 @@ namespace O3GL
 	}
 
 	template<int key>
-	void _Window<key>::OverlayDisplayCallback()
+	void Window<key>::OverlayDisplayCallback()
 	{
 		if (instance)
 		{
@@ -227,7 +215,7 @@ namespace O3GL
 	}
 
 	template<int key>
-	void _Window<key>::ReshapeCallback(int width, int height)
+	void Window<key>::ReshapeCallback(int width, int height)
 	{
 		if (instance)
 		{
@@ -237,7 +225,7 @@ namespace O3GL
 	}
 
 	template<int key>
-	void _Window<key>::KeyboardCallback(unsigned char key, int x, int y)
+	void Window<key>::KeyboardCallback(unsigned char key, int x, int y)
 	{
 		if (instance)
 		{
@@ -247,7 +235,7 @@ namespace O3GL
 	}
 
 	template<int key>
-	void _Window<key>::KeyboardUpCallback(unsigned char key, int x, int y)
+	void Window<key>::KeyboardUpCallback(unsigned char key, int x, int y)
 	{
 		if (instance)
 		{
@@ -257,7 +245,7 @@ namespace O3GL
 	}
 
 	template<int key>
-	void _Window<key>::SpecialCallback(int key, int x, int y)
+	void Window<key>::SpecialCallback(int key, int x, int y)
 	{
 		if (instance)
 		{
@@ -267,7 +255,7 @@ namespace O3GL
 	}
 
 	template<int key>
-	void _Window<key>::SpecialUpCallback(int key, int x, int y)
+	void Window<key>::SpecialUpCallback(int key, int x, int y)
 	{
 		if (instance)
 		{
@@ -277,7 +265,7 @@ namespace O3GL
 	}
 
 	template<int key>
-	void _Window<key>::MouseCallback(int button, int state, int x, int y)
+	void Window<key>::MouseCallback(int button, int state, int x, int y)
 	{
 		if (instance)
 		{
@@ -287,7 +275,7 @@ namespace O3GL
 	}
 
 	template<int key>
-	void _Window<key>::MotionCallback(int x, int y)
+	void Window<key>::MotionCallback(int x, int y)
 	{
 		if (instance)
 		{
@@ -297,7 +285,7 @@ namespace O3GL
 	}
 
 	template<int key>
-	void _Window<key>::PassiveMotionCallback(int x, int y)
+	void Window<key>::PassiveMotionCallback(int x, int y)
 	{
 		if (instance)
 		{
@@ -307,7 +295,7 @@ namespace O3GL
 	}
 
 	template<int key>
-	void _Window<key>::VisibilityCallback(int state)
+	void Window<key>::VisibilityCallback(int state)
 	{
 		if (instance)
 		{
@@ -317,7 +305,7 @@ namespace O3GL
 	}
 
 	template<int key>
-	void _Window<key>::EntryCallback(int state)
+	void Window<key>::EntryCallback(int state)
 	{
 		if (instance)
 		{
@@ -327,7 +315,7 @@ namespace O3GL
 	}
 
 	template<int key>
-	void _Window<key>::CloseCallback()
+	void Window<key>::CloseCallback()
 	{
 		if (instance)
 		{
@@ -337,7 +325,7 @@ namespace O3GL
 	}
 
 	template<int key>
-	void _Window<key>::TimerCallback(int value)
+	void Window<key>::TimerCallback(int value)
 	{
 		if (instance)
 		{

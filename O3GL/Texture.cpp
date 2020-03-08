@@ -7,10 +7,10 @@
 // 
 namespace O3GL
 {
-	bool _Texture::initUnits = false;
-	std::vector<GLuint> _Texture::units = std::vector<GLuint>();
+	bool Texture::initUnits = false;
+	std::vector<GLuint> Texture::units = std::vector<GLuint>();
 
-	_Texture::_Texture(GLenum target) : GLObject(glCreateTexture(target), glDeleteTextures), target(target), unitID(0), begin(false)
+	Texture::Texture(GLenum target) : GLHandle(new GLObject(glCreateTexture(target), glDeleteTextures)), target(target), unitID(0), begin(false)
 	{
 		if (!initUnits)
 		{
@@ -29,7 +29,7 @@ namespace O3GL
 		}
 	}
 
-	void _Texture::Begin() const
+	void Texture::Begin() const
 	{
 		if (begin)
 		{
@@ -45,7 +45,7 @@ namespace O3GL
 		GL_CHECK_ERROR;
 	}
 
-	void _Texture::Begin(const Sampler& sampler) const
+	void Texture::Begin(const Sampler& sampler) const
 	{
 		if (begin)
 		{
@@ -62,7 +62,7 @@ namespace O3GL
 		GL_CHECK_ERROR;
 	}
 
-	void _Texture::End() const
+	void Texture::End() const
 	{
 		if (!begin)
 		{
@@ -79,43 +79,43 @@ namespace O3GL
 		GL_CHECK_ERROR;
 	}
 
-	void _Texture::Storage1D(GLint levels, GLint internalformat, GLsizei width) const
+	void Texture::Storage1D(GLint levels, GLint internalformat, GLsizei width) const
 	{
 		glTextureStorage1D(*this, levels, internalformat, width);
 		GL_CHECK_ERROR;
 	}
 
-	void _Texture::Storage2D(GLint levels, GLint internalformat, GLsizei width, GLsizei height) const
+	void Texture::Storage2D(GLint levels, GLint internalformat, GLsizei width, GLsizei height) const
 	{
 		glTextureStorage2D(*this, levels, internalformat, width, height);
 		GL_CHECK_ERROR;
 	}
 
-	void _Texture::Storage3D(GLint levels, GLint internalformat, GLsizei width, GLsizei height, GLsizei depth) const
+	void Texture::Storage3D(GLint levels, GLint internalformat, GLsizei width, GLsizei height, GLsizei depth) const
 	{
 		glTextureStorage3D(*this, levels, internalformat, width, height, depth);
 		GL_CHECK_ERROR;
 	}
 
-	void _Texture::SubImage1D(GLint level, GLint xoffset, GLsizei width, GLenum format, GLenum type, const GLvoid* data) const
+	void Texture::SubImage1D(GLint level, GLint xoffset, GLsizei width, GLenum format, GLenum type, const GLvoid* data) const
 	{
 		glTextureSubImage1D(*this, level, xoffset, width, format, type, data);
 		GL_CHECK_ERROR;
 	}
 
-	void _Texture::SubImage2D(GLint level, GLint xoffset, GLint yoffset, GLsizei width, GLsizei height, GLenum format, GLenum type, const GLvoid* data) const
+	void Texture::SubImage2D(GLint level, GLint xoffset, GLint yoffset, GLsizei width, GLsizei height, GLenum format, GLenum type, const GLvoid* data) const
 	{
 		glTextureSubImage2D(*this, level, xoffset, yoffset, width, height, format, type, data);
 		GL_CHECK_ERROR;
 	}
 
-	void _Texture::SubImage3D(GLint level, GLint xoffset, GLint yoffset, GLint zoffset, GLsizei width, GLsizei height, GLsizei depth, GLenum format, GLenum type, const GLvoid* data) const
+	void Texture::SubImage3D(GLint level, GLint xoffset, GLint yoffset, GLint zoffset, GLsizei width, GLsizei height, GLsizei depth, GLenum format, GLenum type, const GLvoid* data) const
 	{
 		glTextureSubImage3D(*this, level, xoffset, yoffset, zoffset, width, height, depth, format, type, data);
 		GL_CHECK_ERROR;
 	}
 
-	void _Texture::Image1D(GLenum target, GLint level, GLint internalformat, GLsizei width, GLenum format, GLenum type, const GLvoid* data) const
+	void Texture::Image1D(GLenum target, GLint level, GLint internalformat, GLsizei width, GLenum format, GLenum type, const GLvoid* data) const
 	{
 		glBindTexture(this->target, *this);
 		glTexImage1D(target, level, internalformat, width, 0, format, type, data);
@@ -123,7 +123,7 @@ namespace O3GL
 		GL_CHECK_ERROR;
 	}
 
-	void _Texture::Image2D(GLenum target, GLint level, GLint internalformat, GLsizei width, GLsizei height, GLenum format, GLenum type, const GLvoid* data) const
+	void Texture::Image2D(GLenum target, GLint level, GLint internalformat, GLsizei width, GLsizei height, GLenum format, GLenum type, const GLvoid* data) const
 	{
 		glBindTexture(this->target, *this);
 		glTexImage2D(target, level, internalformat, width, height, 0, format, type, data);
@@ -131,7 +131,7 @@ namespace O3GL
 		GL_CHECK_ERROR;
 	}
 
-	void _Texture::Image3D(GLenum target, GLint level, GLint internalformat, GLsizei width, GLsizei height, GLsizei depth, GLenum format, GLenum type, const GLvoid* data) const
+	void Texture::Image3D(GLenum target, GLint level, GLint internalformat, GLsizei width, GLsizei height, GLsizei depth, GLenum format, GLenum type, const GLvoid* data) const
 	{
 		glBindTexture(this->target, *this);
 		glTexImage3D(target, level, internalformat, width, height, depth, 0, format, type, data);
@@ -139,7 +139,7 @@ namespace O3GL
 		GL_CHECK_ERROR;
 	}
 
-	void _Texture::GenMipmaps() const
+	void Texture::GenMipmaps() const
 	{
 		glGenerateTextureMipmap(*this);
 		GL_CHECK_ERROR;

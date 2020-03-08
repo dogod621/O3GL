@@ -241,19 +241,18 @@ namespace O3GL
 		GLDeleteFun2 deleteFun2;
 	};
 
-	template<class T>
 	class GLHandle
 	{
 	public:
-		GLHandle(T* t = nullptr) : obj(t) {};
-		T* operator ->() { return obj.get(); }
-		const T* operator ->() const { return obj.get(); }
-		T& operator *() { return *obj; }
-		const T& operator *() const { return *obj; }
+		GLHandle(GLObject* t = nullptr) : obj(t) {};
+		GLObject* operator ->() { return obj.get(); }
+		const GLObject* operator ->() const { return obj.get(); }
+		GLObject& operator *() { return *obj; }
+		const GLObject& operator *() const { return *obj; }
 		operator const GLuint() const { return GLuint(*obj); }
 
 	protected:
-		PTR<T> obj;
+		PTR<GLObject> obj;
 	};
 
 	// Common GLUT Create and Delete object function
@@ -272,19 +271,18 @@ namespace O3GL
 		GLUTDelete deleteFun;
 	};
 
-	template<class T>
 	class GLUTHandle
 	{
 	public:
-		GLUTHandle(T* t = nullptr) : obj(t) {};
-		T* operator ->() { return obj.get(); }
-		const T* operator ->() const { return obj.get(); }
-		T& operator *() { return *obj; }
-		const T& operator *() const { return *obj; }
+		GLUTHandle(GLUTObject* t = nullptr) : obj(t) {};
+		GLUTObject* operator ->() { return obj.get(); }
+		const GLUTObject* operator ->() const { return obj.get(); }
+		GLUTObject& operator *() { return *obj; }
+		const GLUTObject& operator *() const { return *obj; }
 		operator const int() const { return int(*obj); }
 
 	protected:
-		PTR<T> obj;
+		PTR<GLUTObject> obj;
 	};
 
 	struct Camera

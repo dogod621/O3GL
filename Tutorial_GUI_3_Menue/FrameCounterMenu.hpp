@@ -7,8 +7,8 @@
 namespace O3GL
 {
 	//
-	template<int key, class Target>
-	class _ModifyFrameCounterMenu : public _Menu<key>
+	template<int key>
+	class ModifyFrameCounterMenu : public Menu<key>
 	{
 	public:
 		enum Option : int
@@ -28,9 +28,9 @@ namespace O3GL
 		};
 
 	public:
-		_ModifyFrameCounterMenu(const Target& target) :
-			_Menu(),
-			target(target)
+		ModifyFrameCounterMenu(unsigned int* frameCounter) :
+			Menu(),
+			frameCounter(frameCounter)
 		{
 			AddItem("+1", Option::ADD_ONE);
 			AddItem("+2", Option::ADD_TWO);
@@ -51,35 +51,28 @@ namespace O3GL
 		{
 			switch (option)
 			{
-			case Option::ADD_ONE: target->frameCounter += 1;break;
-			case Option::ADD_TWO: target->frameCounter += 2;break;
-			case Option::ADD_TEN: target->frameCounter += 10;break;
-			case Option::SUB_ONE: target->frameCounter -= 1;break;
-			case Option::SUB_TWO: target->frameCounter -= 2;break;
-			case Option::SUB_TEN: target->frameCounter -= 10;break;
-			case Option::MUL_ONE: target->frameCounter *= 1;break;
-			case Option::MUL_TWO: target->frameCounter *= 2;break;
-			case Option::MUL_TEN: target->frameCounter *= 10;break;
-			case Option::DIV_ONE: target->frameCounter /= 1;break;
-			case Option::DIV_TWO: target->frameCounter /= 2;break;
-			case Option::DIV_TEN: target->frameCounter /= 10;break;
+			case Option::ADD_ONE: *frameCounter += 1;break;
+			case Option::ADD_TWO: *frameCounter += 2;break;
+			case Option::ADD_TEN: *frameCounter += 10;break;
+			case Option::SUB_ONE: *frameCounter -= 1;break;
+			case Option::SUB_TWO: *frameCounter -= 2;break;
+			case Option::SUB_TEN: *frameCounter -= 10;break;
+			case Option::MUL_ONE: *frameCounter *= 1;break;
+			case Option::MUL_TWO: *frameCounter *= 2;break;
+			case Option::MUL_TEN: *frameCounter *= 10;break;
+			case Option::DIV_ONE: *frameCounter /= 1;break;
+			case Option::DIV_TWO: *frameCounter /= 2;break;
+			case Option::DIV_TEN: *frameCounter /= 10;break;
 			}
 		}
 
 	protected:
-		Target target;
-	};
-
-	template<int key, class Target>
-	class ModifyFrameCounterMenu : public GLUTHandle<_ModifyFrameCounterMenu<key, Target>>
-	{
-	public:
-		ModifyFrameCounterMenu(const Target& target) : GLUTHandle<_ModifyFrameCounterMenu<key, Target>>(new _ModifyFrameCounterMenu<key, Target>(target)) {}
+		unsigned int* frameCounter;
 	};
 
 	//
-	template<int key, class Target>
-	class _FrameCounterMenu : public _Menu<key>
+	template<int key>
+	class FrameCounterMenu : public Menu<key>
 	{
 	public:
 		enum Option : int
@@ -88,9 +81,9 @@ namespace O3GL
 		};
 
 	public:
-		_FrameCounterMenu(const Target& target) :
-			_Menu(),
-			target(target)
+		FrameCounterMenu(unsigned int* frameCounter) :
+			Menu(),
+			frameCounter(frameCounter)
 		{
 			AddItem("Reset Frame Counter", Option::RESET);
 		}
@@ -100,18 +93,11 @@ namespace O3GL
 		{
 			switch (option)
 			{
-			case Option::RESET: target->frameCounter = 0;break;
+			case Option::RESET: *frameCounter = 0;break;
 			}
 		}
 
 	protected:
-		Target target;
-	};
-
-	template<int key, class Target>
-	class FrameCounterMenu : public GLUTHandle<_FrameCounterMenu<key, Target>>
-	{
-	public:
-		FrameCounterMenu(const Target& target) : GLUTHandle<_FrameCounterMenu<key, Target>>(new _FrameCounterMenu<key, Target>(target)) {}
+		unsigned int* frameCounter;
 	};
 };
