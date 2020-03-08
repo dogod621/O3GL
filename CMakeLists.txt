@@ -151,7 +151,8 @@ include_directories(${FreeGLUT_INCLUDE_DIR})
 
 # Setup O3GL
 add_subdirectory("O3GL")
-set_target_properties(O3GL PROPERTIES FOLDER "O3GL/LIB")
+set_target_properties(O3GL_CORE PROPERTIES FOLDER "O3GL/LIB")
+set_target_properties(O3GL_RENDERS PROPERTIES FOLDER "O3GL/LIB")
 
 # Setup EXE
 function(AddEXE NAME)
@@ -162,7 +163,8 @@ function(AddEXE NAME)
 	add_executable(${TARGET_NAME} ${srcs} ${hpps} ${hdrs})
 	set_target_properties(${TARGET_NAME} PROPERTIES FOLDER "O3GL/EXE")
 
-	target_link_libraries(${TARGET_NAME} O3GL)
+	target_link_libraries(${TARGET_NAME} O3GL_CORE)
+	target_link_libraries(${TARGET_NAME} O3GL_RENDERS)
 
 	install(TARGETS ${TARGET_NAME}
 			RUNTIME DESTINATION bin)

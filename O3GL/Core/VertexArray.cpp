@@ -1,5 +1,5 @@
 // O3GL
-#include "O3GL/VertexArray.hpp"
+#include "O3GL/Core/VertexArray.hpp"
 
 // 
 namespace O3GL

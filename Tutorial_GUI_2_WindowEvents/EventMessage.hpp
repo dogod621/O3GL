@@ -4,7 +4,7 @@
 #include <sstream>
 
 // O3GL
-#include "O3GL/Utils.hpp"
+#include "O3GL/Core/Utils.hpp"
 
 //
 namespace O3GL

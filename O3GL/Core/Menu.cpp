@@ -1,5 +1,5 @@
 // O3GL
-#include "O3GL/Menu.hpp"
+#include "O3GL/Core/Menu.hpp"
 
 //
 namespace O3GL

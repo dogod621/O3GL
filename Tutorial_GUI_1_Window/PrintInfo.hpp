@@ -1,8 +1,8 @@
 #pragma once
 
 // O3GL
-#include "O3GL/Utils.hpp"
-#include "O3GL/Window.hpp"
+#include "O3GL/Core/Utils.hpp"
+#include "O3GL/Core/Window.hpp"
 
 //
 namespace O3GL

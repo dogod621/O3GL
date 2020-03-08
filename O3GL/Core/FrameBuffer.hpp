@@ -5,8 +5,8 @@
 #include <map>
 
 // O3GL
-#include "O3GL/Utils.hpp"
-#include "O3GL/Texture.hpp"
+#include "O3GL/Core/Utils.hpp"
+#include "O3GL/Core/Texture.hpp"
 
 // 
 namespace O3GL

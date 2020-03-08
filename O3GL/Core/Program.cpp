@@ -1,5 +1,5 @@
 // O3GL
-#include "O3GL/Program.hpp"
+#include "O3GL/Core/Program.hpp"
 
 // 
 namespace O3GL

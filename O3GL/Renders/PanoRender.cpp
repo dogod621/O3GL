@@ -2,7 +2,7 @@
 #include <sstream>
 
 // O3GL
-#include "O3GL/PanoRender.hpp"
+#include "O3GL/Renders/PanoRender.hpp"
 
 // 
 namespace O3GL

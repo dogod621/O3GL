@@ -2,7 +2,7 @@
 #include <sstream>
 
 // O3GL
-#include "O3GL/FrameBuffer.hpp"
+#include "O3GL/Core/FrameBuffer.hpp"
 
 // 
 namespace O3GL

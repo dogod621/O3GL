@@ -1,14 +1,14 @@
 #pragma once
 
 // O3GL
-#include "O3GL/Utils.hpp"
-#include "O3GL/Buffer.hpp"
-#include "O3GL/VertexArray.hpp"
-#include "O3GL/Shader.hpp"
-#include "O3GL/Program.hpp"
-#include "O3GL/Sampler.hpp"
-#include "O3GL/Texture.hpp"
-#include "O3GL/FrameBuffer.hpp"
+#include "O3GL/Core/Utils.hpp"
+#include "O3GL/Core/Buffer.hpp"
+#include "O3GL/Core/VertexArray.hpp"
+#include "O3GL/Core/Shader.hpp"
+#include "O3GL/Core/Program.hpp"
+#include "O3GL/Core/Sampler.hpp"
+#include "O3GL/Core/Texture.hpp"
+#include "O3GL/Core/FrameBuffer.hpp"
 
 // 
 namespace O3GL

@@ -2,7 +2,7 @@
 #include <algorithm>
 
 // O3GL
-#include "O3GL/Texture.hpp"
+#include "O3GL/Core/Texture.hpp"
 
 // 
 namespace O3GL

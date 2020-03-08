@@ -2,7 +2,7 @@
 #include <fstream>
 
 // O3GL
-#include "O3GL/Shader.hpp"
+#include "O3GL/Core/Shader.hpp"
 
 // 
 namespace O3GL

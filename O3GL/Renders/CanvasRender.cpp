@@ -2,7 +2,8 @@
 #include <sstream>
 
 // O3GL
-#include "O3GL/CanvasRender.hpp"
+#include "O3GL/Core/Window.hpp"
+#include "O3GL/Renders/CanvasRender.hpp"
 
 // 
 namespace O3GL
