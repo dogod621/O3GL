@@ -96,6 +96,8 @@ namespace O3GL
 		Window<key>(name, GLUT_DOUBLE | GLUT_RGBA | GLUT_DEPTH, x, y, width, height, 33), quadRender(), t(0.0)
 	{
 		quadRender.Init();
+		quadRender.PrintShaderSources("unlit_vert");
+		quadRender.PrintShaderSources("unlit_frag");
 	}
 
 	template<int key>
@@ -103,6 +105,8 @@ namespace O3GL
 		Window<key>(window, x, y, width, height, 33), quadRender(), t(0.0)
 	{
 		quadRender.Init();
+		quadRender.PrintShaderSources("unlit_vert");
+		quadRender.PrintShaderSources("unlit_frag");
 	}
 
 	template<int key>
