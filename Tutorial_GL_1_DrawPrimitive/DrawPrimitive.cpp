@@ -72,10 +72,10 @@ namespace O3GL
 
 		//
 		std::vector<R32> posData = {
-			0.f, 0.f, 0.f,
-			1.f, 0.f, 0.f,
+			-1.f, -1.f, 0.f,
+			1.f, -1.f, 0.f,
 			1.f, 1.f, 0.f,
-			0.f, 1.f, 0.f };
+			-1.f, 1.f, 0.f };
 		std::vector<R32> normalData = {
 			0.f, 0.f, 1.f,
 			0.f, 0.f, 1.f,
@@ -171,7 +171,7 @@ void main(void)
 	else if (u_mode == 1)
 		f_color = vec4((normal + 1.0f) * 0.5f, 1.0f);
 	else if (u_mode == 2)
-		f_color = vec4((v_pos.xyz + 1.0f) * 0.5f, 1.0f);
+		f_color = vec4(v_pos.xyz, 1.0f);
 	else if (u_mode == 3)
 		f_color = vec4(v_uv, 0.0f, 1.0f);
 	else
@@ -252,7 +252,7 @@ void main(void)
 		//
 		programs.at("unlit").Uniform<GLfloat, 4, 4>("u_modelView", viewing * modelling);
 		programs.at("unlit").Uniform<GLfloat, 4, 4>("u_projection", projection);
-		programs.at("unlit").Uniform<GLuint, 1>("u_mode", (GLuint)0);
+		programs.at("unlit").Uniform<GLuint, 1>("u_mode", (GLuint)mode);
 	}
 
 	void QuadRender::InitVertexArraysEvent()
