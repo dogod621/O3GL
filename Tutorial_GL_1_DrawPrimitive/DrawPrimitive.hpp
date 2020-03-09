@@ -3,6 +3,7 @@
 // O3GL
 #include "O3GL/Core/Render.hpp"
 #include "O3GL/Core/Window.hpp"
+#include "O3GL/Core/Menu.hpp"
 
 //
 namespace O3GL
@@ -70,11 +71,42 @@ namespace O3GL
 	};
 
 	template<int key>
+	class ModeMenu : public Menu<key>
+	{
+	public:
+		ModeMenu(PTR<QuadRender> quadRender) :
+			Menu(),
+			quadRender(quadRender)
+		{
+			AddItem("Display Texture", (int)QuadRender::Mode::TEXTURE);
+			AddItem("Display Normal", (int)QuadRender::Mode::NORMAL);
+			AddItem("Display Position", (int)QuadRender::Mode::POSITION);
+			AddItem("Display UV", (int)QuadRender::Mode::UV);
+		}
+
+	public:
+		virtual void ClickEvent(int option)
+		{
+			quadRender->SetMode(QuadRender::Mode(option));
+		}
+
+	protected:
+		PTR<QuadRender> quadRender;;
+	};
+
+	template<int key>
 	class DrawPrimitiveWindow : public Window<key>
 	{
 	public:
-		DrawPrimitiveWindow(const std::string& name, int x, int y, int width, int height, unsigned int tick = 10);
-		DrawPrimitiveWindow(int window, int x, int y, int width, int height, unsigned int tick = 10);
+		DrawPrimitiveWindow(PTR<QuadRender> quadRender, const std::string& name, int x, int y, int width, int height, unsigned int tick = 10) :
+			Window<key>(name, GLUT_DOUBLE | GLUT_RGBA | GLUT_DEPTH, x, y, width, height, tick), quadRender(quadRender), t(0.0)
+		{
+		}
+
+		DrawPrimitiveWindow(PTR<QuadRender> quadRender, int window, int x, int y, int width, int height, unsigned int tick = 10) :
+			Window<key>(window, x, y, width, height, tick), quadRender(quadRender), t(0.0)
+		{
+		}
 
 	public:
 		virtual void InitGLStatusEvent() const;
@@ -82,33 +114,14 @@ namespace O3GL
 	public:
 		virtual void DisplayEvent();
 		virtual void ReshapeEvent(int width, int height);
-		virtual void KeyboardEvent(unsigned char key, int x, int y);
 		virtual void TimerEvent(int value);
 
 	protected:
-		QuadRender quadRender;
+		PTR<QuadRender> quadRender;
 		double t;
 	};
 
 	//
-	template<int key>
-	DrawPrimitiveWindow<key>::DrawPrimitiveWindow(const std::string& name, int x, int y, int width, int height, unsigned int tick) :
-		Window<key>(name, GLUT_DOUBLE | GLUT_RGBA | GLUT_DEPTH, x, y, width, height, tick), quadRender(), t(0.0)
-	{
-		quadRender.Init();
-		quadRender.PrintShaderSources("unlit_vert");
-		quadRender.PrintShaderSources("unlit_frag");
-	}
-
-	template<int key>
-	DrawPrimitiveWindow<key>::DrawPrimitiveWindow(int window, int x, int y, int width, int height, unsigned int tick) :
-		Window<key>(window, x, y, width, height, tick), quadRender(), t(0.0)
-	{
-		quadRender.Init();
-		quadRender.PrintShaderSources("unlit_vert");
-		quadRender.PrintShaderSources("unlit_frag");
-	}
-
 	template<int key>
 	void DrawPrimitiveWindow<key>::InitGLStatusEvent() const
 	{
@@ -127,7 +140,7 @@ namespace O3GL
 	void DrawPrimitiveWindow<key>::DisplayEvent()
 	{
 		// Draw
-		double costTime = quadRender.Draw();
+		double costTime = quadRender->Draw();
 
 		float lineHeight = 0.06f;
 		float wx = -1.0f;
@@ -144,30 +157,7 @@ namespace O3GL
 	template<int key>
 	void DrawPrimitiveWindow<key>::ReshapeEvent(int width, int height)
 	{
-		quadRender.SetProjection(glm::perspective(glm::radians(60.0f), (float)(width) / (float)(height), 0.1f, 100.0f));
-	}
-
-	template<int key>
-	void DrawPrimitiveWindow<key>::KeyboardEvent(unsigned char key, int x, int y)
-	{
-		switch (key)
-		{
-		case '1':
-			quadRender.SetMode(QuadRender::Mode::TEXTURE);
-			break;
-		case '2':
-			quadRender.SetMode(QuadRender::Mode::NORMAL);
-			break;
-		case '3':
-			quadRender.SetMode(QuadRender::Mode::POSITION);
-			break;
-		case '4':
-			quadRender.SetMode(QuadRender::Mode::UV);
-			break;
-		default:
-			quadRender.SetMode(QuadRender::Mode::NONE);
-			break;
-		}
+		quadRender->SetProjection(glm::perspective(glm::radians(60.0f), (float)(width) / (float)(height), 0.1f, 100.0f));
 	}
 
 	template<int key>
@@ -175,7 +165,7 @@ namespace O3GL
 	{
 		t += timeElapsed;
 		float angle = (float)(t / 600.0);
-		quadRender.SetModelling(glm::rotate(glm::translate(glm::identity<Mat44>(), Vec3(std::sin(angle), std::cos(angle), -4.f)), angle, glm::vec3(1.0, 0.0, 0.0)));
+		quadRender->SetModelling(glm::rotate(glm::translate(glm::identity<Mat44>(), Vec3(std::sin(angle), std::cos(angle), -4.f)), angle, glm::vec3(1.0, 0.0, 0.0)));
 
 		glutPostRedisplay();
 	}
