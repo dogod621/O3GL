@@ -4,8 +4,14 @@
 #include <vector>
 #include <sstream>
 
+namespace O3GL
+{
+	class Render;
+}
+
 // O3GL
 #include "O3GL/Core/Utils.hpp"
+#include "O3GL/Core/Render.hpp"
 
 // 
 namespace O3GL
@@ -399,7 +405,10 @@ namespace O3GL
 	class WindowBase
 	{
 	public:
-		WindowBase() {}
+		WindowBase() : renders() {}
+
+	public:
+		virtual void SetupEvent() {}
 
 	public:
 		virtual void InitGLStatusEvent() const {}
@@ -437,6 +446,20 @@ namespace O3GL
 		Entry::Message latestEntryMessage;
 		Close::Message latestCloseMessage;
 		Timer::Message latestTimerMessage;
+
+	protected:
+		std::map<std::string, PTR<Render>> renders;
+
+	public:
+		PTR<Render> GetRender(const std::string& name)
+		{
+			return renders.at(name);
+		}
+
+		CONST_PTR<Render> GetRender(const std::string& name) const
+		{
+			return renders.at(name);
+		}
 	};
 
 	//
@@ -449,7 +472,7 @@ namespace O3GL
 		~Window();
 
 	public:
-		void Init() const;
+		void Init();
 
 		template<class T>
 		T GetInfo(GLenum state) const;
@@ -469,6 +492,10 @@ namespace O3GL
 		static int InitAndCreateWindow(const std::string& name, unsigned int displayMode, int x, int y, int width, int height);
 		static int InitAndCreateSubWindow(int window, int x, int y, int width, int height);
 
+	protected:
+
+
+	protected:
 		static void DisplayCallback();
 		static void OverlayDisplayCallback();
 		static void ReshapeCallback(int width, int height);
@@ -533,9 +560,10 @@ namespace O3GL
 	}
 
 	template<int key>
-	void Window<key>::Init() const
+	void Window<key>::Init()
 	{
 		glutSetWindow(*this);
+		SetupEvent();
 		glutDisplayFunc(Window<key>::DisplayCallback);
 		glutOverlayDisplayFunc(Window<key>::OverlayDisplayCallback);
 		glutReshapeFunc(Window<key>::ReshapeCallback);
@@ -551,6 +579,8 @@ namespace O3GL
 		glutCloseFunc(Window<key>::CloseCallback);
 		glutTimerFunc(tick, Window<key>::TimerCallback, 0);
 		InitGLStatusEvent();
+		for (std::map<std::string, PTR<Render>>::iterator it = renders.begin(); it != renders.end(); ++it)
+			it->second->Init();
 	}
 
 	template<int key>
@@ -644,6 +674,8 @@ namespace O3GL
 		if (instance)
 		{
 			glutSetWindow(*instance);
+			for (std::map<std::string, PTR<Render>>::iterator it = instance->renders.begin(); it != instance->renders.end(); ++it)
+				it->second->DisplayEvent(instance->latestDisplayMessage);
 			instance->DisplayEvent(instance->latestDisplayMessage);
 			instance->latestDisplayMessage.Restart();
 		}
@@ -655,6 +687,8 @@ namespace O3GL
 		if (instance)
 		{
 			glutSetWindow(*instance);
+			for (std::map<std::string, PTR<Render>>::iterator it = instance->renders.begin(); it != instance->renders.end(); ++it)
+				it->second->OverlayDisplayEvent(instance->latestOverlayDisplayMessage);
 			instance->OverlayDisplayEvent(instance->latestOverlayDisplayMessage);
 			instance->latestOverlayDisplayMessage.Restart();
 		}
@@ -668,6 +702,8 @@ namespace O3GL
 			glutSetWindow(*instance);
 			instance->latestReshapeMessage.width = width;
 			instance->latestReshapeMessage.height = height;
+			for (std::map<std::string, PTR<Render>>::iterator it = instance->renders.begin(); it != instance->renders.end(); ++it)
+				it->second->ReshapeEvent(instance->latestReshapeMessage);
 			instance->ReshapeEvent(instance->latestReshapeMessage);
 			instance->latestReshapeMessage.Restart();
 		}
@@ -682,6 +718,8 @@ namespace O3GL
 			instance->latestKeyboardMessage.key = key;
 			instance->latestKeyboardMessage.x = x;
 			instance->latestKeyboardMessage.y = y;
+			for (std::map<std::string, PTR<Render>>::iterator it = instance->renders.begin(); it != instance->renders.end(); ++it)
+				it->second->KeyboardEvent(instance->latestKeyboardMessage);
 			instance->KeyboardEvent(instance->latestKeyboardMessage);
 			instance->latestKeyboardMessage.Restart();
 		}
@@ -696,6 +734,8 @@ namespace O3GL
 			instance->latestKeyboardUpMessage.key = key;
 			instance->latestKeyboardUpMessage.x = x;
 			instance->latestKeyboardUpMessage.y = y;
+			for (std::map<std::string, PTR<Render>>::iterator it = instance->renders.begin(); it != instance->renders.end(); ++it)
+				it->second->KeyboardUpEvent(instance->latestKeyboardUpMessage);
 			instance->KeyboardUpEvent(instance->latestKeyboardUpMessage);
 			instance->latestKeyboardUpMessage.Restart();
 		}
@@ -710,6 +750,8 @@ namespace O3GL
 			instance->latestSpecialMessage.key = (Special::Key)key;
 			instance->latestSpecialMessage.x = x;
 			instance->latestSpecialMessage.y = y;
+			for (std::map<std::string, PTR<Render>>::iterator it = instance->renders.begin(); it != instance->renders.end(); ++it)
+				it->second->SpecialEvent(instance->latestSpecialMessage);
 			instance->SpecialEvent(instance->latestSpecialMessage);
 			instance->latestSpecialMessage.Restart();
 		}
@@ -724,6 +766,8 @@ namespace O3GL
 			instance->latestSpecialUpMessage.key = (Special::Key)key;
 			instance->latestSpecialUpMessage.x = x;
 			instance->latestSpecialUpMessage.y = y;
+			for (std::map<std::string, PTR<Render>>::iterator it = instance->renders.begin(); it != instance->renders.end(); ++it)
+				it->second->SpecialUpEvent(instance->latestSpecialUpMessage);
 			instance->SpecialUpEvent(instance->latestSpecialUpMessage);
 			instance->latestSpecialUpMessage.Restart();
 		}
@@ -739,6 +783,8 @@ namespace O3GL
 			instance->latestMouseMessage.state = (Mouse::State)state;
 			instance->latestMouseMessage.x = x;
 			instance->latestMouseMessage.y = y;
+			for (std::map<std::string, PTR<Render>>::iterator it = instance->renders.begin(); it != instance->renders.end(); ++it)
+				it->second->MouseEvent(instance->latestMouseMessage);
 			instance->MouseEvent(instance->latestMouseMessage);
 			instance->latestMouseMessage.Restart();
 		}
@@ -752,6 +798,8 @@ namespace O3GL
 			glutSetWindow(*instance);
 			instance->latestMotionMessage.x = x;
 			instance->latestMotionMessage.y = y;
+			for (std::map<std::string, PTR<Render>>::iterator it = instance->renders.begin(); it != instance->renders.end(); ++it)
+				it->second->MotionEvent(instance->latestMotionMessage);
 			instance->MotionEvent(instance->latestMotionMessage);
 			instance->latestMotionMessage.Restart();
 		}
@@ -765,6 +813,8 @@ namespace O3GL
 			glutSetWindow(*instance);
 			instance->latestPassiveMotionMessage.x = x;
 			instance->latestPassiveMotionMessage.y = y;
+			for (std::map<std::string, PTR<Render>>::iterator it = instance->renders.begin(); it != instance->renders.end(); ++it)
+				it->second->PassiveMotionEvent(instance->latestPassiveMotionMessage);
 			instance->PassiveMotionEvent(instance->latestPassiveMotionMessage);
 			instance->latestPassiveMotionMessage.Restart();
 		}
@@ -777,6 +827,8 @@ namespace O3GL
 		{
 			glutSetWindow(*instance);
 			instance->latestVisibilityMessage.state = (Visibility::State)state;
+			for (std::map<std::string, PTR<Render>>::iterator it = instance->renders.begin(); it != instance->renders.end(); ++it)
+				it->second->VisibilityEvent(instance->latestVisibilityMessage);
 			instance->VisibilityEvent(instance->latestVisibilityMessage);
 			instance->latestVisibilityMessage.Restart();
 		}
@@ -789,6 +841,8 @@ namespace O3GL
 		{
 			glutSetWindow(*instance);
 			instance->latestEntryMessage.state = (Entry::State)state;
+			for (std::map<std::string, PTR<Render>>::iterator it = instance->renders.begin(); it != instance->renders.end(); ++it)
+				it->second->EntryEvent(instance->latestEntryMessage);
 			instance->EntryEvent(instance->latestEntryMessage);
 			instance->latestEntryMessage.Restart();
 		}
@@ -800,6 +854,8 @@ namespace O3GL
 		if (instance)
 		{
 			glutSetWindow(*instance);
+			for (std::map<std::string, PTR<Render>>::iterator it = instance->renders.begin(); it != instance->renders.end(); ++it)
+				it->second->CloseEvent(instance->latestCloseMessage);
 			instance->CloseEvent(instance->latestCloseMessage);
 			instance->latestCloseMessage.Restart();
 		}
@@ -842,6 +898,8 @@ namespace O3GL
 			instance->latestTimerMessage.timeElapsed += instance->tickElapsed;
 
 			instance->latestTimerMessage.value = value;
+			for (std::map<std::string, PTR<Render>>::iterator it = instance->renders.begin(); it != instance->renders.end(); ++it)
+				it->second->TimerEvent(instance->latestTimerMessage);
 			instance->TimerEvent(instance->latestTimerMessage);
 			instance->latestTimerMessage.Restart();
 

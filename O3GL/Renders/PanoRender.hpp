@@ -111,7 +111,7 @@ namespace O3GL
 			RigMode rigMode, const std::vector<Mat44>& rigW2V,
 			ProjectionMode inProjMode, const std::vector<Camera>& inProjCamera,
 			ProjectionMode outProjMode, const std::vector<Camera>& outProjCamera,
-			const Texture& panoFieldTexture) :
+			const CONST_PTR<Texture>& panoFieldTexture) :
 			CanvasRender(canvasWidth, canvasHeight),
 			rigMode(rigMode), rigW2V(rigW2V), rigV2W(),
 			inProjMode(inProjMode), inProjTransform(glm::identity<Mat44>()), inProjCamera(inProjCamera),
@@ -128,7 +128,7 @@ namespace O3GL
 			RigMode rigMode, const std::vector<Mat44>& rigW2V,
 			ProjectionMode inProjMode, const std::vector<Camera>& inProjCamera,
 			ProjectionMode outProjMode, const std::vector<Camera>& outProjCamera,
-			const Texture& panoFieldTexture, const Texture& panoDepthTexture) :
+			const CONST_PTR<Texture>& panoFieldTexture, const CONST_PTR<Texture>& panoDepthTexture) :
 			CanvasRender(canvasWidth, canvasHeight),
 			rigMode(rigMode), rigW2V(rigW2V), rigV2W(),
 			inProjMode(inProjMode), inProjTransform(glm::identity<Mat44>()), inProjCamera(inProjCamera),
@@ -145,7 +145,7 @@ namespace O3GL
 			RigMode rigMode, const std::vector<Mat44>& rigW2V,
 			ProjectionMode inProjMode, const std::vector<Camera>& inProjCamera,
 			ProjectionMode outProjMode, const std::vector<Camera>& outProjCamera,
-			const Texture& panoFieldTexture, const Texture& panoDepthTexture, const Texture& panoMaskTexture) :
+			const CONST_PTR<Texture>& panoFieldTexture, const CONST_PTR<Texture>& panoDepthTexture, const CONST_PTR<Texture>& panoMaskTexture) :
 			CanvasRender(canvasWidth, canvasHeight),
 			rigMode(rigMode), rigW2V(rigW2V), rigV2W(),
 			inProjMode(inProjMode), inProjTransform(glm::identity<Mat44>()), inProjCamera(inProjCamera),
@@ -172,13 +172,13 @@ namespace O3GL
 		const bool enableDepth;
 		const bool enableMask;
 
-		const Sampler panoFieldSampler;
-		const Sampler panoDepthSampler;
-		const Sampler panoMaskSampler;
+		CONST_PTR<Sampler> panoFieldSampler;
+		CONST_PTR<Sampler> panoDepthSampler;
+		CONST_PTR<Sampler> panoMaskSampler;
 
-		const Texture panoFieldTexture;
-		const Texture panoDepthTexture;
-		const Texture panoMaskTexture;
+		CONST_PTR<Texture> panoFieldTexture;
+		CONST_PTR<Texture> panoDepthTexture;
+		CONST_PTR<Texture> panoMaskTexture;
 
 		const std::size_t layers;
 
@@ -231,7 +231,7 @@ namespace O3GL
 			RigMode rigMode, const std::vector<Mat44>& rigW2V,
 			ProjectionMode inProjMode, const std::vector<Camera>& inProjCamera,
 			ProjectionMode outProjMode, const std::vector<Camera>& outProjCamera,
-			const Texture& panoFieldTexture) :
+			const CONST_PTR<Texture>& panoFieldTexture) :
 			PanoRenderBase(
 				canvasWidth, canvasHeight,
 				rigMode, rigW2V,
@@ -245,7 +245,7 @@ namespace O3GL
 			RigMode rigMode, const std::vector<Mat44>& rigW2V,
 			ProjectionMode inProjMode, const std::vector<Camera>& inProjCamera,
 			ProjectionMode outProjMode, const std::vector<Camera>& outProjCamera,
-			const Texture& panoFieldTexture, const Texture& panoDepthTexture) :
+			const CONST_PTR<Texture>& panoFieldTexture, const CONST_PTR<Texture>& panoDepthTexture) :
 			PanoRenderBase(
 				canvasWidth, canvasHeight,
 				rigMode, rigW2V,
@@ -259,7 +259,7 @@ namespace O3GL
 			RigMode rigMode, const std::vector<Mat44>& rigW2V,
 			ProjectionMode inProjMode, const std::vector<Camera>& inProjCamera,
 			ProjectionMode outProjMode, const std::vector<Camera>& outProjCamera,
-			const Texture& panoFieldTexture, const Texture& panoDepthTexture, const Texture& panoMaskTexture) :
+			const CONST_PTR<Texture>& panoFieldTexture, const CONST_PTR<Texture>& panoDepthTexture, const CONST_PTR<Texture>& panoMaskTexture) :
 			PanoRenderBase(
 				canvasWidth, canvasHeight,
 				rigMode, rigW2V,

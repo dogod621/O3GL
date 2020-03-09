@@ -46,11 +46,16 @@ namespace O3GL
 		virtual void PostDrawEvent() const;
 
 	public:
+		virtual void ReshapeEvent(const Reshape::Message& m);
+		virtual void SpecialEvent(const Special::Message& m);
+		virtual void TimerEvent(const Timer::Message& m);
+
+	public:
 		QuadRender() :
 			viewing(glm::lookAt(Vec3(0.f, 0.f, 0.f), Vec3(0.f, 0.f, -1.f), Vec3(0.f, 1.f, 0.f))),
 			modelling(glm::translate(glm::identity<Mat44>(), Vec3(0.f, 0.f, -4.f))),
 			projection(glm::perspective(glm::radians(60.0f), 4.0f / 3.0f, 0.1f, 100.0f)),
-			mode(Mode::TEXTURE)
+			mode(Mode::TEXTURE), t(0.0)
 		{}
 
 		Mat44 GetViewing() const { return viewing; }
@@ -68,58 +73,39 @@ namespace O3GL
 		Mat44 modelling;
 		Mat44 projection;
 		Mode mode;
-	};
-
-	template<int key>
-	class ModeMenu : public Menu<key>
-	{
-	public:
-		ModeMenu(PTR<QuadRender> quadRender) :
-			Menu(),
-			quadRender(quadRender)
-		{
-			AddItem("Display Texture", (int)QuadRender::Mode::TEXTURE);
-			AddItem("Display Normal", (int)QuadRender::Mode::NORMAL);
-			AddItem("Display Position", (int)QuadRender::Mode::POSITION);
-			AddItem("Display UV", (int)QuadRender::Mode::UV);
-		}
-
-	public:
-		virtual void ClickEvent(int option)
-		{
-			quadRender->SetMode(QuadRender::Mode(option));
-		}
-
-	protected:
-		PTR<QuadRender> quadRender;;
+		double t;
 	};
 
 	template<int key>
 	class DrawPrimitiveWindow : public Window<key>
 	{
 	public:
-		DrawPrimitiveWindow(PTR<QuadRender> quadRender, const std::string& name, int x, int y, int width, int height, unsigned int tick = 10) :
-			Window<key>(name, GLUT_DOUBLE | GLUT_RGBA | GLUT_DEPTH, x, y, width, height, tick), quadRender(quadRender), t(0.0)
+		DrawPrimitiveWindow(const std::string& name, int x, int y, int width, int height, unsigned int tick = 10) :
+			Window<key>(name, GLUT_DOUBLE | GLUT_RGBA | GLUT_DEPTH, x, y, width, height, tick)
 		{}
 
-		DrawPrimitiveWindow(PTR<QuadRender> quadRender, int window, int x, int y, int width, int height, unsigned int tick = 10) :
-			Window<key>(window, x, y, width, height, tick), quadRender(quadRender), t(0.0)
+		DrawPrimitiveWindow(int window, int x, int y, int width, int height, unsigned int tick = 10) :
+			Window<key>(window, x, y, width, height, tick)
 		{}
+
+	public:
+		virtual void SetupEvent();
 
 	public:
 		virtual void InitGLStatusEvent() const;
 
 	public:
 		virtual void DisplayEvent(const Display::Message& m);
-		virtual void ReshapeEvent(const Reshape::Message& m);
 		virtual void TimerEvent(const Timer::Message& m);
-
-	protected:
-		PTR<QuadRender> quadRender;
-		double t;
 	};
 
 	//
+	template<int key>
+	void DrawPrimitiveWindow<key>::SetupEvent()
+	{
+		renders["quad"] = PTR<Render>(new QuadRender());
+	}
+
 	template<int key>
 	void DrawPrimitiveWindow<key>::InitGLStatusEvent() const
 	{
@@ -138,7 +124,7 @@ namespace O3GL
 	void DrawPrimitiveWindow<key>::DisplayEvent(const Display::Message& m)
 	{
 		// Draw
-		double costTime = quadRender->Draw();
+		double costTime = renders["quad"]->Draw();
 
 		float lineHeight = 0.06f;
 		float wx = -1.0f;
@@ -153,18 +139,8 @@ namespace O3GL
 	}
 
 	template<int key>
-	void DrawPrimitiveWindow<key>::ReshapeEvent(const Reshape::Message& m)
-	{
-		quadRender->SetProjection(glm::perspective(glm::radians(60.0f), (float)(m.width) / (float)(m.height), 0.1f, 100.0f));
-	}
-
-	template<int key>
 	void DrawPrimitiveWindow<key>::TimerEvent(const Timer::Message& m)
 	{
-		t += tickElapsed;
-		float angle = (float)(t / 600.0);
-		quadRender->SetModelling(glm::rotate(glm::translate(glm::identity<Mat44>(), Vec3(std::sin(angle), std::cos(angle), -4.f)), angle, glm::vec3(1.0, 0.0, 0.0)));
-
 		glutPostRedisplay();
 	}
 };

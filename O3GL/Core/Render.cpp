@@ -29,7 +29,7 @@ namespace O3GL
 		InitSamplersEvent();
 		InitTexturesEvent();
 		InitBuffersEvent();
-		
+
 		InitVertexShaderHeadersEvent();
 		InitVertexShaderMainsEvent();
 
@@ -73,7 +73,7 @@ namespace O3GL
 	{
 		int count = 1;
 		std::cout << std::setw(6) << "Name: " << name << std::endl;
-		std::stringstream ss(shaders.at(name).GetSource());
+		std::stringstream ss(shaders.at(name)->GetSource());
 		std::string line;
 		while (std::getline(ss, line, '\n'))
 		{
