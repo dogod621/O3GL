@@ -25,7 +25,7 @@ if(NOT IS_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/FreeGLUT)
 endif()
 
 # Setup GLM
-set(GLM_INCLUDE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/GLM/)
+set(GLM_INCLUDE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/GLM/ CACHE PATH "")
 
 option(GLM_BUILD_SHARED_LIBS "Build the shared glm library" OFF)
 option(GLM_BUILD_STATIC_LIBS "Build the static glm library" ON)
@@ -73,7 +73,7 @@ unset(BUILD_SHARED_LIBS CACHE)
 unset(BUILD_STATIC_LIBS CACHE)
 
 # Setup GLEW
-set(GLEW_INCLUDE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/GLEW/include/)
+set(GLEW_INCLUDE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/GLEW/include/ CACHE PATH "")
 
 option(GLEW_BUILD_SHARED_LIBS "Build the shared glew library" OFF)
 option(GLEW_BUILD_STATIC_LIBS "Build the static glew library" ON)
@@ -121,7 +121,7 @@ unset(glew-cmake_BUILD_SINGLE_CONTEXT CACHE)
 unset(glew-cmake_BUILD_MULTI_CONTEXT CACHE)
 
 # Setup FreeGLUT
-set(FREEGLUT_INCLUDE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/FreeGLUT/include/)
+set(FREEGLUT_INCLUDE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/FreeGLUT/include/ CACHE PATH "")
 
 IF(MSVC)
     option(FREEGLUT_INSTALL_PDB "Also install freeglut .pdb files" ON)
@@ -173,7 +173,7 @@ include_directories(${GLEW_INCLUDE_DIR})
 include_directories(${FREEGLUT_INCLUDE_DIR})
 
 # Setup O3GL
-set(O3GL_INCLUDE_DIR ${CMAKE_CURRENT_SOURCE_DIR})
+set(O3GL_INCLUDE_DIR ${CMAKE_CURRENT_SOURCE_DIR} CACHE PATH "")
 
 add_subdirectory("O3GL")
 set_target_properties(O3GL_CORE PROPERTIES FOLDER "O3GL/LIB")
