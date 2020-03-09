@@ -174,10 +174,8 @@ namespace O3GL
 	void DrawPrimitiveWindow<key>::TimerEvent(int value)
 	{
 		t += timeElapsed;
-		float tx = (float)std::sin(t / 600.0);
-		float ty = (float)std::cos(t / 600.0);
-
-		quadRender.SetModelling(glm::translate(glm::identity<Mat44>(), Vec3(tx, ty, -4.f)));
+		float angle = (float)(t / 600.0);
+		quadRender.SetModelling(glm::rotate(glm::translate(glm::identity<Mat44>(), Vec3(std::sin(angle), std::cos(angle), -4.f)), angle, glm::vec3(1.0, 0.0, 0.0)));
 
 		glutPostRedisplay();
 	}
