@@ -7,9 +7,6 @@ namespace O3GL
 	//
 	void QuadRender::SetupEvent()
 	{
-		Render::SetupEvent();
-
-		//
 		samplers["bilinear"] = Sampler();
 		textures["color"] = Texture();
 
@@ -33,9 +30,6 @@ namespace O3GL
 
 	void QuadRender::InitSamplersEvent()
 	{
-		Render::InitSamplersEvent();
-
-		//
 		samplers["bilinear"].SetInfo<GLint>(GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
 		samplers["bilinear"].SetInfo<GLint>(GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
 		samplers["bilinear"].SetInfo<GLint>(GL_TEXTURE_MIN_FILTER, GL_LINEAR);
@@ -44,9 +38,6 @@ namespace O3GL
 
 	void QuadRender::InitTexturesEvent()
 	{
-		Render::InitTexturesEvent();
-
-		//
 		GLsizei texW = 256u;
 		GLsizei texH = 256u;
 
@@ -68,9 +59,6 @@ namespace O3GL
 
 	void QuadRender::InitBuffersEvent()
 	{
-		Render::InitBuffersEvent();
-
-		//
 		std::vector<R32> posData = {
 			-1.f, -1.f, 0.f,
 			1.f, -1.f, 0.f,
@@ -96,9 +84,6 @@ namespace O3GL
 
 	void QuadRender::InitVertexShaderHeadersEvent()
 	{
-		Render::InitVertexShaderHeadersEvent();
-
-		//
 		shaderSources["unlit_vert"].push_back(R"(
 #version 460 core
 
@@ -130,9 +115,7 @@ void main(void)
 
 	void QuadRender::InitGeometryShaderHeadersEvent()
 	{
-		Render::InitGeometryShaderHeadersEvent();
 
-		//
 	}
 
 	void QuadRender::InitGeometryShaderMainsEvent()
@@ -142,9 +125,6 @@ void main(void)
 
 	void QuadRender::InitFragmentShaderHeadersEvent()
 	{
-		Render::InitFragmentShaderHeadersEvent();
-
-		//
 		shaderSources["unlit_frag"].push_back(R"(
 #version 460 core
 
@@ -182,9 +162,6 @@ void main(void)
 
 	void QuadRender::InitShadersEvent()
 	{
-		Render::InitShadersEvent();
-
-		//
 		shaders["unlit_vert"].Source(shaderSources["unlit_vert"]);
 		{
 			GLboolean success;
@@ -225,9 +202,6 @@ void main(void)
 
 	void QuadRender::InitProgramsEvent()
 	{
-		Render::InitProgramsEvent();
-
-		//
 		programs["unlit"].AttachShader(shaders["unlit_vert"]);
 		if (shaderSources["unlit_geom"].size() > 0)
 			programs["unlit"].AttachShader(shaders["unlit_geom"]);
@@ -247,9 +221,6 @@ void main(void)
 
 	void QuadRender::InitProgramParametersEvent() const
 	{
-		Render::InitProgramParametersEvent();
-
-		//
 		programs.at("unlit").Uniform<GLfloat, 4, 4>("u_modelView", viewing * modelling);
 		programs.at("unlit").Uniform<GLfloat, 4, 4>("u_projection", projection);
 		programs.at("unlit").Uniform<GLuint, 1>("u_mode", (GLuint)mode);
@@ -257,9 +228,6 @@ void main(void)
 
 	void QuadRender::InitVertexArraysEvent()
 	{
-		Render::InitVertexArraysEvent();
-
-		//
 		// Set pos
 		{
 			GLint attribLocation = programs["unlit"].GetAttribLocation("a_pos");
@@ -299,13 +267,11 @@ void main(void)
 
 	void QuadRender::InitFrameBuffersEvent()
 	{
+
 	}
 
 	void QuadRender::PreDrawEvent() const
 	{
-		Render::PreDrawEvent();
-
-		//
 		programs.at("unlit").Begin();
 		vertexArrays.at("quad").Begin();
 		textures.at("color").Begin(samplers.at("bilinear"));
@@ -325,8 +291,5 @@ void main(void)
 		textures.at("color").End();
 		vertexArrays.at("quad").End();
 		programs.at("unlit").End();
-
-		//
-		Render::PostDrawEvent();
 	}
 };

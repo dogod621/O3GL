@@ -11,9 +11,6 @@ namespace O3GL
 	//
 	void CanvasRender::SetupEvent()
 	{
-		Render::SetupEvent();
-
-		//
 		samplers["plane_nearest"] = Sampler();
 		samplers["plane_bilinear"] = Sampler();
 		samplers["plane_trilinear"] = Sampler();
@@ -55,9 +52,6 @@ namespace O3GL
 
 	void CanvasRender::InitSamplersEvent()
 	{
-		Render::InitSamplersEvent();
-
-		//
 		GLfloat maxNumSamples;
 		glGetFloatv(GL_MAX_TEXTURE_MAX_ANISOTROPY, &maxNumSamples);
 
@@ -188,9 +182,6 @@ namespace O3GL
 
 	void CanvasRender::InitBuffersEvent()
 	{
-		Render::InitBuffersEvent();
-
-		//
 		std::vector<R32> posData = {
 		-1.f, -1.f, 0.99999f,
 		1.0f, -1.f, 0.99999f,
@@ -204,9 +195,6 @@ namespace O3GL
 
 	void CanvasRender::InitVertexShaderHeadersEvent()
 	{
-		Render::InitVertexShaderHeadersEvent();
-
-		//
 		shaderSources["canvas_vert"].push_back(R"(
 #version 460 core
 
@@ -226,9 +214,6 @@ void main(void)
 
 	void CanvasRender::InitFragmentShaderHeadersEvent()
 	{
-		Render::InitFragmentShaderHeadersEvent();
-
-		//
 		shaderSources["canvas_frag"].push_back(R"(	
 #version 460 core
 //#extension GL_EXT_texture_array : enable
@@ -358,9 +343,6 @@ void main(void)
 
 	void CanvasRender::InitShadersEvent()
 	{
-		Render::InitShadersEvent();
-
-		//
 		shaders["canvas_vert"].Source(shaderSources["canvas_vert"]);
 		{
 			GLboolean success;
@@ -401,9 +383,6 @@ void main(void)
 
 	void CanvasRender::InitProgramsEvent()
 	{
-		Render::InitProgramsEvent();
-
-		//
 		programs["canvas"].AttachShader(shaders["canvas_vert"]);
 		if (shaderSources["canvas_geom"].size() > 0)
 			programs["canvas"].AttachShader(shaders["canvas_geom"]);
@@ -423,17 +402,12 @@ void main(void)
 
 	void CanvasRender::InitProgramParametersEvent() const
 	{
-		Render::InitProgramParametersEvent();
-
-		//
 		programs.at("canvas").Uniform<GLint, 1>("u_canvasWidth", CanvasWidth());
 		programs.at("canvas").Uniform<GLint, 1>("u_canvasHeight", CanvasHeight());
 	}
 
 	void CanvasRender::InitVertexArraysEvent()
 	{
-		Render::InitVertexArraysEvent();
-
 		// Set pos
 		GLint attribLocation = 0;
 		GLuint bindingIndex = 0;
@@ -449,9 +423,6 @@ void main(void)
 
 	void CanvasRender::PreDrawEvent() const
 	{
-		Render::PreDrawEvent();
-
-		//
 		if (!windowMode)
 			frameBuffers.at("canvas").Begin();
 
@@ -474,9 +445,6 @@ void main(void)
 
 		if (!windowMode)
 			frameBuffers.at("canvas").End();
-
-		//
-		Render::PostDrawEvent();
 	}
 
 	GLint CanvasRender::CanvasWidth() const

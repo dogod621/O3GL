@@ -17,28 +17,28 @@ namespace O3GL
 	class Render
 	{
 	public:
-		virtual void SetupEvent() {} // inherit accumulate
+		virtual void SetupEvent() {}
 
 	public:
-		virtual void InitSamplersEvent() {} // inherit accumulate
-		virtual void InitTexturesEvent() {} // inherit accumulate
-		virtual void InitBuffersEvent() {} // inherit accumulate
-		virtual void InitVertexShaderHeadersEvent() {} // inherit accumulate
+		virtual void InitSamplersEvent() {}
+		virtual void InitTexturesEvent() {}
+		virtual void InitBuffersEvent() {}
+		virtual void InitVertexShaderHeadersEvent() {}
 		virtual void InitVertexShaderMainsEvent() {}
-		virtual void InitGeometryShaderHeadersEvent() {} // inherit accumulate
+		virtual void InitGeometryShaderHeadersEvent() {}
 		virtual void InitGeometryShaderMainsEvent() {}
-		virtual void InitFragmentShaderHeadersEvent() {} // inherit accumulate
+		virtual void InitFragmentShaderHeadersEvent() {}
 		virtual void InitFragmentShaderMainsEvent() {}
-		virtual void InitShadersEvent() {} // inherit accumulate
-		virtual void InitProgramsEvent() {} // inherit accumulate
-		virtual void InitProgramParametersEvent() const {} // inherit accumulate
-		virtual void InitVertexArraysEvent() {} // inherit accumulate
-		virtual void InitFrameBuffersEvent() {} // inherit accumulate
+		virtual void InitShadersEvent() {}
+		virtual void InitProgramsEvent() {}
+		virtual void InitProgramParametersEvent() const {}
+		virtual void InitVertexArraysEvent() {}
+		virtual void InitFrameBuffersEvent() {}
 
 	public:
-		virtual void PreDrawEvent() const {} // inherit accumulate
+		virtual void PreDrawEvent() const {}
 		virtual void OnDrawEvent() const {}
-		virtual void PostDrawEvent() const {} // inherit accumulate
+		virtual void PostDrawEvent() const {}
 
 	public:
 		Render();
