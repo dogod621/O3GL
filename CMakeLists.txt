@@ -5,12 +5,6 @@ cmake_policy(VERSION 3.2)
 project(O3GL)
 set_property(GLOBAL PROPERTY USE_FOLDERS ON)
 
-# Setup Install Directory
-if(CMAKE_INSTALL_PREFIX_INITIALIZED_TO_DEFAULT)
-	set(CMAKE_INSTALL_PREFIX_INITIALIZED_TO_DEFAULT OFF)
-	set(CMAKE_INSTALL_PREFIX ${CMAKE_INSTALL_PREFIX}/${PROJECT_NAME})
-endif()
-
 # Check Submodules are Cloned
 if(NOT IS_DIRECTORY ${CMAKE_SOURCE_DIR}/GLM)
   message(FATAL_ERROR "The GLM submodule directory is missing! "
@@ -33,9 +27,9 @@ endif()
 # Setup GLM
 set(GLM_INCLUDE_DIR ${CMAKE_SOURCE_DIR}/GLM/)
 
-set(BUILD_SHARED_LIBS OFF CACHE BOOL " " FORCE)
-set(BUILD_STATIC_LIBS ON CACHE BOOL " " FORCE)
-set(GLM_TEST_ENABLE OFF CACHE BOOL " " FORCE)
+set(BUILD_SHARED_LIBS OFF CACHE BOOL " ")
+set(BUILD_STATIC_LIBS ON CACHE BOOL " ")
+set(GLM_TEST_ENABLE OFF CACHE BOOL " ")
 
 add_subdirectory("GLM")
 set(GLM_LIB_TARGETS)
@@ -66,16 +60,19 @@ if(GLM_TEST_ENABLE)
 		endforeach()
 	endforeach()
 endif()
+if(TARGET uninstall)
+	set_target_properties(uninstall PROPERTIES FOLDER "GLM")
+endif()
 set_target_properties(${GLM_LIB_TARGETS} PROPERTIES FOLDER "GLM/LIB")
 set_target_properties(${GLM_EXE_TARGETS} PROPERTIES FOLDER "GLM/EXE")
 
 # Setup GLEW
 set(GLEW_INCLUDE_DIR ${CMAKE_SOURCE_DIR}/GLEW/include/)
 
-set(glew-cmake_BUILD_SHARED OFF CACHE BOOL " " FORCE)
-set(glew-cmake_BUILD_STATIC ON CACHE BOOL " " FORCE)
-set(glew-cmake_BUILD_SINGLE_CONTEXT ON CACHE BOOL " " FORCE)
-set(glew-cmake_BUILD_MULTI_CONTEXT OFF CACHE BOOL " " FORCE)
+set(glew-cmake_BUILD_SHARED OFF CACHE BOOL " ")
+set(glew-cmake_BUILD_STATIC ON CACHE BOOL " ")
+set(glew-cmake_BUILD_SINGLE_CONTEXT ON CACHE BOOL " ")
+set(glew-cmake_BUILD_MULTI_CONTEXT OFF CACHE BOOL " ")
 add_subdirectory("GLEW")
 set(GLEW_LIB_TARGETS)
 if(${glew-cmake_BUILD_SHARED})
@@ -109,9 +106,9 @@ set_target_properties(${GLEW_LIB_TARGETS} PROPERTIES FOLDER "GLEW/LIB")
 # Setup FreeGLUT
 set(FreeGLUT_INCLUDE_DIR ${CMAKE_SOURCE_DIR}/FreeGLUT/freeglut/freeglut/include/)
 
-set(FREEGLUT_BUILD_SHARED_LIBS OFF CACHE BOOL " " FORCE)
-set(FREEGLUT_BUILD_STATIC_LIBS ON CACHE BOOL " " FORCE)
-set(FREEGLUT_BUILD_DEMOS OFF CACHE BOOL " " FORCE)
+set(FREEGLUT_BUILD_SHARED_LIBS OFF CACHE BOOL " ")
+set(FREEGLUT_BUILD_STATIC_LIBS ON CACHE BOOL " ")
+set(FREEGLUT_BUILD_DEMOS OFF CACHE BOOL " ")
 
 add_subdirectory("FreeGLUT/freeglut/freeglut")
 set(FreeGLUT_LIB_TARGETS)
@@ -154,7 +151,9 @@ add_subdirectory("O3GL")
 set_target_properties(O3GL_CORE PROPERTIES FOLDER "O3GL/LIB")
 set_target_properties(O3GL_RENDERS PROPERTIES FOLDER "O3GL/LIB")
 
-# Setup EXE
+# Setup Tutorials
+option(BUILD_TUTORIAL "Build Tutorial Examples" ON)
+
 function(AddEXE NAME)
 	file(GLOB srcs	${CMAKE_SOURCE_DIR}/${NAME}/*.cpp)
 	file(GLOB hpps	${CMAKE_SOURCE_DIR}/${NAME}/*.hpp)
@@ -170,10 +169,12 @@ function(AddEXE NAME)
 			RUNTIME DESTINATION bin)
 endfunction()
 
-AddEXE("Tutorial_GUI_1_Window")
-AddEXE("Tutorial_GUI_2_WindowEvents")
-AddEXE("Tutorial_GUI_3_Menue")
-AddEXE("Tutorial_GL_1_DrawPrimitive")
-AddEXE("Tutorial_GL_2_Framebuffer")
-AddEXE("Tutorial_GL_3_MultipleRenderTargets")
-AddEXE("Tutorial_GL_4_MultiLayeredRenderTarget")
+if(${BUILD_TUTORIAL})
+	AddEXE("Tutorial_GUI_1_Window")
+	AddEXE("Tutorial_GUI_2_WindowEvents")
+	AddEXE("Tutorial_GUI_3_Menue")
+	AddEXE("Tutorial_GL_1_DrawPrimitive")
+	AddEXE("Tutorial_GL_2_Framebuffer")
+	AddEXE("Tutorial_GL_3_MultipleRenderTargets")
+	AddEXE("Tutorial_GL_4_MultiLayeredRenderTarget")
+endif()

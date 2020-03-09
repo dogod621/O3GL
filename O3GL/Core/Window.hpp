@@ -51,8 +51,8 @@ namespace O3GL
 	class Window : public GLUTHandle, public WindowBase
 	{
 	public:
-		Window(const std::string& name, unsigned int displayMode, int x, int y, int width, int height, unsigned int tick);
-		Window(int window, int x, int y, int width, int height, unsigned int tick);
+		Window(const std::string& name, unsigned int displayMode, int x, int y, int width, int height, unsigned int tick = 10);
+		Window(int window, int x, int y, int width, int height, unsigned int tick = 10);
 		~Window();
 
 	public:
@@ -60,6 +60,9 @@ namespace O3GL
 
 		template<class T>
 		T GetInfo(GLenum state) const;
+
+		void EnterGameMode(const std::string& gameMode);
+		void LeaveGameMode();
 
 	public:
 		template<>
@@ -95,6 +98,7 @@ namespace O3GL
 		double timeElapsed;
 		bool subWindow;
 		static Window* instance;
+		int copyWinID;
 	};
 
 	//
@@ -109,7 +113,8 @@ namespace O3GL
 		firstTick(true),
 		timeStamp(),
 		timeElapsed(0.0),
-		subWindow(false)
+		subWindow(false),
+		copyWinID(0)
 	{
 		instance = this;
 	}
@@ -122,7 +127,8 @@ namespace O3GL
 		firstTick(true),
 		timeStamp(),
 		timeElapsed(0.0),
-		subWindow(true)
+		subWindow(true),
+		copyWinID(0)
 	{
 		instance = this;
 	}
@@ -152,6 +158,38 @@ namespace O3GL
 		glutCloseFunc(Window<key>::CloseCallback);
 		glutTimerFunc(tick, Window<key>::TimerCallback, 0);
 		InitGLStatusEvent();
+	}
+
+	template<int key>
+	void Window<key>::EnterGameMode(const std::string& gameMode)
+	{
+		glutSetWindow(*this);
+		if (glutGameModeGet(GLUT_GAME_MODE_ACTIVE) == 0)
+		{
+			glutGameModeString(gameMode.c_str());
+			if (glutGameModeGet(GLUT_GAME_MODE_POSSIBLE))
+			{
+				copyWinID = int(*this);
+				(*(*this))._SetID(glutEnterGameMode());
+			}
+			else
+			{
+				THROW_EXCEPTION("GameMode: " + gameMode + " is not available");
+			}
+			Init();
+		}
+	}
+
+	template<int key>
+	void Window<key>::LeaveGameMode()
+	{
+		glutSetWindow(*this);
+		if (glutGameModeGet(GLUT_GAME_MODE_ACTIVE) != 0)
+		{
+			glutLeaveGameMode();
+			(*(*this))._SetID(copyWinID);
+			copyWinID = 0;
+		}
 	}
 
 	template<int key>
@@ -202,7 +240,8 @@ namespace O3GL
 			{
 				THROW_EXCEPTION("Window is not init!?");
 			}
-			return glutCreateSubWindow(window, x, y, width, height);
+			int winID = glutCreateSubWindow(window, x, y, width, height);
+			return winID;
 		}
 	}
 

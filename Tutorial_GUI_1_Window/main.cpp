@@ -6,9 +6,9 @@ int main(int argc, char** argv)
 {
 	try
 	{
-		O3GL::PrintFrameCounterWindow<0> printFrameCounterWindow("PrintFrameCounter", 0, 0, 300, 600, 10);
+		O3GL::PrintFrameCounterWindow<0> printFrameCounterWindow("PrintFrameCounter", 0, 0, 800, 600, 10);
+		
 		O3GL::PrintGLVersionWindow<1> printGLVersionWindow("PrintGLVersionWindow", 300, 0, 300, 600, 100);
-
 		O3GL::Window<2> printAllInOneWindow("PrintAllInOne", GLUT_DOUBLE | GLUT_RGBA, 600, 0, 610, 600, 33);
 		O3GL::PrintFrameCounterWindow<3> printFrameCounterSubWindow(printAllInOneWindow, 0, 0, 300, 600, 10);
 		O3GL::PrintGLVersionWindow<4> printGLVersionSubWindow(printAllInOneWindow, 310, 0, 300, 600, 100);

@@ -13,11 +13,11 @@ namespace O3GL
 	class PrintEventWindow : public Window<key>
 	{
 	public:
-		PrintEventWindow(const std::string& name, int x, int y, int width, int height, unsigned int tick) :
+		PrintEventWindow(const std::string& name, int x, int y, int width, int height, unsigned int tick = 10) :
 			Window<key>(name, GLUT_DOUBLE | GLUT_RGBA, x, y, width, height, tick)
 		{}
 
-		PrintEventWindow(int window, int x, int y, int width, int height, unsigned int tick) :
+		PrintEventWindow(int window, int x, int y, int width, int height, unsigned int tick = 10) :
 			Window<key>(window, x, y, width, height, tick)
 		{}
 

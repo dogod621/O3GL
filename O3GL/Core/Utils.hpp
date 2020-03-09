@@ -235,6 +235,8 @@ namespace O3GL
 		~GLObject() noexcept(false);
 		operator const GLuint() const { return id; }
 
+		void _SetID(GLuint _id) { id = _id; }
+
 	protected:
 		GLuint id;
 		GLDeleteFun1 deleteFun1;
@@ -265,6 +267,8 @@ namespace O3GL
 		GLUTObject(int id, GLUTDelete deleteFun);
 		~GLUTObject();
 		operator const int() const { return id; }
+
+		void _SetID(int _id) { id = _id; }
 
 	protected:
 		int id;

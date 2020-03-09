@@ -6,7 +6,7 @@ int main()
 {
 	try
 	{
-		O3GL::DrawPrimitiveWindow<0> drawPrimitiveWindow("DrawPrimitive", 0, 0, 800, 600);
+		O3GL::DrawPrimitiveWindow<0> drawPrimitiveWindow("DrawPrimitive", 0, 0, 800, 600, 33);
 		drawPrimitiveWindow.Init();
 		O3GL::EnterMainLoop();
 	}

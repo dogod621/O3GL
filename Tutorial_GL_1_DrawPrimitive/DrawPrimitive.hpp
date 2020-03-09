@@ -73,8 +73,8 @@ namespace O3GL
 	class DrawPrimitiveWindow : public Window<key>
 	{
 	public:
-		DrawPrimitiveWindow(const std::string& name, int x, int y, int width, int height);
-		DrawPrimitiveWindow(int window, int x, int y, int width, int height);
+		DrawPrimitiveWindow(const std::string& name, int x, int y, int width, int height, unsigned int tick = 10);
+		DrawPrimitiveWindow(int window, int x, int y, int width, int height, unsigned int tick = 10);
 
 	public:
 		virtual void InitGLStatusEvent() const;
@@ -92,8 +92,8 @@ namespace O3GL
 
 	//
 	template<int key>
-	DrawPrimitiveWindow<key>::DrawPrimitiveWindow(const std::string& name, int x, int y, int width, int height) :
-		Window<key>(name, GLUT_DOUBLE | GLUT_RGBA | GLUT_DEPTH, x, y, width, height, 33), quadRender(), t(0.0)
+	DrawPrimitiveWindow<key>::DrawPrimitiveWindow(const std::string& name, int x, int y, int width, int height, unsigned int tick) :
+		Window<key>(name, GLUT_DOUBLE | GLUT_RGBA | GLUT_DEPTH, x, y, width, height, tick), quadRender(), t(0.0)
 	{
 		quadRender.Init();
 		quadRender.PrintShaderSources("unlit_vert");
@@ -101,8 +101,8 @@ namespace O3GL
 	}
 
 	template<int key>
-	DrawPrimitiveWindow<key>::DrawPrimitiveWindow(int window, int x, int y, int width, int height) :
-		Window<key>(window, x, y, width, height, 33), quadRender(), t(0.0)
+	DrawPrimitiveWindow<key>::DrawPrimitiveWindow(int window, int x, int y, int width, int height, unsigned int tick) :
+		Window<key>(window, x, y, width, height, tick), quadRender(), t(0.0)
 	{
 		quadRender.Init();
 		quadRender.PrintShaderSources("unlit_vert");
