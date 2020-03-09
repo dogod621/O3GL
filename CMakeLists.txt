@@ -104,13 +104,13 @@ endif()
 set_target_properties(${GLEW_LIB_TARGETS} PROPERTIES FOLDER "GLEW/LIB")
 
 # Setup FreeGLUT
-set(FreeGLUT_INCLUDE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/FreeGLUT/freeglut/freeglut/include/)
+set(FreeGLUT_INCLUDE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/FreeGLUT/include/)
 
 set(FREEGLUT_BUILD_SHARED_LIBS OFF CACHE BOOL " ")
 set(FREEGLUT_BUILD_STATIC_LIBS ON CACHE BOOL " ")
 set(FREEGLUT_BUILD_DEMOS OFF CACHE BOOL " ")
 
-add_subdirectory("FreeGLUT/freeglut/freeglut")
+add_subdirectory("FreeGLUT")
 set(FreeGLUT_LIB_TARGETS)
 set(FreeGLUT_EXE_TARGETS)
 if(${FREEGLUT_BUILD_SHARED_LIBS})
