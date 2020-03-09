@@ -100,21 +100,19 @@ namespace O3GL
 	public:
 		DrawPrimitiveWindow(PTR<QuadRender> quadRender, const std::string& name, int x, int y, int width, int height, unsigned int tick = 10) :
 			Window<key>(name, GLUT_DOUBLE | GLUT_RGBA | GLUT_DEPTH, x, y, width, height, tick), quadRender(quadRender), t(0.0)
-		{
-		}
+		{}
 
 		DrawPrimitiveWindow(PTR<QuadRender> quadRender, int window, int x, int y, int width, int height, unsigned int tick = 10) :
 			Window<key>(window, x, y, width, height, tick), quadRender(quadRender), t(0.0)
-		{
-		}
+		{}
 
 	public:
 		virtual void InitGLStatusEvent() const;
 
 	public:
-		virtual void DisplayEvent();
-		virtual void ReshapeEvent(int width, int height);
-		virtual void TimerEvent(int value);
+		virtual void DisplayEvent(const Display::Message& m);
+		virtual void ReshapeEvent(const Reshape::Message& m);
+		virtual void TimerEvent(const Timer::Message& m);
 
 	protected:
 		PTR<QuadRender> quadRender;
@@ -137,7 +135,7 @@ namespace O3GL
 	}
 
 	template<int key>
-	void DrawPrimitiveWindow<key>::DisplayEvent()
+	void DrawPrimitiveWindow<key>::DisplayEvent(const Display::Message& m)
 	{
 		// Draw
 		double costTime = quadRender->Draw();
@@ -146,7 +144,7 @@ namespace O3GL
 		float wx = -1.0f;
 		float wy = -1.0f;
 
-		Text(wx, wy, 0.0f, "Time elapsed: " + std::to_string(timeElapsed) + " ms", 1.0f, 0.0f, 0.0f, 1.0f);
+		Text(wx, wy, 0.0f, "Tick elapsed: " + std::to_string(tickElapsed) + " ms", 1.0f, 0.0f, 0.0f, 1.0f);
 		wy += lineHeight;
 		Text(wx, wy, 0.0f, "Draw cost: " + std::to_string(costTime) + " ms", 0.0f, 1.0f, 0.0f, 1.0f);
 
@@ -155,15 +153,15 @@ namespace O3GL
 	}
 
 	template<int key>
-	void DrawPrimitiveWindow<key>::ReshapeEvent(int width, int height)
+	void DrawPrimitiveWindow<key>::ReshapeEvent(const Reshape::Message& m)
 	{
-		quadRender->SetProjection(glm::perspective(glm::radians(60.0f), (float)(width) / (float)(height), 0.1f, 100.0f));
+		quadRender->SetProjection(glm::perspective(glm::radians(60.0f), (float)(m.width) / (float)(m.height), 0.1f, 100.0f));
 	}
 
 	template<int key>
-	void DrawPrimitiveWindow<key>::TimerEvent(int value)
+	void DrawPrimitiveWindow<key>::TimerEvent(const Timer::Message& m)
 	{
-		t += timeElapsed;
+		t += tickElapsed;
 		float angle = (float)(t / 600.0);
 		quadRender->SetModelling(glm::rotate(glm::translate(glm::identity<Mat44>(), Vec3(std::sin(angle), std::cos(angle), -4.f)), angle, glm::vec3(1.0, 0.0, 0.0)));
 

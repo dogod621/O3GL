@@ -11,11 +11,389 @@
 namespace O3GL
 {
 	//
+	struct Message
+	{
+		double timeElapsed;
+
+		Message() : timeElapsed(0.0) {}
+
+		void Restart() { timeElapsed = 0.0; };
+
+		virtual std::string NameStr() const = 0;
+		virtual std::string FormatStr() const { return ""; }
+		virtual std::string ValueStr() const { return ""; }
+
+		operator std::string();
+	};
+
+	namespace Display
+	{
+		struct Message : O3GL::Message
+		{
+			Message() : O3GL::Message() {}
+
+			virtual std::string NameStr() const
+			{
+				return "Display Event";
+			}
+		};
+	};
+
+	namespace OverlayDisplay
+	{
+		struct Message : O3GL::Message
+		{
+			Message() : O3GL::Message() {}
+
+			virtual std::string NameStr() const
+			{
+				return "OverlayDisplay Event";
+			}
+		};
+	};
+
+	namespace Reshape
+	{
+		struct Message : O3GL::Message
+		{
+			int width;
+			int height;
+
+			Message(int width = 0, int height = 0) : O3GL::Message(), width(width), height(height) {}
+
+			virtual std::string NameStr() const
+			{
+				return "Reshape Event";
+			}
+
+			virtual std::string FormatStr() const
+			{
+				return "width, height";
+			}
+
+			virtual std::string ValueStr() const
+			{
+				std::stringstream ss;
+				ss << width << ", " << height;
+				return ss.str();
+			}
+		};
+	};
+
+	namespace Keyboard
+	{
+		std::string KeyStr(unsigned char key);
+
+		struct Message : O3GL::Message
+		{
+			unsigned char key;
+			int x;
+			int y;
+
+			Message(unsigned char key = 0, int x = 0, int y = 0) : O3GL::Message(), key(key), x(x), y(y) {}
+
+			virtual std::string NameStr() const
+			{
+				return "Keyboard Event";
+			}
+
+			virtual std::string FormatStr() const
+			{
+				return "key, x, y";
+			}
+
+			virtual std::string ValueStr() const
+			{
+				std::stringstream ss;
+				ss << KeyStr(key) << ", " << x << ", " << y;
+				return ss.str();
+			}
+		};
+	};
+
+	namespace KeyboardUp
+	{
+		struct Message : Keyboard::Message
+		{
+			Message(unsigned char key = 0, int x = 0, int y = 0) : Keyboard::Message(key, x, y) {}
+
+			virtual std::string NameStr() const
+			{
+				return "KeyboardUp Event";
+			}
+		};
+	};
+
+	namespace Special
+	{
+		enum Key : int
+		{
+			F1 = GLUT_KEY_F1,
+			F2 = GLUT_KEY_F2,
+			F3 = GLUT_KEY_F3,
+			F4 = GLUT_KEY_F4,
+			F5 = GLUT_KEY_F5,
+			F6 = GLUT_KEY_F6,
+			F7 = GLUT_KEY_F7,
+			F8 = GLUT_KEY_F8,
+			F9 = GLUT_KEY_F9,
+			F10 = GLUT_KEY_F10,
+			F11 = GLUT_KEY_F11,
+			F12 = GLUT_KEY_F12,
+			LEFT = GLUT_KEY_LEFT,
+			UP = GLUT_KEY_UP,
+			RIGHT = GLUT_KEY_RIGHT,
+			DOWN = GLUT_KEY_DOWN,
+			PAGE_UP = GLUT_KEY_PAGE_UP,
+			PAGE_DOWN = GLUT_KEY_PAGE_DOWN,
+			HOME = GLUT_KEY_HOME,
+			END = GLUT_KEY_END,
+			INSERT = GLUT_KEY_INSERT
+		};
+
+		std::string KeyStr(Key key);
+
+		struct Message : O3GL::Message
+		{
+			Key key;
+			int x;
+			int y;
+
+			Message(Key key = (Key)0, int x = 0, int y = 0) : O3GL::Message(), key(key), x(x), y(y) {}
+
+			virtual std::string NameStr() const
+			{
+				return "Special Event";
+			}
+
+			virtual std::string FormatStr() const
+			{
+				return "key, x, y";
+			}
+
+			virtual std::string ValueStr() const
+			{
+				std::stringstream ss;
+				ss << KeyStr(key) << ", " << x << ", " << y;
+				return ss.str();
+			}
+		};
+	};
+
+	namespace SpecialUp
+	{
+		using Key = Special::Key;
+
+		struct Message : Special::Message
+		{
+			Message(Key key = (Key)0, int x = 0, int y = 0) : Special::Message(key, x, y) {}
+
+			virtual std::string NameStr() const
+			{
+				return "SpecialUp Event";
+			}
+		};
+	};
+
+	namespace Mouse
+	{
+		enum Button : int
+		{
+			LEFT = GLUT_LEFT_BUTTON,
+			MIDDLE = GLUT_MIDDLE_BUTTON,
+			RIGHT = GLUT_RIGHT_BUTTON
+		};
+
+		enum State : int
+		{
+			DOWN = GLUT_DOWN,
+			UP = GLUT_UP
+		};
+
+		std::string ButtonStr(Button button);
+
+		std::string StateStr(State state);
+
+		struct Message : O3GL::Message
+		{
+			Button button;
+			State state;
+			int x;
+			int y;
+
+			Message(Button button = (Button)0, State state = (State)0, int x = 0, int y = 0) : O3GL::Message(), button(button), state(state), x(x), y(y) {}
+
+			virtual std::string NameStr() const
+			{
+				return "Mouse Event";
+			}
+
+			virtual std::string FormatStr() const
+			{
+				return "button, state, x, y";
+			}
+
+			virtual std::string ValueStr() const
+			{
+				std::stringstream ss;
+				ss << ButtonStr(button) << ", " << StateStr(state) << ", " << x << ", " << y;
+				return ss.str();
+			}
+		};
+	};
+
+	namespace Motion
+	{
+		struct Message : O3GL::Message
+		{
+			int x;
+			int y;
+
+			Message(int x = 0, int y = 0) : O3GL::Message(), x(x), y(y) {}
+
+			virtual std::string NameStr() const
+			{
+				return "Motion Event";
+			}
+
+			virtual std::string FormatStr() const
+			{
+				return "x, y";
+			}
+
+			virtual std::string ValueStr() const
+			{
+				std::stringstream ss;
+				ss << x << ", " << y;
+				return ss.str();
+			}
+		};
+	};
+
+	namespace PassiveMotion
+	{
+		struct Message : Motion::Message
+		{
+			Message(int x = 0, int y = 0) : Motion::Message(x, y) {}
+
+			virtual std::string NameStr() const
+			{
+				return "PassiveMotion Event";
+			}
+		};
+	};
+
+	namespace Visibility
+	{
+		enum State : int
+		{
+			NOT_VISIBLE = GLUT_NOT_VISIBLE,
+			VISIBLE = GLUT_VISIBLE
+		};
+
+		std::string StateStr(State state);
+
+		struct Message : O3GL::Message
+		{
+			State state;
+
+			Message(State state = (State)0) : O3GL::Message(), state(state) {}
+
+			virtual std::string NameStr() const
+			{
+				return "Visibility Event";
+			}
+
+			virtual std::string FormatStr() const
+			{
+				return "state";
+			}
+
+			virtual std::string ValueStr() const
+			{
+				return StateStr(state);
+			}
+		};
+	};
+
+	namespace Entry
+	{
+		enum State : int
+		{
+			LEFT = GLUT_LEFT,
+			ENTERED = GLUT_ENTERED
+		};
+
+		std::string StateStr(State state);
+
+		struct Message : O3GL::Message
+		{
+			State state;
+
+			Message(State state = (State)0) : O3GL::Message(), state(state) {}
+
+			virtual std::string NameStr() const
+			{
+				return "Entry Event";
+			}
+
+			virtual std::string FormatStr() const
+			{
+				return "state";
+			}
+
+			virtual std::string ValueStr() const
+			{
+				return StateStr(state);
+			}
+		};
+	};
+
+	namespace Close
+	{
+		struct Message : O3GL::Message
+		{
+			Message() : O3GL::Message() {}
+
+			virtual std::string NameStr() const
+			{
+				return "Close Event";
+			}
+		};
+	};
+
+	namespace Timer
+	{
+		struct Message : O3GL::Message
+		{
+			int value;
+
+			Message() : O3GL::Message(), value(0) {}
+
+			virtual std::string NameStr() const
+			{
+				return "Timer Event";
+			}
+
+			virtual std::string FormatStr() const
+			{
+				return "value";
+			}
+
+			virtual std::string ValueStr() const
+			{
+				std::stringstream ss;
+				ss << value;
+				return ss.str();
+			}
+		};
+	};
+
+	//
 	void EnterMainLoop();
 	void LeaveMainLoop();
 	int CurrentWindowWidth();
 	int CurrentWindowHeight();
-
 
 	//
 	class WindowBase
@@ -24,26 +402,41 @@ namespace O3GL
 		WindowBase() {}
 
 	public:
-		virtual void InitGLStatusEvent() const;
+		virtual void InitGLStatusEvent() const {}
 
 	public:
-		virtual void DisplayEvent();
-		virtual void OverlayDisplayEvent();
-		virtual void ReshapeEvent(int width, int height);
-		virtual void KeyboardEvent(unsigned char key, int x, int y);
-		virtual void KeyboardUpEvent(unsigned char key, int x, int y);
-		virtual void SpecialEvent(int key, int x, int y);
-		virtual void SpecialUpEvent(int key, int x, int y);
-		virtual void MouseEvent(int button, int state, int x, int y);
-		virtual void MotionEvent(int x, int y);
-		virtual void PassiveMotionEvent(int x, int y);
-		virtual void VisibilityEvent(int state);
-		virtual void EntryEvent(int state);
-		virtual void CloseEvent();
-		virtual void TimerEvent(int value);
+		virtual void DisplayEvent(const Display::Message& m) {}
+		virtual void OverlayDisplayEvent(const OverlayDisplay::Message& m) {}
+		virtual void ReshapeEvent(const Reshape::Message& m) {}
+		virtual void KeyboardEvent(const Keyboard::Message& m) {}
+		virtual void KeyboardUpEvent(const KeyboardUp::Message& m) {}
+		virtual void SpecialEvent(const Special::Message& m) {}
+		virtual void SpecialUpEvent(const SpecialUp::Message& m) {}
+		virtual void MouseEvent(const Mouse::Message& m) {}
+		virtual void MotionEvent(const Motion::Message& m) {}
+		virtual void PassiveMotionEvent(const PassiveMotion::Message& m) {}
+		virtual void VisibilityEvent(const Visibility::Message& m) {}
+		virtual void EntryEvent(const Entry::Message& m) {}
+		virtual void CloseEvent(const Close::Message& m) {}
+		virtual void TimerEvent(const Timer::Message& m) {}
 
 	protected:
 		static bool init;
+
+		Display::Message latestDisplayMessage;
+		OverlayDisplay::Message latestOverlayDisplayMessage;
+		Reshape::Message latestReshapeMessage;
+		Keyboard::Message latestKeyboardMessage;
+		KeyboardUp::Message latestKeyboardUpMessage;
+		Special::Message latestSpecialMessage;
+		SpecialUp::Message latestSpecialUpMessage;
+		Mouse::Message latestMouseMessage;
+		Motion::Message latestMotionMessage;
+		PassiveMotion::Message latestPassiveMotionMessage;
+		Visibility::Message latestVisibilityMessage;
+		Entry::Message latestEntryMessage;
+		Close::Message latestCloseMessage;
+		Timer::Message latestTimerMessage;
 	};
 
 	//
@@ -95,7 +488,7 @@ namespace O3GL
 		unsigned int tick;
 		bool firstTick;
 		std::chrono::steady_clock::time_point timeStamp;
-		double timeElapsed;
+		double tickElapsed;
 		bool subWindow;
 		static Window* instance;
 		int copyWinID;
@@ -112,7 +505,7 @@ namespace O3GL
 		tick(tick),
 		firstTick(true),
 		timeStamp(),
-		timeElapsed(0.0),
+		tickElapsed(0.0),
 		subWindow(false),
 		copyWinID(0)
 	{
@@ -126,7 +519,7 @@ namespace O3GL
 		tick(tick),
 		firstTick(true),
 		timeStamp(),
-		timeElapsed(0.0),
+		tickElapsed(0.0),
 		subWindow(true),
 		copyWinID(0)
 	{
@@ -251,7 +644,8 @@ namespace O3GL
 		if (instance)
 		{
 			glutSetWindow(*instance);
-			instance->DisplayEvent();
+			instance->DisplayEvent(instance->latestDisplayMessage);
+			instance->latestDisplayMessage.Restart();
 		}
 	}
 
@@ -261,7 +655,8 @@ namespace O3GL
 		if (instance)
 		{
 			glutSetWindow(*instance);
-			instance->OverlayDisplayEvent();
+			instance->OverlayDisplayEvent(instance->latestOverlayDisplayMessage);
+			instance->latestOverlayDisplayMessage.Restart();
 		}
 	}
 
@@ -271,7 +666,10 @@ namespace O3GL
 		if (instance)
 		{
 			glutSetWindow(*instance);
-			instance->ReshapeEvent(width, height);
+			instance->latestReshapeMessage.width = width;
+			instance->latestReshapeMessage.height = height;
+			instance->ReshapeEvent(instance->latestReshapeMessage);
+			instance->latestReshapeMessage.Restart();
 		}
 	}
 
@@ -281,7 +679,11 @@ namespace O3GL
 		if (instance)
 		{
 			glutSetWindow(*instance);
-			instance->KeyboardEvent(key, x, y);
+			instance->latestKeyboardMessage.key = key;
+			instance->latestKeyboardMessage.x = x;
+			instance->latestKeyboardMessage.y = y;
+			instance->KeyboardEvent(instance->latestKeyboardMessage);
+			instance->latestKeyboardMessage.Restart();
 		}
 	}
 
@@ -291,7 +693,11 @@ namespace O3GL
 		if (instance)
 		{
 			glutSetWindow(*instance);
-			instance->KeyboardUpEvent(key, x, y);
+			instance->latestKeyboardUpMessage.key = key;
+			instance->latestKeyboardUpMessage.x = x;
+			instance->latestKeyboardUpMessage.y = y;
+			instance->KeyboardUpEvent(instance->latestKeyboardUpMessage);
+			instance->latestKeyboardUpMessage.Restart();
 		}
 	}
 
@@ -301,7 +707,11 @@ namespace O3GL
 		if (instance)
 		{
 			glutSetWindow(*instance);
-			instance->SpecialEvent(key, x, y);
+			instance->latestSpecialMessage.key = (Special::Key)key;
+			instance->latestSpecialMessage.x = x;
+			instance->latestSpecialMessage.y = y;
+			instance->SpecialEvent(instance->latestSpecialMessage);
+			instance->latestSpecialMessage.Restart();
 		}
 	}
 
@@ -311,7 +721,11 @@ namespace O3GL
 		if (instance)
 		{
 			glutSetWindow(*instance);
-			instance->SpecialUpEvent(key, x, y);
+			instance->latestSpecialUpMessage.key = (Special::Key)key;
+			instance->latestSpecialUpMessage.x = x;
+			instance->latestSpecialUpMessage.y = y;
+			instance->SpecialUpEvent(instance->latestSpecialUpMessage);
+			instance->latestSpecialUpMessage.Restart();
 		}
 	}
 
@@ -321,7 +735,12 @@ namespace O3GL
 		if (instance)
 		{
 			glutSetWindow(*instance);
-			instance->MouseEvent(button, state, x, y);
+			instance->latestMouseMessage.button = (Mouse::Button)button;
+			instance->latestMouseMessage.state = (Mouse::State)state;
+			instance->latestMouseMessage.x = x;
+			instance->latestMouseMessage.y = y;
+			instance->MouseEvent(instance->latestMouseMessage);
+			instance->latestMouseMessage.Restart();
 		}
 	}
 
@@ -331,7 +750,10 @@ namespace O3GL
 		if (instance)
 		{
 			glutSetWindow(*instance);
-			instance->MotionEvent(x, y);
+			instance->latestMotionMessage.x = x;
+			instance->latestMotionMessage.y = y;
+			instance->MotionEvent(instance->latestMotionMessage);
+			instance->latestMotionMessage.Restart();
 		}
 	}
 
@@ -341,7 +763,10 @@ namespace O3GL
 		if (instance)
 		{
 			glutSetWindow(*instance);
-			instance->PassiveMotionEvent(x, y);
+			instance->latestPassiveMotionMessage.x = x;
+			instance->latestPassiveMotionMessage.y = y;
+			instance->PassiveMotionEvent(instance->latestPassiveMotionMessage);
+			instance->latestPassiveMotionMessage.Restart();
 		}
 	}
 
@@ -351,7 +776,9 @@ namespace O3GL
 		if (instance)
 		{
 			glutSetWindow(*instance);
-			instance->VisibilityEvent(state);
+			instance->latestVisibilityMessage.state = (Visibility::State)state;
+			instance->VisibilityEvent(instance->latestVisibilityMessage);
+			instance->latestVisibilityMessage.Restart();
 		}
 	}
 
@@ -361,7 +788,9 @@ namespace O3GL
 		if (instance)
 		{
 			glutSetWindow(*instance);
-			instance->EntryEvent(state);
+			instance->latestEntryMessage.state = (Entry::State)state;
+			instance->EntryEvent(instance->latestEntryMessage);
+			instance->latestEntryMessage.Restart();
 		}
 	}
 
@@ -371,7 +800,8 @@ namespace O3GL
 		if (instance)
 		{
 			glutSetWindow(*instance);
-			instance->CloseEvent();
+			instance->CloseEvent(instance->latestCloseMessage);
+			instance->latestCloseMessage.Restart();
 		}
 	}
 
@@ -385,18 +815,36 @@ namespace O3GL
 			if (instance->firstTick)
 			{
 				instance->timeStamp = std::chrono::high_resolution_clock::now();
-				instance->timeElapsed = 0.0;
+				instance->tickElapsed = 0.0;
 				instance->firstTick = false;
 			}
 			else
 			{
 				std::chrono::steady_clock::time_point timeStamp2 = std::chrono::high_resolution_clock::now();
-				std::chrono::duration<double, std::milli> _timeElapsed = timeStamp2 - instance->timeStamp;
-				instance->timeElapsed = _timeElapsed.count();
+				std::chrono::duration<double, std::milli> timeElapsed = timeStamp2 - instance->timeStamp;
+				instance->tickElapsed = timeElapsed.count();
 				instance->timeStamp = timeStamp2;
 			}
 
-			instance->TimerEvent(value);
+			instance->latestDisplayMessage.timeElapsed += instance->tickElapsed;
+			instance->latestOverlayDisplayMessage.timeElapsed += instance->tickElapsed;
+			instance->latestReshapeMessage.timeElapsed += instance->tickElapsed;
+			instance->latestKeyboardMessage.timeElapsed += instance->tickElapsed;
+			instance->latestKeyboardUpMessage.timeElapsed += instance->tickElapsed;
+			instance->latestSpecialMessage.timeElapsed += instance->tickElapsed;
+			instance->latestSpecialUpMessage.timeElapsed += instance->tickElapsed;
+			instance->latestMouseMessage.timeElapsed += instance->tickElapsed;
+			instance->latestMotionMessage.timeElapsed += instance->tickElapsed;
+			instance->latestPassiveMotionMessage.timeElapsed += instance->tickElapsed;
+			instance->latestVisibilityMessage.timeElapsed += instance->tickElapsed;
+			instance->latestEntryMessage.timeElapsed += instance->tickElapsed;
+			instance->latestCloseMessage.timeElapsed += instance->tickElapsed;
+			instance->latestTimerMessage.timeElapsed += instance->tickElapsed;
+
+			instance->latestTimerMessage.value = value;
+			instance->TimerEvent(instance->latestTimerMessage);
+			instance->latestTimerMessage.Restart();
+
 			glutTimerFunc(instance->tick, TimerCallback, 0);
 		}
 	}

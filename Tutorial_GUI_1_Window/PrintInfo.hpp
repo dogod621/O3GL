@@ -24,8 +24,8 @@ namespace O3GL
 		virtual void InitGLStatusEvent() const;
 
 	public:
-		virtual void DisplayEvent();
-		virtual void TimerEvent(int value);
+		virtual void DisplayEvent(const Display::Message& m);
+		virtual void TimerEvent(const Timer::Message& m);
 
 	public:
 		unsigned int frameCounter;
@@ -45,7 +45,7 @@ namespace O3GL
 		{}
 
 	public:
-		virtual void DisplayEvent();
+		virtual void DisplayEvent(const Display::Message& m);
 	};
 };
 
@@ -65,7 +65,7 @@ namespace O3GL
 	}
 
 	template<int key>
-	void PrintFrameCounterWindow<key>::DisplayEvent()
+	void PrintFrameCounterWindow<key>::DisplayEvent(const Display::Message& m)
 	{
 		// Clear backbuffer
 		glClear(GL_COLOR_BUFFER_BIT);
@@ -75,7 +75,7 @@ namespace O3GL
 		float wx = -1.0f;
 		float wy = -1.0f;
 
-		Text(wx, wy, 0.0f, "Time elapsed: " + std::to_string(timeElapsed) + " ms", 1.0f, 0.0f, 0.0f, 1.0f);
+		Text(wx, wy, 0.0f, "Tick elapsed: " + std::to_string(tickElapsed) + " ms", 1.0f, 0.0f, 0.0f, 1.0f);
 		wy += lineHeight;
 		Text(wx, wy, 0.0f, "This is the " + std::to_string(frameCounter) + "-th frame", 1.0f, 0.0f, 0.0f, 1.0f);
 
@@ -84,7 +84,7 @@ namespace O3GL
 	}
 
 	template<int key>
-	void PrintFrameCounterWindow<key>::TimerEvent(int value)
+	void PrintFrameCounterWindow<key>::TimerEvent(const Timer::Message& m)
 	{
 		frameCounter++;
 		glutPostRedisplay();
@@ -92,7 +92,7 @@ namespace O3GL
 
 	//
 	template<int key>
-	void PrintGLVersionWindow<key>::DisplayEvent()
+	void PrintGLVersionWindow<key>::DisplayEvent(const Display::Message& m)
 	{
 		// Clear backbuffer
 		glClear(GL_COLOR_BUFFER_BIT);
@@ -102,7 +102,7 @@ namespace O3GL
 		float wx = -1.0f;
 		float wy = -1.0f;
 
-		Text(wx, wy, 0.0f, "Time elapsed: " + std::to_string(timeElapsed) + " ms", 1.0f, 0.0f, 0.0f, 1.0f);
+		Text(wx, wy, 0.0f, "Tick elapsed: " + std::to_string(tickElapsed) + " ms", 1.0f, 0.0f, 0.0f, 1.0f);
 		wy += lineHeight;
 		Text(wx, wy, 0.0f, "This is the " + std::to_string(frameCounter) + "-th frame", 1.0f, 0.0f, 0.0f, 1.0f);
 		wy += lineHeight;

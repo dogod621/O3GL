@@ -3,7 +3,6 @@
 // O3GL
 #include "O3GL/Core/Utils.hpp"
 #include "O3GL/Core/Window.hpp"
-#include "EventMessage.hpp"
 
 //
 namespace O3GL
@@ -14,47 +13,22 @@ namespace O3GL
 	{
 	public:
 		PrintEventWindow(const std::string& name, int x, int y, int width, int height, unsigned int tick = 10) :
-			Window<key>(name, GLUT_DOUBLE | GLUT_RGBA, x, y, width, height, tick)
+			Window<key>(name, GLUT_DOUBLE | GLUT_RGBA, x, y, width, height, tick), litTime(100.0)
 		{}
 
 		PrintEventWindow(int window, int x, int y, int width, int height, unsigned int tick = 10) :
-			Window<key>(window, x, y, width, height, tick)
+			Window<key>(window, x, y, width, height, tick), litTime(100.0)
 		{}
 
 	public:
 		virtual void InitGLStatusEvent() const;
 
 	public:
-		virtual void DisplayEvent();
-		virtual void OverlayDisplayEvent();
-		virtual void ReshapeEvent(int width, int height);
-		virtual void KeyboardEvent(unsigned char key, int x, int y);
-		virtual void KeyboardUpEvent(unsigned char key, int x, int y);
-		virtual void SpecialEvent(int key, int x, int y);
-		virtual void SpecialUpEvent(int key, int x, int y);
-		virtual void MouseEvent(int button, int state, int x, int y);
-		virtual void MotionEvent(int x, int y);
-		virtual void PassiveMotionEvent(int x, int y);
-		virtual void VisibilityEvent(int state);
-		virtual void EntryEvent(int state);
-		virtual void CloseEvent();
-		virtual void TimerEvent(int value);
+		virtual void DisplayEvent(const Display::Message& m);
+		virtual void TimerEvent(const Timer::Message& m);
 
 	protected:
-		DisplayEventMessage displayEventMessage;
-		OverlayDisplayEventMessage overlayDisplayEventMessage;
-		ReshapeEventMessage reshapeEventMessage;
-		KeyboardEventMessage keyboardEventMessage;
-		KeyboardUpEventMessage keyboardUpEventMessage;
-		SpecialEventMessage specialEventMessage;
-		SpecialUpEventMessage specialUpEventMessage;
-		MouseEventMessage mouseEventMessage;
-		MotionEventMessage motionEventMessage;
-		PassiveMotionEventMessage passiveMotionEventMessage;
-		VisibilityEventMessage visibilityEventMessage;
-		EntryEventMessage entryEventMessage;
-		CloseEventMessage closeEventMessage;
-		TimerEventMessage timerEventMessage;
+		double litTime;
 	};
 
 	//
@@ -71,10 +45,8 @@ namespace O3GL
 	}
 
 	template<int key>
-	void PrintEventWindow<key>::DisplayEvent()
+	void PrintEventWindow<key>::DisplayEvent(const Display::Message& m)
 	{
-		displayEventMessage.Active();
-
 		// Clear backbuffer
 		glClear(GL_COLOR_BUFFER_BIT);
 
@@ -83,143 +55,100 @@ namespace O3GL
 		float wx = -1.0f;
 		float wy = -1.0f;
 
-		Text(wx, wy, 0.0f, "Time elapsed: " + std::to_string(timeElapsed) + " ms", 1.0f, 0.0f, 0.0f, 1.0f);
+		Text(wx, wy, 0.0f, "Tick elapsed: " + std::to_string(tickElapsed) + " ms", 1.0f, 0.0f, 0.0f, 1.0f);
 		wy += lineHeight;
 
-		displayEventMessage.Draw(wx, wy);
+		if (latestDisplayMessage.timeElapsed < litTime)
+			Text(wx, wy, 0.0f, std::string(latestDisplayMessage), 1.0f, 0.0f, 0.0f, 1.0f);
+		else
+			Text(wx, wy, 0.0f, std::string(latestDisplayMessage), 0.0f, 0.0f, 0.0f, 1.0f);
 		wy += lineHeight;
-		overlayDisplayEventMessage.Draw(wx, wy);
+
+		if (latestOverlayDisplayMessage.timeElapsed < litTime)
+			Text(wx, wy, 0.0f, std::string(latestOverlayDisplayMessage), 1.0f, 0.0f, 0.0f, 1.0f);
+		else
+			Text(wx, wy, 0.0f, std::string(latestOverlayDisplayMessage), 0.0f, 0.0f, 0.0f, 1.0f);
 		wy += lineHeight;
-		reshapeEventMessage.Draw(wx, wy);
+
+		if (latestReshapeMessage.timeElapsed < litTime)
+			Text(wx, wy, 0.0f, std::string(latestReshapeMessage), 1.0f, 0.0f, 0.0f, 1.0f);
+		else
+			Text(wx, wy, 0.0f, std::string(latestReshapeMessage), 0.0f, 0.0f, 0.0f, 1.0f);
 		wy += lineHeight;
-		keyboardEventMessage.Draw(wx, wy);
+
+		if (latestKeyboardMessage.timeElapsed < litTime)
+			Text(wx, wy, 0.0f, std::string(latestKeyboardMessage), 1.0f, 0.0f, 0.0f, 1.0f);
+		else
+			Text(wx, wy, 0.0f, std::string(latestKeyboardMessage), 0.0f, 0.0f, 0.0f, 1.0f);
 		wy += lineHeight;
-		keyboardUpEventMessage.Draw(wx, wy);
+
+		if (latestKeyboardUpMessage.timeElapsed < litTime)
+			Text(wx, wy, 0.0f, std::string(latestKeyboardUpMessage), 1.0f, 0.0f, 0.0f, 1.0f);
+		else
+			Text(wx, wy, 0.0f, std::string(latestKeyboardUpMessage), 0.0f, 0.0f, 0.0f, 1.0f);
 		wy += lineHeight;
-		specialEventMessage.Draw(wx, wy);
+
+		if (latestSpecialMessage.timeElapsed < litTime)
+			Text(wx, wy, 0.0f, std::string(latestSpecialMessage), 1.0f, 0.0f, 0.0f, 1.0f);
+		else
+			Text(wx, wy, 0.0f, std::string(latestSpecialMessage), 0.0f, 0.0f, 0.0f, 1.0f);
 		wy += lineHeight;
-		specialUpEventMessage.Draw(wx, wy);
+
+		if (latestSpecialUpMessage.timeElapsed < litTime)
+			Text(wx, wy, 0.0f, std::string(latestSpecialUpMessage), 1.0f, 0.0f, 0.0f, 1.0f);
+		else
+			Text(wx, wy, 0.0f, std::string(latestSpecialUpMessage), 0.0f, 0.0f, 0.0f, 1.0f);
 		wy += lineHeight;
-		mouseEventMessage.Draw(wx, wy);
+
+		if (latestMouseMessage.timeElapsed < litTime)
+			Text(wx, wy, 0.0f, std::string(latestMouseMessage), 1.0f, 0.0f, 0.0f, 1.0f);
+		else
+			Text(wx, wy, 0.0f, std::string(latestMouseMessage), 0.0f, 0.0f, 0.0f, 1.0f);
 		wy += lineHeight;
-		motionEventMessage.Draw(wx, wy);
+
+		if (latestMotionMessage.timeElapsed < litTime)
+			Text(wx, wy, 0.0f, std::string(latestMotionMessage), 1.0f, 0.0f, 0.0f, 1.0f);
+		else
+			Text(wx, wy, 0.0f, std::string(latestMotionMessage), 0.0f, 0.0f, 0.0f, 1.0f);
 		wy += lineHeight;
-		passiveMotionEventMessage.Draw(wx, wy);
+
+		if (latestPassiveMotionMessage.timeElapsed < litTime)
+			Text(wx, wy, 0.0f, std::string(latestPassiveMotionMessage), 1.0f, 0.0f, 0.0f, 1.0f);
+		else
+			Text(wx, wy, 0.0f, std::string(latestPassiveMotionMessage), 0.0f, 0.0f, 0.0f, 1.0f);
 		wy += lineHeight;
-		visibilityEventMessage.Draw(wx, wy);
+
+		if (latestVisibilityMessage.timeElapsed < litTime)
+			Text(wx, wy, 0.0f, std::string(latestVisibilityMessage), 1.0f, 0.0f, 0.0f, 1.0f);
+		else
+			Text(wx, wy, 0.0f, std::string(latestVisibilityMessage), 0.0f, 0.0f, 0.0f, 1.0f);
 		wy += lineHeight;
-		entryEventMessage.Draw(wx, wy);
+
+		if (latestEntryMessage.timeElapsed < litTime)
+			Text(wx, wy, 0.0f, std::string(latestEntryMessage), 1.0f, 0.0f, 0.0f, 1.0f);
+		else
+			Text(wx, wy, 0.0f, std::string(latestEntryMessage), 0.0f, 0.0f, 0.0f, 1.0f);
 		wy += lineHeight;
-		closeEventMessage.Draw(wx, wy);
+
+		if (latestCloseMessage.timeElapsed < litTime)
+			Text(wx, wy, 0.0f, std::string(latestCloseMessage), 1.0f, 0.0f, 0.0f, 1.0f);
+		else
+			Text(wx, wy, 0.0f, std::string(latestCloseMessage), 0.0f, 0.0f, 0.0f, 1.0f);
 		wy += lineHeight;
-		timerEventMessage.Draw(wx, wy);
+
+		if (latestTimerMessage.timeElapsed < litTime)
+			Text(wx, wy, 0.0f, std::string(latestTimerMessage), 1.0f, 0.0f, 0.0f, 1.0f);
+		else
+			Text(wx, wy, 0.0f, std::string(latestTimerMessage), 0.0f, 0.0f, 0.0f, 1.0f);
+		wy += lineHeight;
 
 		// Swap buffers
 		glutSwapBuffers();
 	}
 
 	template<int key>
-	void PrintEventWindow<key>::OverlayDisplayEvent()
+	void PrintEventWindow<key>::TimerEvent(const Timer::Message& m)
 	{
-		overlayDisplayEventMessage.Active();
-	}
-
-	template<int key>
-	void PrintEventWindow<key>::ReshapeEvent(int width, int height)
-	{
-		reshapeEventMessage.Active();
-		reshapeEventMessage.width = width;
-		reshapeEventMessage.height = height;
-	}
-
-	template<int key>
-	void PrintEventWindow<key>::KeyboardEvent(unsigned char key, int x, int y)
-	{
-		keyboardEventMessage.Active();
-		keyboardEventMessage.key = key;
-		keyboardEventMessage.x = x;
-		keyboardEventMessage.y = y;
-	}
-
-	template<int key>
-	void PrintEventWindow<key>::KeyboardUpEvent(unsigned char key, int x, int y)
-	{
-		keyboardUpEventMessage.Active();
-		keyboardUpEventMessage.key = key;
-		keyboardUpEventMessage.x = x;
-		keyboardUpEventMessage.y = y;
-	}
-
-	template<int key>
-	void PrintEventWindow<key>::SpecialEvent(int key, int x, int y)
-	{
-		specialEventMessage.Active();
-		specialEventMessage.key = key;
-		specialEventMessage.x = x;
-		specialEventMessage.y = y;
-	}
-
-	template<int key>
-	void PrintEventWindow<key>::SpecialUpEvent(int key, int x, int y)
-	{
-		specialUpEventMessage.Active();
-		specialUpEventMessage.key = key;
-		specialUpEventMessage.x = x;
-		specialUpEventMessage.y = y;
-	}
-
-	template<int key>
-	void PrintEventWindow<key>::MouseEvent(int button, int state, int x, int y)
-	{
-		mouseEventMessage.Active();
-		mouseEventMessage.button = button;
-		mouseEventMessage.state = state;
-		mouseEventMessage.x = x;
-		mouseEventMessage.y = y;
-	}
-
-	template<int key>
-	void PrintEventWindow<key>::MotionEvent(int x, int y)
-	{
-		motionEventMessage.Active();
-		motionEventMessage.x = x;
-		motionEventMessage.y = y;
-	}
-
-	template<int key>
-	void PrintEventWindow<key>::PassiveMotionEvent(int x, int y)
-	{
-		passiveMotionEventMessage.Active();
-		passiveMotionEventMessage.x = x;
-		passiveMotionEventMessage.y = y;
-	}
-
-	template<int key>
-	void PrintEventWindow<key>::VisibilityEvent(int state)
-	{
-		visibilityEventMessage.Active();
-		visibilityEventMessage.state = state;
-	}
-
-	template<int key>
-	void PrintEventWindow<key>::EntryEvent(int state)
-	{
-		entryEventMessage.Active();
-		entryEventMessage.state = state;
-	}
-
-	template<int key>
-	void PrintEventWindow<key>::CloseEvent()
-	{
-		closeEventMessage.Active();
-	}
-
-	template<int key>
-	void PrintEventWindow<key>::TimerEvent(int value)
-	{
-		timerEventMessage.Active();
-		timerEventMessage.value = value;
-
 		glutPostRedisplay();
 	}
 };
