@@ -6,26 +6,26 @@ project(O3GL)
 set_property(GLOBAL PROPERTY USE_FOLDERS ON)
 
 # Check Submodules are Cloned
-if(NOT IS_DIRECTORY ${CMAKE_SOURCE_DIR}/GLM)
+if(NOT IS_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/GLM)
   message(FATAL_ERROR "The GLM submodule directory is missing! "
     "You probably did not clone the project with --recursive. It is possible to recover "
     "by running \"git submodule update --init --recursive\"")
 endif()
 
-if(NOT IS_DIRECTORY ${CMAKE_SOURCE_DIR}/GLEW)
+if(NOT IS_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/GLEW)
   message(FATAL_ERROR "The GLEW submodule directory is missing! "
     "You probably did not clone the project with --recursive. It is possible to recover "
     "by running \"git submodule update --init --recursive\"")
 endif()
 
-if(NOT IS_DIRECTORY ${CMAKE_SOURCE_DIR}/FreeGLUT)
+if(NOT IS_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/FreeGLUT)
   message(FATAL_ERROR "The FreeGLUT submodule directory is missing! "
     "You probably did not clone the project with --recursive. It is possible to recover "
     "by running \"git submodule update --init --recursive\"")
 endif()
 
 # Setup GLM
-set(GLM_INCLUDE_DIR ${CMAKE_SOURCE_DIR}/GLM/)
+set(GLM_INCLUDE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/GLM/)
 
 set(BUILD_SHARED_LIBS OFF CACHE BOOL " ")
 set(BUILD_STATIC_LIBS ON CACHE BOOL " ")
@@ -46,7 +46,7 @@ endif()
 set(GLM_EXE_TARGETS)
 if(GLM_TEST_ENABLE)
 	foreach(glm_test IN ITEMS "bug" "core" "ext" "gtc" "gtx" "perf")
-		set(glm_test_root ${CMAKE_SOURCE_DIR}/GLM/test/${glm_test})
+		set(glm_test_root ${CMAKE_CURRENT_SOURCE_DIR}/GLM/test/${glm_test})
 		string(LENGTH ${glm_test_root} glm_test_root_length)
 		file(GLOB glm_test_sources ${glm_test_root}/*.cpp)
 		foreach(glm_test_source IN LISTS glm_test_sources)
@@ -67,7 +67,7 @@ set_target_properties(${GLM_LIB_TARGETS} PROPERTIES FOLDER "GLM/LIB")
 set_target_properties(${GLM_EXE_TARGETS} PROPERTIES FOLDER "GLM/EXE")
 
 # Setup GLEW
-set(GLEW_INCLUDE_DIR ${CMAKE_SOURCE_DIR}/GLEW/include/)
+set(GLEW_INCLUDE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/GLEW/include/)
 
 set(glew-cmake_BUILD_SHARED OFF CACHE BOOL " ")
 set(glew-cmake_BUILD_STATIC ON CACHE BOOL " ")
@@ -104,7 +104,7 @@ endif()
 set_target_properties(${GLEW_LIB_TARGETS} PROPERTIES FOLDER "GLEW/LIB")
 
 # Setup FreeGLUT
-set(FreeGLUT_INCLUDE_DIR ${CMAKE_SOURCE_DIR}/FreeGLUT/freeglut/freeglut/include/)
+set(FreeGLUT_INCLUDE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/FreeGLUT/freeglut/freeglut/include/)
 
 set(FREEGLUT_BUILD_SHARED_LIBS OFF CACHE BOOL " ")
 set(FREEGLUT_BUILD_STATIC_LIBS ON CACHE BOOL " ")
@@ -141,7 +141,7 @@ set_target_properties(${FreeGLUT_LIB_TARGETS} PROPERTIES FOLDER "FreeGLUT/LIB")
 set_target_properties(${FreeGLUT_EXE_TARGETS} PROPERTIES FOLDER "FreeGLUT/EXE")
 
 # Setup Include Dir
-include_directories(${CMAKE_SOURCE_DIR})
+include_directories(${CMAKE_CURRENT_SOURCE_DIR})
 include_directories(${GLM_INCLUDE_DIR})
 include_directories(${GLEW_INCLUDE_DIR})
 include_directories(${FreeGLUT_INCLUDE_DIR})
@@ -155,9 +155,9 @@ set_target_properties(O3GL_RENDERS PROPERTIES FOLDER "O3GL/LIB")
 option(BUILD_TUTORIAL "Build Tutorial Examples" ON)
 
 function(AddEXE NAME)
-	file(GLOB srcs	${CMAKE_SOURCE_DIR}/${NAME}/*.cpp)
-	file(GLOB hpps	${CMAKE_SOURCE_DIR}/${NAME}/*.hpp)
-	file(GLOB hdrs	${CMAKE_SOURCE_DIR}/${NAME}/*.h)
+	file(GLOB srcs	${CMAKE_CURRENT_SOURCE_DIR}/${NAME}/*.cpp)
+	file(GLOB hpps	${CMAKE_CURRENT_SOURCE_DIR}/${NAME}/*.hpp)
+	file(GLOB hdrs	${CMAKE_CURRENT_SOURCE_DIR}/${NAME}/*.h)
 	set(TARGET_NAME ${NAME})
 	add_executable(${TARGET_NAME} ${srcs} ${hpps} ${hdrs})
 	set_target_properties(${TARGET_NAME} PROPERTIES FOLDER "O3GL/EXE")
