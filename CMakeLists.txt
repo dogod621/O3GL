@@ -27,9 +27,12 @@ endif()
 # Setup GLM
 set(GLM_INCLUDE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/GLM/)
 
-set(BUILD_SHARED_LIBS OFF CACHE BOOL " ")
-set(BUILD_STATIC_LIBS ON CACHE BOOL " ")
-set(GLM_TEST_ENABLE OFF CACHE BOOL " ")
+option(GLM_BUILD_SHARED_LIBS "Build the shared glm library" OFF)
+option(GLM_BUILD_STATIC_LIBS "Build the static glm library" ON)
+
+set(BUILD_SHARED_LIBS ${GLM_BUILD_SHARED_LIBS} CACHE BOOL " ")
+set(BUILD_STATIC_LIBS ${GLM_BUILD_STATIC_LIBS} CACHE BOOL " ")
+set(GLM_TEST_ENABLE OFF CACHE BOOL "Build glm unit tests")
 
 add_subdirectory("GLM")
 set(GLM_LIB_TARGETS)
@@ -66,13 +69,22 @@ endif()
 set_target_properties(${GLM_LIB_TARGETS} PROPERTIES FOLDER "GLM/LIB")
 set_target_properties(${GLM_EXE_TARGETS} PROPERTIES FOLDER "GLM/EXE")
 
+unset(BUILD_SHARED_LIBS CACHE)
+unset(BUILD_STATIC_LIBS CACHE)
+
 # Setup GLEW
 set(GLEW_INCLUDE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/GLEW/include/)
 
-set(glew-cmake_BUILD_SHARED OFF CACHE BOOL " ")
-set(glew-cmake_BUILD_STATIC ON CACHE BOOL " ")
-set(glew-cmake_BUILD_SINGLE_CONTEXT ON CACHE BOOL " ")
-set(glew-cmake_BUILD_MULTI_CONTEXT OFF CACHE BOOL " ")
+option(GLEW_BUILD_SHARED_LIBS "Build the shared glew library" OFF)
+option(GLEW_BUILD_STATIC_LIBS "Build the static glew library" ON)
+option(GLEW_BUILD_SINGLE_CONTEXT_LIBS "Build the single context glew library" ON)
+option(GLEW_BUILD_MULTI_CONTEXT_LIBS "Build the multi context glew library" OFF)
+
+set(glew-cmake_BUILD_SHARED ${GLEW_BUILD_SHARED_LIBS} CACHE BOOL " ")
+set(glew-cmake_BUILD_STATIC ${GLEW_BUILD_STATIC_LIBS} CACHE BOOL " ")
+set(glew-cmake_BUILD_SINGLE_CONTEXT ${GLEW_BUILD_SINGLE_CONTEXT_LIBS} CACHE BOOL " ")
+set(glew-cmake_BUILD_MULTI_CONTEXT ${GLEW_BUILD_MULTI_CONTEXT_LIBS} CACHE BOOL " ")
+
 add_subdirectory("GLEW")
 set(GLEW_LIB_TARGETS)
 if(${glew-cmake_BUILD_SHARED})
@@ -103,12 +115,24 @@ if(${glew-cmake_BUILD_STATIC})
 endif()
 set_target_properties(${GLEW_LIB_TARGETS} PROPERTIES FOLDER "GLEW/LIB")
 
+unset(glew-cmake_BUILD_SHARED CACHE)
+unset(glew-cmake_BUILD_STATIC CACHE)
+unset(glew-cmake_BUILD_SINGLE_CONTEXT CACHE)
+unset(glew-cmake_BUILD_MULTI_CONTEXT CACHE)
+
 # Setup FreeGLUT
-set(FreeGLUT_INCLUDE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/FreeGLUT/include/)
+set(FREEGLUT_INCLUDE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/FreeGLUT/include/)
+
+IF(MSVC)
+    option(FREEGLUT_INSTALL_PDB "Also install freeglut .pdb files" ON)
+ELSE()
+    set(FREEGLUT_INSTALL_PDB OFF)
+ENDIF()
 
 set(FREEGLUT_BUILD_SHARED_LIBS OFF CACHE BOOL " ")
 set(FREEGLUT_BUILD_STATIC_LIBS ON CACHE BOOL " ")
 set(FREEGLUT_BUILD_DEMOS OFF CACHE BOOL " ")
+set(INSTALL_PDB ${FREEGLUT_INSTALL_PDB} CACHE BOOL " ")
 
 add_subdirectory("FreeGLUT")
 set(FreeGLUT_LIB_TARGETS)
@@ -140,27 +164,31 @@ endif()
 set_target_properties(${FreeGLUT_LIB_TARGETS} PROPERTIES FOLDER "FreeGLUT/LIB")
 set_target_properties(${FreeGLUT_EXE_TARGETS} PROPERTIES FOLDER "FreeGLUT/EXE")
 
+unset(INSTALL_PDB CACHE)
+
 # Setup Include Dir
 include_directories(${CMAKE_CURRENT_SOURCE_DIR})
 include_directories(${GLM_INCLUDE_DIR})
 include_directories(${GLEW_INCLUDE_DIR})
-include_directories(${FreeGLUT_INCLUDE_DIR})
+include_directories(${FREEGLUT_INCLUDE_DIR})
 
 # Setup O3GL
+set(O3GL_INCLUDE_DIR ${CMAKE_CURRENT_SOURCE_DIR})
+
 add_subdirectory("O3GL")
 set_target_properties(O3GL_CORE PROPERTIES FOLDER "O3GL/LIB")
 set_target_properties(O3GL_RENDERS PROPERTIES FOLDER "O3GL/LIB")
 
-# Setup Tutorials
-option(BUILD_TUTORIAL "Build Tutorial Examples" ON)
+# Setup Demos
+option(O3GL_BUILD_DEMOS "Build O3GL demos" ON)
 
-function(AddEXE NAME)
-	file(GLOB srcs	${CMAKE_CURRENT_SOURCE_DIR}/${NAME}/*.cpp)
-	file(GLOB hpps	${CMAKE_CURRENT_SOURCE_DIR}/${NAME}/*.hpp)
-	file(GLOB hdrs	${CMAKE_CURRENT_SOURCE_DIR}/${NAME}/*.h)
+function(AddDemo NAME)
+	file(GLOB srcs	${CMAKE_CURRENT_SOURCE_DIR}/Demos/${NAME}/*.cpp)
+	file(GLOB hpps	${CMAKE_CURRENT_SOURCE_DIR}/Demos/${NAME}/*.hpp)
+	file(GLOB hdrs	${CMAKE_CURRENT_SOURCE_DIR}/Demos/${NAME}/*.h)
 	set(TARGET_NAME ${NAME})
 	add_executable(${TARGET_NAME} ${srcs} ${hpps} ${hdrs})
-	set_target_properties(${TARGET_NAME} PROPERTIES FOLDER "O3GL/EXE")
+	set_target_properties(${TARGET_NAME} PROPERTIES FOLDER "O3GL/EXE/Demos/")
 
 	target_link_libraries(${TARGET_NAME} O3GL_CORE)
 	target_link_libraries(${TARGET_NAME} O3GL_RENDERS)
@@ -169,12 +197,12 @@ function(AddEXE NAME)
 			RUNTIME DESTINATION bin)
 endfunction()
 
-if(${BUILD_TUTORIAL})
-	AddEXE("Tutorial_GUI_1_Window")
-	AddEXE("Tutorial_GUI_2_WindowEvents")
-	AddEXE("Tutorial_GUI_3_Menue")
-	AddEXE("Tutorial_GL_1_DrawPrimitive")
-	AddEXE("Tutorial_GL_2_Framebuffer")
-	AddEXE("Tutorial_GL_3_MultipleRenderTargets")
-	AddEXE("Tutorial_GL_4_MultiLayeredRenderTarget")
+if(${O3GL_BUILD_DEMOS})
+	AddDemo("Window")
+	AddDemo("WindowEvents")
+	AddDemo("Menue")
+	AddDemo("DrawPrimitive")
+	AddDemo("Framebuffer")
+	AddDemo("MultipleRenderTargets")
+	AddDemo("MultiLayeredRenderTarget")
 endif()

@@ -1,6 +1,6 @@
 // O3GL
 #include "PrintEvent.hpp"
-#include "Tutorial_GUI_1_Window/PrintInfo.hpp"
+#include "Demos/Window/PrintInfo.hpp"
 
 // Main
 int main(int argc, char** argv)
