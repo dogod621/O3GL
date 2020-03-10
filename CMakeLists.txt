@@ -173,36 +173,15 @@ include_directories(${GLEW_INCLUDE_DIR})
 include_directories(${FREEGLUT_INCLUDE_DIR})
 
 # Setup O3GL
+OPTION(O3GL_BUILD_SHARED_LIBS "Build O3GL shared library." OFF)
+OPTION(O3GL_BUILD_STATIC_LIBS "Build O3GL static library." ON)
+
 set(O3GL_INCLUDE_DIR ${CMAKE_CURRENT_SOURCE_DIR} CACHE PATH "")
 
 add_subdirectory("O3GL")
-set_target_properties(O3GL_CORE PROPERTIES FOLDER "O3GL/LIB")
-set_target_properties(O3GL_RENDERS PROPERTIES FOLDER "O3GL/LIB")
 
 # Setup Demos
 option(O3GL_BUILD_DEMOS "Build O3GL demos" ON)
-
-function(AddDemo NAME)
-	file(GLOB srcs	${CMAKE_CURRENT_SOURCE_DIR}/Demos/${NAME}/*.cpp)
-	file(GLOB hpps	${CMAKE_CURRENT_SOURCE_DIR}/Demos/${NAME}/*.hpp)
-	file(GLOB hdrs	${CMAKE_CURRENT_SOURCE_DIR}/Demos/${NAME}/*.h)
-	set(TARGET_NAME ${NAME})
-	add_executable(${TARGET_NAME} ${srcs} ${hpps} ${hdrs})
-	set_target_properties(${TARGET_NAME} PROPERTIES FOLDER "O3GL/EXE/Demos/")
-
-	target_link_libraries(${TARGET_NAME} O3GL_CORE)
-	target_link_libraries(${TARGET_NAME} O3GL_RENDERS)
-
-	install(TARGETS ${TARGET_NAME}
-			RUNTIME DESTINATION bin)
-endfunction()
-
 if(${O3GL_BUILD_DEMOS})
-	AddDemo("Window")
-	AddDemo("WindowEvents")
-	AddDemo("Menue")
-	AddDemo("DrawPrimitive")
-	AddDemo("Framebuffer")
-	AddDemo("MultipleRenderTargets")
-	AddDemo("MultiLayeredRenderTarget")
+	add_subdirectory("Demos")
 endif()
