@@ -21,10 +21,10 @@ namespace O3GL
 			NONE = 4
 		};
 
-	public:
+	protected:
 		virtual void SetupEvent();
 
-	public:
+	protected:
 		virtual void InitSamplersEvent();
 		virtual void InitTexturesEvent();
 		virtual void InitBuffersEvent();
@@ -40,12 +40,12 @@ namespace O3GL
 		virtual void InitVertexArraysEvent();
 		virtual void InitFrameBuffersEvent();
 
-	public:
+	protected:
 		virtual void PreDrawEvent() const;
 		virtual void OnDrawEvent() const;
 		virtual void PostDrawEvent() const;
 
-	public:
+	protected:
 		virtual void ReshapeEvent(const Reshape::Message& m);
 		virtual void SpecialEvent(const Special::Message& m);
 		virtual void TimerEvent(const Timer::Message& m);
@@ -88,10 +88,10 @@ namespace O3GL
 			Window<key>(window, x, y, width, height, tick)
 		{}
 
-	public:
+	protected:
 		virtual void SetupEvent();
 
-	public:
+	protected:
 		virtual void InitGLStatusEvent() const;
 
 	public:

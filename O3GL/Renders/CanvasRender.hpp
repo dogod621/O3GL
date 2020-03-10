@@ -9,10 +9,10 @@ namespace O3GL
 	//
 	class CanvasRender : public Render
 	{
-	public:
+	protected:
 		virtual void SetupEvent();
 
-	public:
+	protected:
 		virtual void InitSamplersEvent();
 		virtual void InitBuffersEvent();
 		virtual void InitVertexShaderHeadersEvent();
@@ -24,7 +24,7 @@ namespace O3GL
 		virtual void InitProgramParametersEvent() const;
 		virtual void InitVertexArraysEvent();
 
-	public:
+	protected:
 		virtual void PreDrawEvent() const;
 		virtual void OnDrawEvent() const;
 		virtual void PostDrawEvent() const;

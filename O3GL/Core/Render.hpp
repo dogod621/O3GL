@@ -73,9 +73,6 @@ namespace O3GL
 	{
 		struct Message;
 	};
-
-	template<int key>
-	class Window;
 }
 
 // O3GL
@@ -95,14 +92,10 @@ namespace O3GL
 	//
 	class Render
 	{
-	public:
-		template<int key>
-		friend class Window;
-
-	public:
+	protected:
 		virtual void SetupEvent() {}
 
-	public:
+	protected:
 		virtual void InitSamplersEvent() {}
 		virtual void InitTexturesEvent() {}
 		virtual void InitBuffersEvent() {}
@@ -118,12 +111,12 @@ namespace O3GL
 		virtual void InitVertexArraysEvent() {}
 		virtual void InitFrameBuffersEvent() {}
 
-	public:
+	protected:
 		virtual void PreDrawEvent() const {}
 		virtual void OnDrawEvent() const {}
 		virtual void PostDrawEvent() const {}
 
-	public:
+	protected:
 		virtual void DisplayEvent(const Display::Message& m) {}
 		virtual void OverlayDisplayEvent(const OverlayDisplay::Message& m) {}
 		virtual void ReshapeEvent(const Reshape::Message& m) {}
@@ -146,6 +139,21 @@ namespace O3GL
 		void Init();
 		double Draw() const;
 		void PrintShaderSources(const std::string& name) const;
+
+		void DisplayCallback(const Display::Message& m);
+		void OverlayDisplayCallback(const OverlayDisplay::Message& m);
+		void ReshapeCallback(const Reshape::Message& m);
+		void KeyboardCallback(const Keyboard::Message& m);
+		void KeyboardUpCallback(const KeyboardUp::Message& m);
+		void SpecialCallback(const Special::Message& m);
+		void SpecialUpCallback(const SpecialUp::Message& m);
+		void MouseCallback(const Mouse::Message& m);
+		void MotionCallback(const Motion::Message& m);
+		void PassiveMotionCallback(const PassiveMotion::Message& m);
+		void VisibilityCallback(const Visibility::Message& m);
+		void EntryCallback(const Entry::Message& m);
+		void CloseCallback(const Close::Message& m);
+		void TimerCallback(const Timer::Message& m);
 
 	protected:
 		std::map<std::string, PTR<Sampler		>> samplers;

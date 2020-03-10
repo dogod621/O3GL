@@ -16,7 +16,7 @@ namespace O3GL
 	public:
 		MenuBase() {}
 
-	public:
+	protected:
 		virtual void ClickEvent(int option) {}
 	};
 
@@ -38,6 +38,8 @@ namespace O3GL
 
 	protected:
 		static int InitAndCreateMenu();
+
+	public:
 		static void ClickCallback(int option);
 
 	protected:

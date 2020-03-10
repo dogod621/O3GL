@@ -28,16 +28,16 @@ namespace O3GL
 	//
 	class PanoRenderBase : public CanvasRender
 	{
-	public:
+	protected:
 		virtual void SetupEvent();
 
-	public:
+	protected:
 		virtual void InitGeometryShaderHeadersEvent();
 		virtual void InitGeometryShaderMainsEvent();
 		virtual void InitFragmentShaderHeadersEvent();
 		virtual void InitProgramParametersEvent() const;
 
-	public:
+	protected:
 		virtual void PreDrawEvent() const;
 		virtual void PostDrawEvent() const;
 
@@ -216,16 +216,16 @@ namespace O3GL
 	//
 	class PanoConverterRender : public PanoRenderBase
 	{
-	public:
+	protected:
 		virtual void SetupEvent();
 
-	public:
+	protected:
 		virtual void InitTexturesEvent();
 		virtual void InitFragmentShaderHeadersEvent();
 		virtual void InitFragmentShaderMainsEvent();
 		virtual void InitFrameBuffersEvent();
 
-	public:
+	protected:
 		virtual void PostDrawEvent() const;
 
 	public:

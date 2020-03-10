@@ -9,11 +9,11 @@ namespace O3GL
 	//
 	class DisplayRender : public O3GL::CanvasRender
 	{
-	public:
+	protected:
 		virtual void InitFragmentShaderHeadersEvent();
 		virtual void InitProgramParametersEvent() const;
 
-	public:
+	protected:
 		virtual void KeyboardEvent(const Keyboard::Message& m);
 
 	public:
@@ -75,10 +75,10 @@ namespace O3GL
 			VECTOR = 3
 		};
 
-	public:
+	protected:
 		virtual void SetupEvent();
 
-	public:
+	protected:
 		virtual void InitFragmentShaderHeadersEvent();
 		virtual void InitFragmentShaderMainsEvent();
 
@@ -128,10 +128,10 @@ namespace O3GL
 	//
 	class AnaglyphDisplayRender : public DisplayRender
 	{
-	public:
+	protected:
 		virtual void SetupEvent();
 
-	public:
+	protected:
 		virtual void InitFragmentShaderHeadersEvent();
 		virtual void InitFragmentShaderMainsEvent();
 

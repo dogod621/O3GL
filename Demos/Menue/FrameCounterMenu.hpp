@@ -46,7 +46,7 @@ namespace O3GL
 			AddItem("/10", Option::DIV_TEN);
 		}
 
-	public:
+	protected:
 		virtual void ClickEvent(int option)
 		{
 			switch (option)
@@ -88,7 +88,7 @@ namespace O3GL
 			AddItem("Reset Frame Counter", Option::RESET);
 		}
 
-	public:
+	protected:
 		virtual void ClickEvent(int option)
 		{
 			switch (option)

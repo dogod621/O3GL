@@ -20,10 +20,10 @@ namespace O3GL
 			Window<key>(window, x, y, width, height, tick), litTime(100.0)
 		{}
 
-	public:
+	protected:
 		virtual void InitGLStatusEvent() const;
 
-	public:
+	protected:
 		virtual void DisplayEvent(const Display::Message& m);
 		virtual void TimerEvent(const Timer::Message& m);
 
