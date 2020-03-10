@@ -325,32 +325,7 @@ namespace O3GL
 		}
 
 		//
-		for (std::size_t i = 0; i < rigW2V.size(); ++i)
-			(*(Mat44*)(&this->rigV2W[i])) = glm::inverse(rigW2V[i]);
-
-		for (std::size_t i = 0; i < inProjCamera.size(); ++i)
-		{
-			Vec3 eye = inProjCamera[i].transform * Vec4(0.0f, 0.0f, 0.0f, 1.0f);
-			Vec3 viewDir = inProjCamera[i].transform * Vec4(1.0f, 0.0f, 0.0f, 0.0f);
-			Vec3 up = inProjCamera[i].transform * Vec4(0.0f, 0.0f, 1.0f, 0.0f);
-
-			(*((Mat44*)&inProjW2V[i])) = glm::lookAt(eye, eye + viewDir, up);
-			(*((Mat44*)&inProjW2C[i])) = inProjCamera[i].projection * inProjW2V[i];
-			(*((Mat44*)&inProjV2W[i])) = glm::inverse(inProjW2V[i]);
-			(*((Mat44*)&inProjC2W[i])) = glm::inverse(inProjW2C[i]);
-		}
-
-		for (std::size_t i = 0; i < outProjCamera.size(); ++i)
-		{
-			Vec3 eye = outProjCamera[i].transform * Vec4(0.0f, 0.0f, 0.0f, 1.0f);
-			Vec3 viewDir = outProjCamera[i].transform * Vec4(1.0f, 0.0f, 0.0f, 0.0f);
-			Vec3 up = outProjCamera[i].transform * Vec4(0.0f, 0.0f, 1.0f, 0.0f);
-
-			(*((Mat44*)&outProjW2V[i])) = glm::lookAt(eye, eye + viewDir, up);
-			(*((Mat44*)&outProjW2C[i])) = outProjCamera[i].projection * outProjW2V[i];
-			(*((Mat44*)&outProjV2W[i])) = glm::inverse(outProjW2V[i]);
-			(*((Mat44*)&outProjC2W[i])) = glm::inverse(outProjW2C[i]);
-		}
+		UpdateTransforms();
 	}
 
 	void PanoRenderBase::InitGeometryShaderHeadersEvent()
@@ -808,6 +783,36 @@ uniform mat4 u_outProjC2W[)");
 
 		//
 		CanvasRender::PostDrawEvent();
+	}
+
+	void PanoRenderBase::UpdateTransforms()
+	{
+		for (std::size_t i = 0; i < rigW2V.size(); ++i)
+			(*(Mat44*)(&this->rigV2W[i])) = glm::inverse(rigW2V[i]);
+
+		for (std::size_t i = 0; i < inProjCamera.size(); ++i)
+		{
+			Vec3 eye = inProjCamera[i].transform * Vec4(0.0f, 0.0f, 0.0f, 1.0f);
+			Vec3 viewDir = inProjCamera[i].transform * Vec4(1.0f, 0.0f, 0.0f, 0.0f);
+			Vec3 up = inProjCamera[i].transform * Vec4(0.0f, 0.0f, 1.0f, 0.0f);
+
+			(*((Mat44*)&inProjW2V[i])) = glm::lookAt(eye, eye + viewDir, up);
+			(*((Mat44*)&inProjW2C[i])) = inProjCamera[i].projection * inProjW2V[i];
+			(*((Mat44*)&inProjV2W[i])) = glm::inverse(inProjW2V[i]);
+			(*((Mat44*)&inProjC2W[i])) = glm::inverse(inProjW2C[i]);
+		}
+
+		for (std::size_t i = 0; i < outProjCamera.size(); ++i)
+		{
+			Vec3 eye = outProjCamera[i].transform * Vec4(0.0f, 0.0f, 0.0f, 1.0f);
+			Vec3 viewDir = outProjCamera[i].transform * Vec4(1.0f, 0.0f, 0.0f, 0.0f);
+			Vec3 up = outProjCamera[i].transform * Vec4(0.0f, 0.0f, 1.0f, 0.0f);
+
+			(*((Mat44*)&outProjW2V[i])) = glm::lookAt(eye, eye + viewDir, up);
+			(*((Mat44*)&outProjW2C[i])) = outProjCamera[i].projection * outProjW2V[i];
+			(*((Mat44*)&outProjV2W[i])) = glm::inverse(outProjW2V[i]);
+			(*((Mat44*)&outProjC2W[i])) = glm::inverse(outProjW2C[i]);
+		}
 	}
 
 	void PanoRenderBase::InitCamera_CUBEMAP(const std::vector<Camera>& cameras)

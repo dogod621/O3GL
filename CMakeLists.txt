@@ -172,6 +172,9 @@ include_directories(${GLM_INCLUDE_DIR})
 include_directories(${GLEW_INCLUDE_DIR})
 include_directories(${FREEGLUT_INCLUDE_DIR})
 
+#Setup predefine def
+add_definitions(-D_USE_MATH_DEFINES)
+
 # Setup O3GL
 OPTION(O3GL_BUILD_SHARED_LIBS "Build O3GL shared library." OFF)
 OPTION(O3GL_BUILD_STATIC_LIBS "Build O3GL static library." ON)

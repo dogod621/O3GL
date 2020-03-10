@@ -42,6 +42,8 @@ namespace O3GL
 		virtual void PostDrawEvent() const;
 
 	protected:
+		virtual void UpdateTransforms();
+
 		static void InitCamera_CUBEMAP(const std::vector<Camera>& cameras);
 		static void InitCamera_JOSH1(const std::vector<Camera>& cameras);
 		static void InitCamera_JOSH2(const std::vector<Camera>& cameras);
