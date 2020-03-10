@@ -16,7 +16,8 @@ namespace O3GL
 		shaderSources(),
 		shaders(),
 		programs(),
-		frameBuffers()
+		frameBuffers(),
+		renders()
 	{
 	}
 

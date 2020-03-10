@@ -73,6 +73,9 @@ namespace O3GL
 	{
 		struct Message;
 	};
+
+	template<int key>
+	class Window;
 }
 
 // O3GL
@@ -92,6 +95,10 @@ namespace O3GL
 	//
 	class Render
 	{
+	public:
+		template<int key>
+		friend class Window;
+
 	public:
 		virtual void SetupEvent() {}
 
@@ -149,6 +156,7 @@ namespace O3GL
 		std::map<std::string, PTR<Shader		>> shaders;
 		std::map<std::string, PTR<Program		>> programs;
 		std::map<std::string, PTR<FrameBuffer	>> frameBuffers;
+		std::map<std::string, PTR<Render		>> renders;
 
 	public:
 		PTR<Sampler> GetSampler(const std::string& name)
@@ -191,6 +199,11 @@ namespace O3GL
 			return frameBuffers.at(name);
 		}
 
+		PTR<Render> GetRender(const std::string& name)
+		{
+			return renders.at(name);
+		}
+
 		CONST_PTR<Sampler> GetSampler(const std::string& name) const
 		{
 			return samplers.at(name);
@@ -229,6 +242,11 @@ namespace O3GL
 		CONST_PTR<FrameBuffer> GetFrameBuffer(const std::string& name) const
 		{
 			return frameBuffers.at(name);
+		}
+
+		CONST_PTR<Render> GetRender(const std::string& name) const
+		{
+			return renders.at(name);
 		}
 	};
 };
