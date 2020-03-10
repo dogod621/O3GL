@@ -44,6 +44,7 @@ namespace O3GL
 			Setup();
 		}
 
+	protected:
 		void Setup();
 
 	protected:

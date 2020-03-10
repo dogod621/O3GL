@@ -45,25 +45,6 @@ namespace O3GL
 		static void InitCamera_JOSH3(const std::vector<Camera>& cameras);
 
 	protected:
-		void PanoRender_SetupEvent__rigMode_MONO__inProjMode_PERSPECTIVE();
-		void PanoRender_SetupEvent__rigMode_MONO__inProjMode_EQUIRECTANGULAR();
-		void PanoRender_SetupEvent__rigMode_MONO__inProjMode_MERCATOR();
-		void PanoRender_SetupEvent__rigMode_MONO__inProjMode_MULTI_PERSPECTIVE();
-		void PanoRender_SetupEvent__rigMode_MONO__inProjMode_CUBEMAP();
-		void PanoRender_SetupEvent__rigMode_MONO__inProjMode_JOSH1();
-		void PanoRender_SetupEvent__rigMode_MONO__inProjMode_JOSH2();
-		void PanoRender_SetupEvent__rigMode_MONO__inProjMode_JOSH3();
-
-		void PanoRender_SetupEvent__rigMode_MULTI__inProjMode_PERSPECTIVE();
-		void PanoRender_SetupEvent__rigMode_MULTI__inProjMode_EQUIRECTANGULAR();
-		void PanoRender_SetupEvent__rigMode_MULTI__inProjMode_MERCATOR();
-		void PanoRender_SetupEvent__rigMode_MULTI__inProjMode_MULTI_PERSPECTIVE();
-		void PanoRender_SetupEvent__rigMode_MULTI__inProjMode_CUBEMAP();
-		void PanoRender_SetupEvent__rigMode_MULTI__inProjMode_JOSH1();
-		void PanoRender_SetupEvent__rigMode_MULTI__inProjMode_JOSH2();
-		void PanoRender_SetupEvent__rigMode_MULTI__inProjMode_JOSH3();
-
-		//
 		void PanoRender_InitFragmentShaderHeadersEvent__rigMode_MONO__inProjMode_PERSPECTIVE();
 		void PanoRender_InitFragmentShaderHeadersEvent__rigMode_MONO__inProjMode_EQUIRECTANGULAR();
 		void PanoRender_InitFragmentShaderHeadersEvent__rigMode_MONO__inProjMode_MERCATOR();
@@ -161,8 +142,6 @@ namespace O3GL
 			Setup();
 		}
 
-		void Setup();
-
 		void SetInProjTransform(Mat44 inProjTransform) const
 		{
 			*((Mat44*)&this->inProjTransform) = inProjTransform;
@@ -172,6 +151,27 @@ namespace O3GL
 		{
 			*((Mat44*)&this->outProjTransform) = outProjTransform;
 		}
+
+	protected:
+		void Setup();
+
+		void PanoRender_Setup__rigMode_MONO__inProjMode_PERSPECTIVE();
+		void PanoRender_Setup__rigMode_MONO__inProjMode_EQUIRECTANGULAR();
+		void PanoRender_Setup__rigMode_MONO__inProjMode_MERCATOR();
+		void PanoRender_Setup__rigMode_MONO__inProjMode_MULTI_PERSPECTIVE();
+		void PanoRender_Setup__rigMode_MONO__inProjMode_CUBEMAP();
+		void PanoRender_Setup__rigMode_MONO__inProjMode_JOSH1();
+		void PanoRender_Setup__rigMode_MONO__inProjMode_JOSH2();
+		void PanoRender_Setup__rigMode_MONO__inProjMode_JOSH3();
+
+		void PanoRender_Setup__rigMode_MULTI__inProjMode_PERSPECTIVE();
+		void PanoRender_Setup__rigMode_MULTI__inProjMode_EQUIRECTANGULAR();
+		void PanoRender_Setup__rigMode_MULTI__inProjMode_MERCATOR();
+		void PanoRender_Setup__rigMode_MULTI__inProjMode_MULTI_PERSPECTIVE();
+		void PanoRender_Setup__rigMode_MULTI__inProjMode_CUBEMAP();
+		void PanoRender_Setup__rigMode_MULTI__inProjMode_JOSH1();
+		void PanoRender_Setup__rigMode_MULTI__inProjMode_JOSH2();
+		void PanoRender_Setup__rigMode_MULTI__inProjMode_JOSH3();
 
 	protected:
 		const bool enableField;

@@ -656,434 +656,6 @@ uniform mat4 u_outProjC2W[)");
 			0.0f, 0.0f, 0.0f, 1.0f);
 	}
 
-	void PanoRenderBase::PanoRender_SetupEvent__rigMode_MONO__inProjMode_PERSPECTIVE()
-	{
-		if (panoFieldTexture->Target() != GL_TEXTURE_2D)
-			THROW_EXCEPTION("pano Field targets is not correct");
-		if (enableDepth)
-		{
-			if (panoDepthTexture->Target() != GL_TEXTURE_2D)
-				THROW_EXCEPTION("pano Depth targets is not correct");
-		}
-		if (enableMask)
-		{
-			if (panoMaskTexture->Target() != GL_TEXTURE_2D)
-				THROW_EXCEPTION("pano Mask targets is not correct");
-		}
-
-		panoFieldSampler = samplers.at("plane_bilinear");
-		if (enableDepth)
-			panoDepthSampler = samplers.at("plane_bilinear");
-		if (enableMask)
-			panoMaskSampler = samplers.at("plane_bilinear");
-	}
-
-	void PanoRenderBase::PanoRender_SetupEvent__rigMode_MONO__inProjMode_EQUIRECTANGULAR()
-	{
-		if (panoFieldTexture->Target() != GL_TEXTURE_2D)
-			THROW_EXCEPTION("pano Field targets is not correct");
-		if (enableDepth)
-		{
-			if (panoDepthTexture->Target() != GL_TEXTURE_2D)
-				THROW_EXCEPTION("pano Depth targets is not correct");
-		}
-		if (enableMask)
-		{
-			if (panoMaskTexture->Target() != GL_TEXTURE_2D)
-				THROW_EXCEPTION("pano Mask targets is not correct");
-		}
-
-		panoFieldSampler = samplers.at("equirectangular_bilinear");
-		if (enableDepth)
-			panoDepthSampler = samplers.at("equirectangular_bilinear");
-		if (enableMask)
-			panoMaskSampler = samplers.at("equirectangular_bilinear");
-	}
-
-	void PanoRenderBase::PanoRender_SetupEvent__rigMode_MONO__inProjMode_MERCATOR()
-	{
-		if (panoFieldTexture->Target() != GL_TEXTURE_2D)
-			THROW_EXCEPTION("pano Field targets is not correct");
-		if (enableDepth)
-		{
-			if (panoDepthTexture->Target() != GL_TEXTURE_2D)
-				THROW_EXCEPTION("pano Depth targets is not correct");
-		}
-		if (enableMask)
-		{
-			if (panoMaskTexture->Target() != GL_TEXTURE_2D)
-				THROW_EXCEPTION("pano Mask targets is not correct");
-		}
-
-		panoFieldSampler = samplers.at("mercator_bilinear");
-		if (enableDepth)
-			panoDepthSampler = samplers.at("mercator_bilinear");
-		if (enableMask)
-			panoMaskSampler = samplers.at("mercator_bilinear");
-	}
-
-	void PanoRenderBase::PanoRender_SetupEvent__rigMode_MONO__inProjMode_MULTI_PERSPECTIVE()
-	{
-		if (panoFieldTexture->Target() != GL_TEXTURE_2D_ARRAY)
-			THROW_EXCEPTION("pano Field targets is not correct");
-		if (enableDepth)
-		{
-			if (panoDepthTexture->Target() != GL_TEXTURE_2D_ARRAY)
-				THROW_EXCEPTION("pano Depth targets is not correct");
-		}
-		if (enableMask)
-		{
-			if (panoMaskTexture->Target() != GL_TEXTURE_2D_ARRAY)
-				THROW_EXCEPTION("pano Mask targets is not correct");
-		}
-
-		if (panoFieldTexture->GetInfo<GLint>(0, GL_TEXTURE_DEPTH) != inProjCamera.size())
-			THROW_EXCEPTION("panoFieldTexture depth is not correct");
-		panoFieldSampler = samplers.at("plane_bilinear");
-		if (enableDepth)
-		{
-			if (panoDepthTexture->GetInfo<GLint>(0, GL_TEXTURE_DEPTH) != inProjCamera.size())
-				THROW_EXCEPTION("panoDepthTexture depth is not correct");
-			panoDepthSampler = samplers.at("plane_bilinear");
-		}
-		if (enableMask)
-		{
-			if (panoMaskTexture->GetInfo<GLint>(0, GL_TEXTURE_DEPTH) != inProjCamera.size())
-				THROW_EXCEPTION("panoMaskTexture depth is not correct");
-			panoMaskSampler = samplers.at("plane_bilinear");
-		}
-	}
-
-	void PanoRenderBase::PanoRender_SetupEvent__rigMode_MONO__inProjMode_CUBEMAP()
-	{
-		if (panoFieldTexture->Target() != GL_TEXTURE_CUBE_MAP)
-			THROW_EXCEPTION("pano Field targets is not correct");
-		if (enableDepth)
-		{
-			if (panoDepthTexture->Target() != GL_TEXTURE_CUBE_MAP)
-				THROW_EXCEPTION("pano Depth targets is not correct");
-		}
-		if (enableMask)
-		{
-			if (panoMaskTexture->Target() != GL_TEXTURE_CUBE_MAP)
-				THROW_EXCEPTION("pano Mask targets is not correct");
-		}
-
-		panoFieldSampler = samplers.at("cube_bilinear");
-		if (enableDepth)
-			panoDepthSampler = samplers.at("cube_bilinear");
-		if (enableMask)
-			panoMaskSampler = samplers.at("cube_bilinear");
-	}
-
-	void PanoRenderBase::PanoRender_SetupEvent__rigMode_MONO__inProjMode_JOSH1()
-	{
-		PanoRender_SetupEvent__rigMode_MONO__inProjMode_MULTI_PERSPECTIVE();
-		InitCamera_JOSH1(inProjCamera);
-	}
-
-	void PanoRenderBase::PanoRender_SetupEvent__rigMode_MONO__inProjMode_JOSH2()
-	{
-		if (panoFieldTexture->Target() != GL_TEXTURE_2D_ARRAY)
-			THROW_EXCEPTION("pano Field targets is not correct");
-		if (enableDepth)
-		{
-			if (panoDepthTexture->Target() != GL_TEXTURE_2D_ARRAY)
-				THROW_EXCEPTION("pano Depth targets is not correct");
-		}
-		if (enableMask)
-		{
-			if (panoMaskTexture->Target() != GL_TEXTURE_2D_ARRAY)
-				THROW_EXCEPTION("pano Mask targets is not correct");
-		}
-
-		if (panoFieldTexture->GetInfo<GLint>(0, GL_TEXTURE_DEPTH) != 12)
-			THROW_EXCEPTION("panoFieldTexture depth is not correct");
-		panoFieldSampler = samplers.at("plane_bilinear");
-		if (enableDepth)
-		{
-			if (panoDepthTexture->GetInfo<GLint>(0, GL_TEXTURE_DEPTH) != 12)
-				THROW_EXCEPTION("panoDepthTexture depth is not correct");
-			panoDepthSampler = samplers.at("plane_bilinear");
-		}
-		if (enableMask)
-		{
-			if (panoMaskTexture->GetInfo<GLint>(0, GL_TEXTURE_DEPTH) != 12)
-				THROW_EXCEPTION("panoMaskTexture depth is not correct");
-			panoMaskSampler = samplers.at("plane_bilinear");
-		}
-
-		InitCamera_JOSH2(inProjCamera);
-	}
-
-	void PanoRenderBase::PanoRender_SetupEvent__rigMode_MONO__inProjMode_JOSH3()
-	{
-		if (panoFieldTexture->Target() != GL_TEXTURE_2D_ARRAY)
-			THROW_EXCEPTION("pano Field targets is not correct");
-		if (enableDepth)
-		{
-			if (panoDepthTexture->Target() != GL_TEXTURE_2D_ARRAY)
-				THROW_EXCEPTION("pano Depth targets is not correct");
-		}
-		if (enableMask)
-		{
-			if (panoMaskTexture->Target() != GL_TEXTURE_2D_ARRAY)
-				THROW_EXCEPTION("pano Mask targets is not correct");
-		}
-
-		if (panoFieldTexture->GetInfo<GLint>(0, GL_TEXTURE_DEPTH) != 6)
-			THROW_EXCEPTION("panoFieldTexture depth is not correct");
-		panoFieldSampler = samplers.at("plane_bilinear");
-		if (enableDepth)
-		{
-			if (panoDepthTexture->GetInfo<GLint>(0, GL_TEXTURE_DEPTH) != 6)
-				THROW_EXCEPTION("panoDepthTexture depth is not correct");
-			panoDepthSampler = samplers.at("plane_bilinear");
-		}
-		if (enableMask)
-		{
-			if (panoMaskTexture->GetInfo<GLint>(0, GL_TEXTURE_DEPTH) != 6)
-				THROW_EXCEPTION("panoMaskTexture depth is not correct");
-			panoMaskSampler = samplers.at("plane_bilinear");
-		}
-
-		InitCamera_JOSH3(inProjCamera);
-	}
-
-	void PanoRenderBase::PanoRender_SetupEvent__rigMode_MULTI__inProjMode_PERSPECTIVE()
-	{
-		if (panoFieldTexture->Target() != GL_TEXTURE_2D_ARRAY)
-			THROW_EXCEPTION("pano Field targets is not correct");
-		if (enableDepth)
-		{
-			if (panoDepthTexture->Target() != GL_TEXTURE_2D_ARRAY)
-				THROW_EXCEPTION("pano Depth targets is not correct");
-		}
-		if (enableMask)
-		{
-			if (panoMaskTexture->Target() != GL_TEXTURE_2D_ARRAY)
-				THROW_EXCEPTION("pano Mask targets is not correct");
-		}
-
-		if (panoFieldTexture->GetInfo<GLint>(0, GL_TEXTURE_DEPTH) != rigW2V.size())
-			THROW_EXCEPTION("panoFieldTexture depth is not correct");
-		panoFieldSampler = samplers.at("plane_bilinear");
-		if (enableDepth)
-		{
-			if (panoDepthTexture->GetInfo<GLint>(0, GL_TEXTURE_DEPTH) != rigW2V.size())
-				THROW_EXCEPTION("panoDepthTexture depth is not correct");
-			panoDepthSampler = samplers.at("plane_bilinear");
-		}
-		if (enableMask)
-		{
-			if (panoMaskTexture->GetInfo<GLint>(0, GL_TEXTURE_DEPTH) != rigW2V.size())
-				THROW_EXCEPTION("panoMaskTexture depth is not correct");
-			panoMaskSampler = samplers.at("plane_bilinear");
-		}
-	}
-
-	void PanoRenderBase::PanoRender_SetupEvent__rigMode_MULTI__inProjMode_EQUIRECTANGULAR()
-	{
-		if (panoFieldTexture->Target() != GL_TEXTURE_2D_ARRAY)
-			THROW_EXCEPTION("pano Field targets is not correct");
-		if (enableDepth)
-		{
-			if (panoDepthTexture->Target() != GL_TEXTURE_2D_ARRAY)
-				THROW_EXCEPTION("pano Depth targets is not correct");
-		}
-		if (enableMask)
-		{
-			if (panoMaskTexture->Target() != GL_TEXTURE_2D_ARRAY)
-				THROW_EXCEPTION("pano Mask targets is not correct");
-		}
-
-		if (panoFieldTexture->GetInfo<GLint>(0, GL_TEXTURE_DEPTH) != rigW2V.size())
-			THROW_EXCEPTION("panoFieldTexture depth is not correct");
-		panoFieldSampler = samplers.at("equirectangular_bilinear");
-		if (enableDepth)
-		{
-			if (panoDepthTexture->GetInfo<GLint>(0, GL_TEXTURE_DEPTH) != rigW2V.size())
-				THROW_EXCEPTION("panoDepthTexture depth is not correct");
-			panoDepthSampler = samplers.at("equirectangular_bilinear");
-		}
-		if (enableMask)
-		{
-			if (panoMaskTexture->GetInfo<GLint>(0, GL_TEXTURE_DEPTH) != rigW2V.size())
-				THROW_EXCEPTION("panoMaskTexture depth is not correct");
-			panoMaskSampler = samplers.at("equirectangular_bilinear");
-		}
-	}
-
-	void PanoRenderBase::PanoRender_SetupEvent__rigMode_MULTI__inProjMode_MERCATOR()
-	{
-		if (panoFieldTexture->Target() != GL_TEXTURE_2D_ARRAY)
-			THROW_EXCEPTION("pano Field targets is not correct");
-		if (enableDepth)
-		{
-			if (panoDepthTexture->Target() != GL_TEXTURE_2D_ARRAY)
-				THROW_EXCEPTION("pano Depth targets is not correct");
-		}
-		if (enableMask)
-		{
-			if (panoMaskTexture->Target() != GL_TEXTURE_2D_ARRAY)
-				THROW_EXCEPTION("pano Mask targets is not correct");
-		}
-
-		if (panoFieldTexture->GetInfo<GLint>(0, GL_TEXTURE_DEPTH) != rigW2V.size())
-			THROW_EXCEPTION("panoFieldTexture depth is not correct");
-		panoFieldSampler = samplers.at("mercator_bilinear");
-		if (enableDepth)
-		{
-			if (panoDepthTexture->GetInfo<GLint>(0, GL_TEXTURE_DEPTH) != rigW2V.size())
-				THROW_EXCEPTION("panoDepthTexture depth is not correct");
-			panoDepthSampler = samplers.at("mercator_bilinear");
-		}
-		if (enableMask)
-		{
-			if (panoMaskTexture->GetInfo<GLint>(0, GL_TEXTURE_DEPTH) != rigW2V.size())
-				THROW_EXCEPTION("panoMaskTexture depth is not correct");
-			panoMaskSampler = samplers.at("mercator_bilinear");
-		}
-	}
-
-	void PanoRenderBase::PanoRender_SetupEvent__rigMode_MULTI__inProjMode_MULTI_PERSPECTIVE()
-	{
-		if (panoFieldTexture->Target() != GL_TEXTURE_2D_ARRAY)
-			THROW_EXCEPTION("pano Field targets is not correct");
-		if (enableDepth)
-		{
-			if (panoDepthTexture->Target() != GL_TEXTURE_2D_ARRAY)
-				THROW_EXCEPTION("pano Depth targets is not correct");
-		}
-		if (enableMask)
-		{
-			if (panoMaskTexture->Target() != GL_TEXTURE_2D_ARRAY)
-				THROW_EXCEPTION("pano Mask targets is not correct");
-		}
-
-		if (panoFieldTexture->GetInfo<GLint>(0, GL_TEXTURE_DEPTH) != inProjCamera.size() * rigW2V.size())
-			THROW_EXCEPTION("panoFieldTexture depth is not correct");
-		panoFieldSampler = samplers.at("plane_bilinear");
-		if (enableDepth)
-		{
-			if (panoDepthTexture->GetInfo<GLint>(0, GL_TEXTURE_DEPTH) != inProjCamera.size() * rigW2V.size())
-				THROW_EXCEPTION("panoDepthTexture depth is not correct");
-			panoDepthSampler = samplers.at("plane_bilinear");
-		}
-		if (enableMask)
-		{
-			if (panoMaskTexture->GetInfo<GLint>(0, GL_TEXTURE_DEPTH) != inProjCamera.size() * rigW2V.size())
-				THROW_EXCEPTION("panoMaskTexture depth is not correct");
-			panoMaskSampler = samplers.at("plane_bilinear");
-		}
-	}
-
-	void PanoRenderBase::PanoRender_SetupEvent__rigMode_MULTI__inProjMode_CUBEMAP()
-	{
-		if (panoFieldTexture->Target() != GL_TEXTURE_CUBE_MAP_ARRAY)
-			THROW_EXCEPTION("pano Field targets is not correct");
-		if (enableDepth)
-		{
-			if (panoDepthTexture->Target() != GL_TEXTURE_CUBE_MAP_ARRAY)
-				THROW_EXCEPTION("pano Depth targets is not correct");
-		}
-		if (enableMask)
-		{
-			if (panoMaskTexture->Target() != GL_TEXTURE_CUBE_MAP_ARRAY)
-				THROW_EXCEPTION("pano Mask targets is not correct");
-		}
-
-		if (panoFieldTexture->GetInfo<GLint>(0, GL_TEXTURE_DEPTH) != rigW2V.size() * 6)
-			THROW_EXCEPTION("panoFieldTexture depth is not correct");
-		panoFieldSampler = samplers.at("cube_bilinear");
-		if (enableDepth)
-		{
-			if (panoDepthTexture->GetInfo<GLint>(0, GL_TEXTURE_DEPTH) != rigW2V.size() * 6)
-				THROW_EXCEPTION("panoDepthTexture depth is not correct");
-			panoDepthSampler = samplers.at("cube_bilinear");
-		}
-		if (enableMask)
-		{
-			if (panoMaskTexture->GetInfo<GLint>(0, GL_TEXTURE_DEPTH) != rigW2V.size() * 6)
-				THROW_EXCEPTION("panoMaskTexture depth is not correct");
-			panoMaskSampler = samplers.at("cube_bilinear");
-		}
-	}
-
-	void PanoRenderBase::PanoRender_SetupEvent__rigMode_MULTI__inProjMode_JOSH1()
-	{
-		PanoRender_SetupEvent__rigMode_MULTI__inProjMode_MULTI_PERSPECTIVE();
-		InitCamera_JOSH1(inProjCamera);
-	}
-
-	void PanoRenderBase::PanoRender_SetupEvent__rigMode_MULTI__inProjMode_JOSH2()
-	{
-		if (panoFieldTexture->Target() != GL_TEXTURE_2D_ARRAY)
-			THROW_EXCEPTION("pano Field targets is not correct");
-		if (enableDepth)
-		{
-			if (panoDepthTexture->Target() != GL_TEXTURE_2D_ARRAY)
-				THROW_EXCEPTION("pano Depth targets is not correct");
-		}
-		if (enableMask)
-		{
-			if (panoMaskTexture->Target() != GL_TEXTURE_2D_ARRAY)
-				THROW_EXCEPTION("pano Mask targets is not correct");
-		}
-
-		if (panoFieldTexture->GetInfo<GLint>(0, GL_TEXTURE_DEPTH) != 12 * rigW2V.size())
-			THROW_EXCEPTION("panoFieldTexture depth is not correct");
-		panoFieldSampler = samplers.at("plane_bilinear");
-		if (enableDepth)
-		{
-			if (panoDepthTexture->GetInfo<GLint>(0, GL_TEXTURE_DEPTH) != 12 * rigW2V.size())
-				THROW_EXCEPTION("panoDepthTexture depth is not correct");
-			panoDepthSampler = samplers.at("plane_bilinear");
-		}
-		if (enableMask)
-		{
-			if (panoMaskTexture->GetInfo<GLint>(0, GL_TEXTURE_DEPTH) != 12 * rigW2V.size())
-				THROW_EXCEPTION("panoMaskTexture depth is not correct");
-			panoMaskSampler = samplers.at("plane_bilinear");
-		}
-
-		InitCamera_JOSH2(inProjCamera);
-	}
-
-	void PanoRenderBase::PanoRender_SetupEvent__rigMode_MULTI__inProjMode_JOSH3()
-	{
-		if (panoFieldTexture->Target() != GL_TEXTURE_2D_ARRAY)
-			THROW_EXCEPTION("pano Field targets is not correct");
-		if (enableDepth)
-		{
-			if (panoDepthTexture->Target() != GL_TEXTURE_2D_ARRAY)
-				THROW_EXCEPTION("pano Depth targets is not correct");
-		}
-		if (enableMask)
-		{
-			if (panoMaskTexture->Target() != GL_TEXTURE_2D_ARRAY)
-				THROW_EXCEPTION("pano Mask targets is not correct");
-		}
-
-		if (panoFieldTexture->GetInfo<GLint>(0, GL_TEXTURE_DEPTH) != 6 * rigW2V.size())
-			THROW_EXCEPTION("panoFieldTexture depth is not correct");
-		panoFieldSampler = samplers.at("plane_bilinear");
-		if (enableDepth)
-		{
-			if (panoDepthTexture->GetInfo<GLint>(0, GL_TEXTURE_DEPTH) != 6 * rigW2V.size())
-				THROW_EXCEPTION("panoDepthTexture depth is not correct");
-			panoDepthSampler = samplers.at("plane_bilinear");
-		}
-		if (enableMask)
-		{
-			if (panoMaskTexture->GetInfo<GLint>(0, GL_TEXTURE_DEPTH) != 6 * rigW2V.size())
-				THROW_EXCEPTION("panoMaskTexture depth is not correct");
-			panoMaskSampler = samplers.at("plane_bilinear");
-		}
-
-		InitCamera_JOSH3(inProjCamera);
-	}
-
 	void PanoRenderBase::PanoRender_InitFragmentShaderHeadersEvent__rigMode_MONO__inProjMode_PERSPECTIVE()
 	{
 		shaderSources["canvas_frag"]->push_back(R"(
@@ -2925,35 +2497,35 @@ Ray3D GetFragViewRay(vec2 fragUV)
 			switch (inProjMode)
 			{
 			case ProjectionMode::PERSPECTIVE:
-				PanoRender_SetupEvent__rigMode_MONO__inProjMode_PERSPECTIVE();
+				PanoRender_Setup__rigMode_MONO__inProjMode_PERSPECTIVE();
 				break;
 
 			case ProjectionMode::EQUIRECTANGULAR:
-				PanoRender_SetupEvent__rigMode_MONO__inProjMode_EQUIRECTANGULAR();
+				PanoRender_Setup__rigMode_MONO__inProjMode_EQUIRECTANGULAR();
 				break;
 
 			case ProjectionMode::MERCATOR:
-				PanoRender_SetupEvent__rigMode_MONO__inProjMode_MERCATOR();
+				PanoRender_Setup__rigMode_MONO__inProjMode_MERCATOR();
 				break;
 
 			case ProjectionMode::MULTI_PERSPECTIVE:
-				PanoRender_SetupEvent__rigMode_MONO__inProjMode_MULTI_PERSPECTIVE();
+				PanoRender_Setup__rigMode_MONO__inProjMode_MULTI_PERSPECTIVE();
 				break;
 
 			case ProjectionMode::CUBEMAP:
-				PanoRender_SetupEvent__rigMode_MONO__inProjMode_CUBEMAP();
+				PanoRender_Setup__rigMode_MONO__inProjMode_CUBEMAP();
 				break;
 
 			case ProjectionMode::JOSH1:
-				PanoRender_SetupEvent__rigMode_MONO__inProjMode_JOSH1();
+				PanoRender_Setup__rigMode_MONO__inProjMode_JOSH1();
 				break;
 
 			case ProjectionMode::JOSH2:
-				PanoRender_SetupEvent__rigMode_MONO__inProjMode_JOSH2();
+				PanoRender_Setup__rigMode_MONO__inProjMode_JOSH2();
 				break;
 
 			case ProjectionMode::JOSH3:
-				PanoRender_SetupEvent__rigMode_MONO__inProjMode_JOSH3();
+				PanoRender_Setup__rigMode_MONO__inProjMode_JOSH3();
 				break;
 
 			default:
@@ -2966,35 +2538,35 @@ Ray3D GetFragViewRay(vec2 fragUV)
 			switch (inProjMode)
 			{
 			case ProjectionMode::PERSPECTIVE:
-				PanoRender_SetupEvent__rigMode_MULTI__inProjMode_PERSPECTIVE();
+				PanoRender_Setup__rigMode_MULTI__inProjMode_PERSPECTIVE();
 				break;
 
 			case ProjectionMode::EQUIRECTANGULAR:
-				PanoRender_SetupEvent__rigMode_MULTI__inProjMode_EQUIRECTANGULAR();
+				PanoRender_Setup__rigMode_MULTI__inProjMode_EQUIRECTANGULAR();
 				break;
 
 			case ProjectionMode::MERCATOR:
-				PanoRender_SetupEvent__rigMode_MULTI__inProjMode_MERCATOR();
+				PanoRender_Setup__rigMode_MULTI__inProjMode_MERCATOR();
 				break;
 
 			case ProjectionMode::MULTI_PERSPECTIVE:
-				PanoRender_SetupEvent__rigMode_MULTI__inProjMode_MULTI_PERSPECTIVE();
+				PanoRender_Setup__rigMode_MULTI__inProjMode_MULTI_PERSPECTIVE();
 				break;
 
 			case ProjectionMode::CUBEMAP:
-				PanoRender_SetupEvent__rigMode_MULTI__inProjMode_CUBEMAP();
+				PanoRender_Setup__rigMode_MULTI__inProjMode_CUBEMAP();
 				break;
 
 			case ProjectionMode::JOSH1:
-				PanoRender_SetupEvent__rigMode_MULTI__inProjMode_JOSH1();
+				PanoRender_Setup__rigMode_MULTI__inProjMode_JOSH1();
 				break;
 
 			case ProjectionMode::JOSH2:
-				PanoRender_SetupEvent__rigMode_MULTI__inProjMode_JOSH2();
+				PanoRender_Setup__rigMode_MULTI__inProjMode_JOSH2();
 				break;
 
 			case ProjectionMode::JOSH3:
-				PanoRender_SetupEvent__rigMode_MULTI__inProjMode_JOSH3();
+				PanoRender_Setup__rigMode_MULTI__inProjMode_JOSH3();
 				break;
 
 			default:
@@ -3088,6 +2660,434 @@ Ray3D GetFragViewRay(vec2 fragUV)
 			(*((Mat44*)&outProjV2W[i])) = glm::inverse(outProjW2V[i]);
 			(*((Mat44*)&outProjC2W[i])) = glm::inverse(outProjW2C[i]);
 		}
+	}
+
+	void PanoRenderBase::PanoRender_Setup__rigMode_MONO__inProjMode_PERSPECTIVE()
+	{
+		if (panoFieldTexture->Target() != GL_TEXTURE_2D)
+			THROW_EXCEPTION("pano Field targets is not correct");
+		if (enableDepth)
+		{
+			if (panoDepthTexture->Target() != GL_TEXTURE_2D)
+				THROW_EXCEPTION("pano Depth targets is not correct");
+		}
+		if (enableMask)
+		{
+			if (panoMaskTexture->Target() != GL_TEXTURE_2D)
+				THROW_EXCEPTION("pano Mask targets is not correct");
+		}
+
+		panoFieldSampler = samplers.at("plane_bilinear");
+		if (enableDepth)
+			panoDepthSampler = samplers.at("plane_bilinear");
+		if (enableMask)
+			panoMaskSampler = samplers.at("plane_bilinear");
+	}
+
+	void PanoRenderBase::PanoRender_Setup__rigMode_MONO__inProjMode_EQUIRECTANGULAR()
+	{
+		if (panoFieldTexture->Target() != GL_TEXTURE_2D)
+			THROW_EXCEPTION("pano Field targets is not correct");
+		if (enableDepth)
+		{
+			if (panoDepthTexture->Target() != GL_TEXTURE_2D)
+				THROW_EXCEPTION("pano Depth targets is not correct");
+		}
+		if (enableMask)
+		{
+			if (panoMaskTexture->Target() != GL_TEXTURE_2D)
+				THROW_EXCEPTION("pano Mask targets is not correct");
+		}
+
+		panoFieldSampler = samplers.at("equirectangular_bilinear");
+		if (enableDepth)
+			panoDepthSampler = samplers.at("equirectangular_bilinear");
+		if (enableMask)
+			panoMaskSampler = samplers.at("equirectangular_bilinear");
+	}
+
+	void PanoRenderBase::PanoRender_Setup__rigMode_MONO__inProjMode_MERCATOR()
+	{
+		if (panoFieldTexture->Target() != GL_TEXTURE_2D)
+			THROW_EXCEPTION("pano Field targets is not correct");
+		if (enableDepth)
+		{
+			if (panoDepthTexture->Target() != GL_TEXTURE_2D)
+				THROW_EXCEPTION("pano Depth targets is not correct");
+		}
+		if (enableMask)
+		{
+			if (panoMaskTexture->Target() != GL_TEXTURE_2D)
+				THROW_EXCEPTION("pano Mask targets is not correct");
+		}
+
+		panoFieldSampler = samplers.at("mercator_bilinear");
+		if (enableDepth)
+			panoDepthSampler = samplers.at("mercator_bilinear");
+		if (enableMask)
+			panoMaskSampler = samplers.at("mercator_bilinear");
+	}
+
+	void PanoRenderBase::PanoRender_Setup__rigMode_MONO__inProjMode_MULTI_PERSPECTIVE()
+	{
+		if (panoFieldTexture->Target() != GL_TEXTURE_2D_ARRAY)
+			THROW_EXCEPTION("pano Field targets is not correct");
+		if (enableDepth)
+		{
+			if (panoDepthTexture->Target() != GL_TEXTURE_2D_ARRAY)
+				THROW_EXCEPTION("pano Depth targets is not correct");
+		}
+		if (enableMask)
+		{
+			if (panoMaskTexture->Target() != GL_TEXTURE_2D_ARRAY)
+				THROW_EXCEPTION("pano Mask targets is not correct");
+		}
+
+		if (panoFieldTexture->GetInfo<GLint>(0, GL_TEXTURE_DEPTH) != inProjCamera.size())
+			THROW_EXCEPTION("panoFieldTexture depth is not correct");
+		panoFieldSampler = samplers.at("plane_bilinear");
+		if (enableDepth)
+		{
+			if (panoDepthTexture->GetInfo<GLint>(0, GL_TEXTURE_DEPTH) != inProjCamera.size())
+				THROW_EXCEPTION("panoDepthTexture depth is not correct");
+			panoDepthSampler = samplers.at("plane_bilinear");
+		}
+		if (enableMask)
+		{
+			if (panoMaskTexture->GetInfo<GLint>(0, GL_TEXTURE_DEPTH) != inProjCamera.size())
+				THROW_EXCEPTION("panoMaskTexture depth is not correct");
+			panoMaskSampler = samplers.at("plane_bilinear");
+		}
+	}
+
+	void PanoRenderBase::PanoRender_Setup__rigMode_MONO__inProjMode_CUBEMAP()
+	{
+		if (panoFieldTexture->Target() != GL_TEXTURE_CUBE_MAP)
+			THROW_EXCEPTION("pano Field targets is not correct");
+		if (enableDepth)
+		{
+			if (panoDepthTexture->Target() != GL_TEXTURE_CUBE_MAP)
+				THROW_EXCEPTION("pano Depth targets is not correct");
+		}
+		if (enableMask)
+		{
+			if (panoMaskTexture->Target() != GL_TEXTURE_CUBE_MAP)
+				THROW_EXCEPTION("pano Mask targets is not correct");
+		}
+
+		panoFieldSampler = samplers.at("cube_bilinear");
+		if (enableDepth)
+			panoDepthSampler = samplers.at("cube_bilinear");
+		if (enableMask)
+			panoMaskSampler = samplers.at("cube_bilinear");
+	}
+
+	void PanoRenderBase::PanoRender_Setup__rigMode_MONO__inProjMode_JOSH1()
+	{
+		PanoRender_Setup__rigMode_MONO__inProjMode_MULTI_PERSPECTIVE();
+		InitCamera_JOSH1(inProjCamera);
+	}
+
+	void PanoRenderBase::PanoRender_Setup__rigMode_MONO__inProjMode_JOSH2()
+	{
+		if (panoFieldTexture->Target() != GL_TEXTURE_2D_ARRAY)
+			THROW_EXCEPTION("pano Field targets is not correct");
+		if (enableDepth)
+		{
+			if (panoDepthTexture->Target() != GL_TEXTURE_2D_ARRAY)
+				THROW_EXCEPTION("pano Depth targets is not correct");
+		}
+		if (enableMask)
+		{
+			if (panoMaskTexture->Target() != GL_TEXTURE_2D_ARRAY)
+				THROW_EXCEPTION("pano Mask targets is not correct");
+		}
+
+		if (panoFieldTexture->GetInfo<GLint>(0, GL_TEXTURE_DEPTH) != 12)
+			THROW_EXCEPTION("panoFieldTexture depth is not correct");
+		panoFieldSampler = samplers.at("plane_bilinear");
+		if (enableDepth)
+		{
+			if (panoDepthTexture->GetInfo<GLint>(0, GL_TEXTURE_DEPTH) != 12)
+				THROW_EXCEPTION("panoDepthTexture depth is not correct");
+			panoDepthSampler = samplers.at("plane_bilinear");
+		}
+		if (enableMask)
+		{
+			if (panoMaskTexture->GetInfo<GLint>(0, GL_TEXTURE_DEPTH) != 12)
+				THROW_EXCEPTION("panoMaskTexture depth is not correct");
+			panoMaskSampler = samplers.at("plane_bilinear");
+		}
+
+		InitCamera_JOSH2(inProjCamera);
+	}
+
+	void PanoRenderBase::PanoRender_Setup__rigMode_MONO__inProjMode_JOSH3()
+	{
+		if (panoFieldTexture->Target() != GL_TEXTURE_2D_ARRAY)
+			THROW_EXCEPTION("pano Field targets is not correct");
+		if (enableDepth)
+		{
+			if (panoDepthTexture->Target() != GL_TEXTURE_2D_ARRAY)
+				THROW_EXCEPTION("pano Depth targets is not correct");
+		}
+		if (enableMask)
+		{
+			if (panoMaskTexture->Target() != GL_TEXTURE_2D_ARRAY)
+				THROW_EXCEPTION("pano Mask targets is not correct");
+		}
+
+		if (panoFieldTexture->GetInfo<GLint>(0, GL_TEXTURE_DEPTH) != 6)
+			THROW_EXCEPTION("panoFieldTexture depth is not correct");
+		panoFieldSampler = samplers.at("plane_bilinear");
+		if (enableDepth)
+		{
+			if (panoDepthTexture->GetInfo<GLint>(0, GL_TEXTURE_DEPTH) != 6)
+				THROW_EXCEPTION("panoDepthTexture depth is not correct");
+			panoDepthSampler = samplers.at("plane_bilinear");
+		}
+		if (enableMask)
+		{
+			if (panoMaskTexture->GetInfo<GLint>(0, GL_TEXTURE_DEPTH) != 6)
+				THROW_EXCEPTION("panoMaskTexture depth is not correct");
+			panoMaskSampler = samplers.at("plane_bilinear");
+		}
+
+		InitCamera_JOSH3(inProjCamera);
+	}
+
+	void PanoRenderBase::PanoRender_Setup__rigMode_MULTI__inProjMode_PERSPECTIVE()
+	{
+		if (panoFieldTexture->Target() != GL_TEXTURE_2D_ARRAY)
+			THROW_EXCEPTION("pano Field targets is not correct");
+		if (enableDepth)
+		{
+			if (panoDepthTexture->Target() != GL_TEXTURE_2D_ARRAY)
+				THROW_EXCEPTION("pano Depth targets is not correct");
+		}
+		if (enableMask)
+		{
+			if (panoMaskTexture->Target() != GL_TEXTURE_2D_ARRAY)
+				THROW_EXCEPTION("pano Mask targets is not correct");
+		}
+
+		if (panoFieldTexture->GetInfo<GLint>(0, GL_TEXTURE_DEPTH) != rigW2V.size())
+			THROW_EXCEPTION("panoFieldTexture depth is not correct");
+		panoFieldSampler = samplers.at("plane_bilinear");
+		if (enableDepth)
+		{
+			if (panoDepthTexture->GetInfo<GLint>(0, GL_TEXTURE_DEPTH) != rigW2V.size())
+				THROW_EXCEPTION("panoDepthTexture depth is not correct");
+			panoDepthSampler = samplers.at("plane_bilinear");
+		}
+		if (enableMask)
+		{
+			if (panoMaskTexture->GetInfo<GLint>(0, GL_TEXTURE_DEPTH) != rigW2V.size())
+				THROW_EXCEPTION("panoMaskTexture depth is not correct");
+			panoMaskSampler = samplers.at("plane_bilinear");
+		}
+	}
+
+	void PanoRenderBase::PanoRender_Setup__rigMode_MULTI__inProjMode_EQUIRECTANGULAR()
+	{
+		if (panoFieldTexture->Target() != GL_TEXTURE_2D_ARRAY)
+			THROW_EXCEPTION("pano Field targets is not correct");
+		if (enableDepth)
+		{
+			if (panoDepthTexture->Target() != GL_TEXTURE_2D_ARRAY)
+				THROW_EXCEPTION("pano Depth targets is not correct");
+		}
+		if (enableMask)
+		{
+			if (panoMaskTexture->Target() != GL_TEXTURE_2D_ARRAY)
+				THROW_EXCEPTION("pano Mask targets is not correct");
+		}
+
+		if (panoFieldTexture->GetInfo<GLint>(0, GL_TEXTURE_DEPTH) != rigW2V.size())
+			THROW_EXCEPTION("panoFieldTexture depth is not correct");
+		panoFieldSampler = samplers.at("equirectangular_bilinear");
+		if (enableDepth)
+		{
+			if (panoDepthTexture->GetInfo<GLint>(0, GL_TEXTURE_DEPTH) != rigW2V.size())
+				THROW_EXCEPTION("panoDepthTexture depth is not correct");
+			panoDepthSampler = samplers.at("equirectangular_bilinear");
+		}
+		if (enableMask)
+		{
+			if (panoMaskTexture->GetInfo<GLint>(0, GL_TEXTURE_DEPTH) != rigW2V.size())
+				THROW_EXCEPTION("panoMaskTexture depth is not correct");
+			panoMaskSampler = samplers.at("equirectangular_bilinear");
+		}
+	}
+
+	void PanoRenderBase::PanoRender_Setup__rigMode_MULTI__inProjMode_MERCATOR()
+	{
+		if (panoFieldTexture->Target() != GL_TEXTURE_2D_ARRAY)
+			THROW_EXCEPTION("pano Field targets is not correct");
+		if (enableDepth)
+		{
+			if (panoDepthTexture->Target() != GL_TEXTURE_2D_ARRAY)
+				THROW_EXCEPTION("pano Depth targets is not correct");
+		}
+		if (enableMask)
+		{
+			if (panoMaskTexture->Target() != GL_TEXTURE_2D_ARRAY)
+				THROW_EXCEPTION("pano Mask targets is not correct");
+		}
+
+		if (panoFieldTexture->GetInfo<GLint>(0, GL_TEXTURE_DEPTH) != rigW2V.size())
+			THROW_EXCEPTION("panoFieldTexture depth is not correct");
+		panoFieldSampler = samplers.at("mercator_bilinear");
+		if (enableDepth)
+		{
+			if (panoDepthTexture->GetInfo<GLint>(0, GL_TEXTURE_DEPTH) != rigW2V.size())
+				THROW_EXCEPTION("panoDepthTexture depth is not correct");
+			panoDepthSampler = samplers.at("mercator_bilinear");
+		}
+		if (enableMask)
+		{
+			if (panoMaskTexture->GetInfo<GLint>(0, GL_TEXTURE_DEPTH) != rigW2V.size())
+				THROW_EXCEPTION("panoMaskTexture depth is not correct");
+			panoMaskSampler = samplers.at("mercator_bilinear");
+		}
+	}
+
+	void PanoRenderBase::PanoRender_Setup__rigMode_MULTI__inProjMode_MULTI_PERSPECTIVE()
+	{
+		if (panoFieldTexture->Target() != GL_TEXTURE_2D_ARRAY)
+			THROW_EXCEPTION("pano Field targets is not correct");
+		if (enableDepth)
+		{
+			if (panoDepthTexture->Target() != GL_TEXTURE_2D_ARRAY)
+				THROW_EXCEPTION("pano Depth targets is not correct");
+		}
+		if (enableMask)
+		{
+			if (panoMaskTexture->Target() != GL_TEXTURE_2D_ARRAY)
+				THROW_EXCEPTION("pano Mask targets is not correct");
+		}
+
+		if (panoFieldTexture->GetInfo<GLint>(0, GL_TEXTURE_DEPTH) != inProjCamera.size() * rigW2V.size())
+			THROW_EXCEPTION("panoFieldTexture depth is not correct");
+		panoFieldSampler = samplers.at("plane_bilinear");
+		if (enableDepth)
+		{
+			if (panoDepthTexture->GetInfo<GLint>(0, GL_TEXTURE_DEPTH) != inProjCamera.size() * rigW2V.size())
+				THROW_EXCEPTION("panoDepthTexture depth is not correct");
+			panoDepthSampler = samplers.at("plane_bilinear");
+		}
+		if (enableMask)
+		{
+			if (panoMaskTexture->GetInfo<GLint>(0, GL_TEXTURE_DEPTH) != inProjCamera.size() * rigW2V.size())
+				THROW_EXCEPTION("panoMaskTexture depth is not correct");
+			panoMaskSampler = samplers.at("plane_bilinear");
+		}
+	}
+
+	void PanoRenderBase::PanoRender_Setup__rigMode_MULTI__inProjMode_CUBEMAP()
+	{
+		if (panoFieldTexture->Target() != GL_TEXTURE_CUBE_MAP_ARRAY)
+			THROW_EXCEPTION("pano Field targets is not correct");
+		if (enableDepth)
+		{
+			if (panoDepthTexture->Target() != GL_TEXTURE_CUBE_MAP_ARRAY)
+				THROW_EXCEPTION("pano Depth targets is not correct");
+		}
+		if (enableMask)
+		{
+			if (panoMaskTexture->Target() != GL_TEXTURE_CUBE_MAP_ARRAY)
+				THROW_EXCEPTION("pano Mask targets is not correct");
+		}
+
+		if (panoFieldTexture->GetInfo<GLint>(0, GL_TEXTURE_DEPTH) != rigW2V.size() * 6)
+			THROW_EXCEPTION("panoFieldTexture depth is not correct");
+		panoFieldSampler = samplers.at("cube_bilinear");
+		if (enableDepth)
+		{
+			if (panoDepthTexture->GetInfo<GLint>(0, GL_TEXTURE_DEPTH) != rigW2V.size() * 6)
+				THROW_EXCEPTION("panoDepthTexture depth is not correct");
+			panoDepthSampler = samplers.at("cube_bilinear");
+		}
+		if (enableMask)
+		{
+			if (panoMaskTexture->GetInfo<GLint>(0, GL_TEXTURE_DEPTH) != rigW2V.size() * 6)
+				THROW_EXCEPTION("panoMaskTexture depth is not correct");
+			panoMaskSampler = samplers.at("cube_bilinear");
+		}
+	}
+
+	void PanoRenderBase::PanoRender_Setup__rigMode_MULTI__inProjMode_JOSH1()
+	{
+		PanoRender_Setup__rigMode_MULTI__inProjMode_MULTI_PERSPECTIVE();
+		InitCamera_JOSH1(inProjCamera);
+	}
+
+	void PanoRenderBase::PanoRender_Setup__rigMode_MULTI__inProjMode_JOSH2()
+	{
+		if (panoFieldTexture->Target() != GL_TEXTURE_2D_ARRAY)
+			THROW_EXCEPTION("pano Field targets is not correct");
+		if (enableDepth)
+		{
+			if (panoDepthTexture->Target() != GL_TEXTURE_2D_ARRAY)
+				THROW_EXCEPTION("pano Depth targets is not correct");
+		}
+		if (enableMask)
+		{
+			if (panoMaskTexture->Target() != GL_TEXTURE_2D_ARRAY)
+				THROW_EXCEPTION("pano Mask targets is not correct");
+		}
+
+		if (panoFieldTexture->GetInfo<GLint>(0, GL_TEXTURE_DEPTH) != 12 * rigW2V.size())
+			THROW_EXCEPTION("panoFieldTexture depth is not correct");
+		panoFieldSampler = samplers.at("plane_bilinear");
+		if (enableDepth)
+		{
+			if (panoDepthTexture->GetInfo<GLint>(0, GL_TEXTURE_DEPTH) != 12 * rigW2V.size())
+				THROW_EXCEPTION("panoDepthTexture depth is not correct");
+			panoDepthSampler = samplers.at("plane_bilinear");
+		}
+		if (enableMask)
+		{
+			if (panoMaskTexture->GetInfo<GLint>(0, GL_TEXTURE_DEPTH) != 12 * rigW2V.size())
+				THROW_EXCEPTION("panoMaskTexture depth is not correct");
+			panoMaskSampler = samplers.at("plane_bilinear");
+		}
+
+		InitCamera_JOSH2(inProjCamera);
+	}
+
+	void PanoRenderBase::PanoRender_Setup__rigMode_MULTI__inProjMode_JOSH3()
+	{
+		if (panoFieldTexture->Target() != GL_TEXTURE_2D_ARRAY)
+			THROW_EXCEPTION("pano Field targets is not correct");
+		if (enableDepth)
+		{
+			if (panoDepthTexture->Target() != GL_TEXTURE_2D_ARRAY)
+				THROW_EXCEPTION("pano Depth targets is not correct");
+		}
+		if (enableMask)
+		{
+			if (panoMaskTexture->Target() != GL_TEXTURE_2D_ARRAY)
+				THROW_EXCEPTION("pano Mask targets is not correct");
+		}
+
+		if (panoFieldTexture->GetInfo<GLint>(0, GL_TEXTURE_DEPTH) != 6 * rigW2V.size())
+			THROW_EXCEPTION("panoFieldTexture depth is not correct");
+		panoFieldSampler = samplers.at("plane_bilinear");
+		if (enableDepth)
+		{
+			if (panoDepthTexture->GetInfo<GLint>(0, GL_TEXTURE_DEPTH) != 6 * rigW2V.size())
+				THROW_EXCEPTION("panoDepthTexture depth is not correct");
+			panoDepthSampler = samplers.at("plane_bilinear");
+		}
+		if (enableMask)
+		{
+			if (panoMaskTexture->GetInfo<GLint>(0, GL_TEXTURE_DEPTH) != 6 * rigW2V.size())
+				THROW_EXCEPTION("panoMaskTexture depth is not correct");
+			panoMaskSampler = samplers.at("plane_bilinear");
+		}
+
+		InitCamera_JOSH3(inProjCamera);
 	}
 
 	//

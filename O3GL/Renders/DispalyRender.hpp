@@ -118,6 +118,7 @@ namespace O3GL
 			Setup();
 		}
 
+	protected:
 		void Setup();
 
 	protected:
@@ -131,9 +132,6 @@ namespace O3GL
 	//
 	class AnaglyphDisplayRender : public DisplayRender
 	{
-	protected:
-		virtual void SetupEvent();
-
 	protected:
 		virtual void InitFragmentShaderHeadersEvent();
 		virtual void InitFragmentShaderMainsEvent();
@@ -156,6 +154,7 @@ namespace O3GL
 			Setup();
 		}
 
+	protected:
 		void Setup();
 
 	protected:
