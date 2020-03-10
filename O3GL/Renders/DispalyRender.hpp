@@ -76,9 +76,6 @@ namespace O3GL
 		};
 
 	protected:
-		virtual void SetupEvent();
-
-	protected:
 		virtual void InitFragmentShaderHeadersEvent();
 		virtual void InitFragmentShaderMainsEvent();
 
@@ -109,13 +106,19 @@ namespace O3GL
 	public:
 		TextureDisplayRender(const CONST_PTR<Texture>& colorTexture, Channel channel, Mode mode) :
 			DisplayRender(), colorSampler(), colorTexture(colorTexture), channel(channel), mode(mode)
-		{}
+		{
+			Setup();
+		}
 
 		TextureDisplayRender(
 			GLint canvasWidth, GLint canvasHeight,
 			const CONST_PTR<Texture>& colorTexture, Channel channel, Mode mode) :
 			DisplayRender(canvasWidth, canvasHeight), colorSampler(), colorTexture(colorTexture), channel(channel), mode(mode)
-		{}
+		{
+			Setup();
+		}
+
+		void Setup();
 
 	protected:
 		CONST_PTR<Sampler> colorSampler;
@@ -141,13 +144,19 @@ namespace O3GL
 	public:
 		AnaglyphDisplayRender(const CONST_PTR<Texture>& leftColorTexture, const CONST_PTR<Texture>& rightColorTexture) :
 			DisplayRender(), leftColorSampler(), rightColorSampler(), leftColorTexture(leftColorTexture), rightColorTexture(rightColorTexture)
-		{}
+		{
+			Setup();
+		}
 
 		AnaglyphDisplayRender(
 			GLint canvasWidth, GLint canvasHeight,
 			const CONST_PTR<Texture>& leftColorTexture, const CONST_PTR<Texture>& rightColorTexture) :
 			DisplayRender(canvasWidth, canvasHeight), leftColorSampler(), rightColorSampler(), leftColorTexture(leftColorTexture), rightColorTexture(rightColorTexture)
-		{}
+		{
+			Setup();
+		}
+
+		void Setup();
 
 	protected:
 		CONST_PTR<Sampler> leftColorSampler;

@@ -51,77 +51,6 @@ uniform int u_dispalyLayer;
 	}
 
 	//
-	void TextureDisplayRender::SetupEvent()
-	{
-		DisplayRender::SetupEvent();
-
-		//
-		switch (mode)
-		{
-		case Mode::COLOR:
-			break;
-		case Mode::INTENSITY:
-			break;
-		case Mode::DISTANCE:
-			switch (channel)
-			{
-			case Channel::ALPHA:
-				THROW_EXCEPTION("Alpha channel can not be displayed as distance");
-				break;
-			case Channel::RGB:
-				THROW_EXCEPTION("RGB channel can not be displayed as distance");
-				break;
-			case Channel::RGBA:
-				THROW_EXCEPTION("RGBA channel can not be displayed as distance");
-				break;
-			}
-			break;
-		case Mode::VECTOR:
-			switch (channel)
-			{
-			case Channel::RGB:
-				break;
-			default:
-				THROW_EXCEPTION("Only RGB channel can be displayed as vector");
-				break;
-			}
-			break;
-		default:
-			THROW_EXCEPTION("mode is not supported");
-			break;
-		}
-
-		switch (colorTexture->Target())
-		{
-		case GL_TEXTURE_2D:
-		case GL_TEXTURE_2D_ARRAY:
-			colorSampler = samplers["plane_trilinear"];
-			break;
-
-		case GL_TEXTURE_CUBE_MAP:
-		case GL_TEXTURE_CUBE_MAP_ARRAY:
-			colorSampler = samplers["cube_trilinear"];
-			break;
-
-		default:
-			THROW_EXCEPTION("colorTexture->Target(): " + std::to_string(colorTexture->Target()) + " is not supported");
-			break;
-		}
-
-		switch (colorTexture->Target())
-		{
-		case GL_TEXTURE_2D_ARRAY:
-			SetEnableLayer(true);
-			SetNumLayer(colorTexture->GetInfo<GLint>(0, GL_TEXTURE_DEPTH));
-			break;
-
-		case GL_TEXTURE_CUBE_MAP_ARRAY:
-			SetEnableLayer(true);
-			SetNumLayer(colorTexture->GetInfo<GLint>(0, GL_TEXTURE_DEPTH) / 6);
-			break;
-		}
-	}
-
 	void TextureDisplayRender::InitFragmentShaderHeadersEvent()
 	{
 		DisplayRender::InitFragmentShaderHeadersEvent();
@@ -463,50 +392,75 @@ vec4 Output(vec4 rgba)
 			)");
 	}
 
-	//
-	void AnaglyphDisplayRender::SetupEvent()
+	void TextureDisplayRender::Setup()
 	{
-		DisplayRender::SetupEvent();
-
-		//
-		if (leftColorTexture->Target() != rightColorTexture->Target())
+		switch (mode)
 		{
-			THROW_EXCEPTION("leftColorTexture->Target(): " + std::to_string(leftColorTexture->Target()) + " is not as same  as rightColorTexture->Target() : " + std::to_string(rightColorTexture->Target()));
+		case Mode::COLOR:
+			break;
+		case Mode::INTENSITY:
+			break;
+		case Mode::DISTANCE:
+			switch (channel)
+			{
+			case Channel::ALPHA:
+				THROW_EXCEPTION("Alpha channel can not be displayed as distance");
+				break;
+			case Channel::RGB:
+				THROW_EXCEPTION("RGB channel can not be displayed as distance");
+				break;
+			case Channel::RGBA:
+				THROW_EXCEPTION("RGBA channel can not be displayed as distance");
+				break;
+			}
+			break;
+		case Mode::VECTOR:
+			switch (channel)
+			{
+			case Channel::RGB:
+				break;
+			default:
+				THROW_EXCEPTION("Only RGB channel can be displayed as vector");
+				break;
+			}
+			break;
+		default:
+			THROW_EXCEPTION("mode is not supported");
+			break;
 		}
 
-		switch (leftColorTexture->Target())
+		switch (colorTexture->Target())
 		{
 		case GL_TEXTURE_2D:
 		case GL_TEXTURE_2D_ARRAY:
-			leftColorSampler = samplers["plane_trilinear"];
-			rightColorSampler = samplers["plane_trilinear"];
+			colorSampler = samplers["plane_trilinear"];
 			break;
 
 		case GL_TEXTURE_CUBE_MAP:
 		case GL_TEXTURE_CUBE_MAP_ARRAY:
-			leftColorSampler = samplers["cube_trilinear"];
-			rightColorSampler = samplers["cube_trilinear"];
+			colorSampler = samplers["cube_trilinear"];
 			break;
 
 		default:
-			THROW_EXCEPTION("leftColorTexture->Target(): " + std::to_string(leftColorTexture->Target()) + " is not supported");
+			THROW_EXCEPTION("colorTexture->Target(): " + std::to_string(colorTexture->Target()) + " is not supported");
 			break;
 		}
 
-		switch (leftColorTexture->Target())
+		switch (colorTexture->Target())
 		{
 		case GL_TEXTURE_2D_ARRAY:
 			SetEnableLayer(true);
-			SetNumLayer(leftColorTexture->GetInfo<GLint>(0, GL_TEXTURE_DEPTH));
+			SetNumLayer(colorTexture->GetInfo<GLint>(0, GL_TEXTURE_DEPTH));
 			break;
 
 		case GL_TEXTURE_CUBE_MAP_ARRAY:
 			SetEnableLayer(true);
-			SetNumLayer(leftColorTexture->GetInfo<GLint>(0, GL_TEXTURE_DEPTH) / 6);
+			SetNumLayer(colorTexture->GetInfo<GLint>(0, GL_TEXTURE_DEPTH) / 6);
 			break;
 		}
 	}
 
+	//
 	void AnaglyphDisplayRender::InitFragmentShaderHeadersEvent()
 	{
 		DisplayRender::InitFragmentShaderHeadersEvent();
@@ -627,5 +581,45 @@ void main(void)
 
 		//
 		DisplayRender::PostDrawEvent();
+	}
+
+	void AnaglyphDisplayRender::Setup()
+	{
+		if (leftColorTexture->Target() != rightColorTexture->Target())
+		{
+			THROW_EXCEPTION("leftColorTexture->Target(): " + std::to_string(leftColorTexture->Target()) + " is not as same  as rightColorTexture->Target() : " + std::to_string(rightColorTexture->Target()));
+		}
+
+		switch (leftColorTexture->Target())
+		{
+		case GL_TEXTURE_2D:
+		case GL_TEXTURE_2D_ARRAY:
+			leftColorSampler = samplers["plane_trilinear"];
+			rightColorSampler = samplers["plane_trilinear"];
+			break;
+
+		case GL_TEXTURE_CUBE_MAP:
+		case GL_TEXTURE_CUBE_MAP_ARRAY:
+			leftColorSampler = samplers["cube_trilinear"];
+			rightColorSampler = samplers["cube_trilinear"];
+			break;
+
+		default:
+			THROW_EXCEPTION("leftColorTexture->Target(): " + std::to_string(leftColorTexture->Target()) + " is not supported");
+			break;
+		}
+
+		switch (leftColorTexture->Target())
+		{
+		case GL_TEXTURE_2D_ARRAY:
+			SetEnableLayer(true);
+			SetNumLayer(leftColorTexture->GetInfo<GLint>(0, GL_TEXTURE_DEPTH));
+			break;
+
+		case GL_TEXTURE_CUBE_MAP_ARRAY:
+			SetEnableLayer(true);
+			SetNumLayer(leftColorTexture->GetInfo<GLint>(0, GL_TEXTURE_DEPTH) / 6);
+			break;
+		}
 	}
 };

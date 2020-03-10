@@ -10,9 +10,6 @@ namespace O3GL
 	class CanvasRender : public Render
 	{
 	protected:
-		virtual void SetupEvent();
-
-	protected:
 		virtual void InitSamplersEvent();
 		virtual void InitBuffersEvent();
 		virtual void InitVertexShaderHeadersEvent();
@@ -34,14 +31,20 @@ namespace O3GL
 			Render(),
 			canvasWidth(0), canvasHeight(0),
 			windowMode(true)
-		{}
+		{
+			Setup();
+		}
 
 		CanvasRender(
 			GLint canvasWidth, GLint canvasHeight) :
 			Render(),
 			canvasWidth(canvasWidth), canvasHeight(canvasHeight),
 			windowMode(false)
-		{}
+		{
+			Setup();
+		}
+
+		void Setup();
 
 	protected:
 		const GLint canvasWidth;

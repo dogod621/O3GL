@@ -93,9 +93,6 @@ namespace O3GL
 	class Render
 	{
 	protected:
-		virtual void SetupEvent() {}
-
-	protected:
 		virtual void InitSamplersEvent() {}
 		virtual void InitTexturesEvent() {}
 		virtual void InitBuffersEvent() {}

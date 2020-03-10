@@ -29,9 +29,6 @@ namespace O3GL
 	class PanoRenderBase : public CanvasRender
 	{
 	protected:
-		virtual void SetupEvent();
-
-	protected:
 		virtual void InitGeometryShaderHeadersEvent();
 		virtual void InitGeometryShaderMainsEvent();
 		virtual void InitFragmentShaderHeadersEvent();
@@ -48,8 +45,6 @@ namespace O3GL
 		static void InitCamera_JOSH3(const std::vector<Camera>& cameras);
 
 	protected:
-		virtual void UpdateTransforms();
-
 		void PanoRender_SetupEvent__rigMode_MONO__inProjMode_PERSPECTIVE();
 		void PanoRender_SetupEvent__rigMode_MONO__inProjMode_EQUIRECTANGULAR();
 		void PanoRender_SetupEvent__rigMode_MONO__inProjMode_MERCATOR();
@@ -124,7 +119,9 @@ namespace O3GL
 			inProjW2V(inProjCamera.size()), inProjW2C(inProjCamera.size()), inProjC2W(inProjCamera.size()), inProjV2W(inProjCamera.size()),
 			outProjW2V(outProjCamera.size()), outProjW2C(outProjCamera.size()), outProjV2W(outProjCamera.size()), outProjC2W(outProjCamera.size()),
 			layers(1)
-		{}
+		{
+			Setup();
+		}
 
 		PanoRenderBase(
 			GLint canvasWidth, GLint canvasHeight,
@@ -141,7 +138,9 @@ namespace O3GL
 			inProjW2V(inProjCamera.size()), inProjW2C(inProjCamera.size()), inProjC2W(inProjCamera.size()), inProjV2W(inProjCamera.size()),
 			outProjW2V(outProjCamera.size()), outProjW2C(outProjCamera.size()), outProjV2W(outProjCamera.size()), outProjC2W(outProjCamera.size()),
 			layers(1)
-		{}
+		{
+			Setup();
+		}
 
 		PanoRenderBase(
 			GLint canvasWidth, GLint canvasHeight,
@@ -158,7 +157,11 @@ namespace O3GL
 			inProjW2V(inProjCamera.size()), inProjW2C(inProjCamera.size()), inProjC2W(inProjCamera.size()), inProjV2W(inProjCamera.size()),
 			outProjW2V(outProjCamera.size()), outProjW2C(outProjCamera.size()), outProjV2W(outProjCamera.size()), outProjC2W(outProjCamera.size()),
 			layers(1)
-		{}
+		{
+			Setup();
+		}
+
+		void Setup();
 
 		void SetInProjTransform(Mat44 inProjTransform) const
 		{
@@ -217,9 +220,6 @@ namespace O3GL
 	class PanoConverterRender : public PanoRenderBase
 	{
 	protected:
-		virtual void SetupEvent();
-
-	protected:
 		virtual void InitTexturesEvent();
 		virtual void InitFragmentShaderHeadersEvent();
 		virtual void InitFragmentShaderMainsEvent();
@@ -241,7 +241,9 @@ namespace O3GL
 				inProjMode, inProjCamera,
 				outProjMode, outProjCamera,
 				panoFieldTexture)
-		{}
+		{
+			Setup();
+		}
 
 		PanoConverterRender(
 			GLint canvasWidth, GLint canvasHeight,
@@ -255,7 +257,9 @@ namespace O3GL
 				inProjMode, inProjCamera,
 				outProjMode, outProjCamera,
 				panoFieldTexture, panoDepthTexture)
-		{}
+		{
+			Setup();
+		}
 
 		PanoConverterRender(
 			GLint canvasWidth, GLint canvasHeight,
@@ -269,6 +273,10 @@ namespace O3GL
 				inProjMode, inProjCamera,
 				outProjMode, outProjCamera,
 				panoFieldTexture, panoDepthTexture, panoMaskTexture)
-		{}
+		{
+			Setup();
+		}
+
+		void Setup();
 	};
 };

@@ -7,327 +7,6 @@
 // 
 namespace O3GL
 {
-	void PanoRenderBase::SetupEvent()
-	{
-		CanvasRender::SetupEvent();
-
-		//
-		switch (rigMode)
-		{
-		case RigMode::MONO:
-			(*(std::vector<Mat44>*)(&this->rigW2V)).clear();
-			(*(std::vector<Mat44>*)(&this->rigV2W)).clear();
-			break;
-
-		case RigMode::MULTI:
-			if (rigW2V.size() < 2)
-				THROW_EXCEPTION("rigMode RigMode::MULTI but rigW2V.size() < 2");
-			(*(std::vector<Mat44>*)(&this->rigV2W)).resize(rigW2V.size());
-			for (std::size_t i = 0; i < rigW2V.size(); ++i)
-				(*(Mat44*)(&this->rigV2W[i])) = glm::inverse(rigW2V[i]);
-			break;
-
-		default:
-			THROW_EXCEPTION("rigMode is not supported");
-			break;
-		}
-
-		//
-		switch (inProjMode)
-		{
-		case ProjectionMode::PERSPECTIVE:
-			if (inProjCamera.size() != 1)
-			{
-				THROW_EXCEPTION("inProjMode ProjectionMode::PERSPECTIVE but inProjCamera.size() != 1");
-			}
-			break;
-
-		case ProjectionMode::MULTI_PERSPECTIVE:
-			if (inProjCamera.size() < 2)
-			{
-				THROW_EXCEPTION("inProjMode ProjectionMode::MULTI_PERSPECTIVE but inProjCamera.size() < 2");
-			}
-			break;
-
-		case ProjectionMode::EQUIRECTANGULAR:
-		case ProjectionMode::MERCATOR:
-		case ProjectionMode::CUBEMAP:
-			(*(std::vector<Camera>*)(&this->inProjCamera)).clear();
-			(*((std::vector<Mat44>*) & inProjW2V)).clear();
-			(*((std::vector<Mat44>*) & inProjW2C)).clear();
-			(*((std::vector<Mat44>*) & inProjV2W)).clear();
-			(*((std::vector<Mat44>*) & inProjC2W)).clear();
-			break;
-
-		case ProjectionMode::JOSH1:
-			(*(std::vector<Camera>*)(&this->inProjCamera)).resize(6);
-			(*((std::vector<Mat44>*) & inProjW2V)).resize(6);
-			(*((std::vector<Mat44>*) & inProjW2C)).resize(6);
-			(*((std::vector<Mat44>*) & inProjV2W)).resize(6);
-			(*((std::vector<Mat44>*) & inProjC2W)).resize(6);
-			InitCamera_JOSH1(inProjCamera);
-			break;
-
-		case ProjectionMode::JOSH2:
-			(*(std::vector<Camera>*)(&this->inProjCamera)).resize(8);
-			(*((std::vector<Mat44>*) & inProjW2V)).resize(8);
-			(*((std::vector<Mat44>*) & inProjW2C)).resize(8);
-			(*((std::vector<Mat44>*) & inProjV2W)).resize(8);
-			(*((std::vector<Mat44>*) & inProjC2W)).resize(8);
-			InitCamera_JOSH2(inProjCamera);
-			break;
-
-		case ProjectionMode::JOSH3:
-			(*(std::vector<Camera>*)(&this->inProjCamera)).resize(2);
-			(*((std::vector<Mat44>*) & inProjW2V)).resize(2);
-			(*((std::vector<Mat44>*) & inProjW2C)).resize(2);
-			(*((std::vector<Mat44>*) & inProjV2W)).resize(2);
-			(*((std::vector<Mat44>*) & inProjC2W)).resize(2);
-			InitCamera_JOSH3(inProjCamera);
-			break;
-
-		default:
-			THROW_EXCEPTION("inProjMode is not supported");
-			break;
-		}
-
-		//
-		switch (outProjMode)
-		{
-		case ProjectionMode::PERSPECTIVE:
-			if (outProjCamera.size() != 1)
-			{
-				THROW_EXCEPTION("outProjMode ProjectionMode::PERSPECTIVE but outProjCamera.size() != 1");
-			}
-			break;
-
-		case ProjectionMode::MULTI_PERSPECTIVE:
-			if (outProjCamera.size() < 2)
-			{
-				THROW_EXCEPTION("outProjMode ProjectionMode::MULTI_PERSPECTIVE but outProjCamera.size() < 2");
-			}
-			break;
-
-		case ProjectionMode::EQUIRECTANGULAR:
-			(*(std::vector<Camera>*)(&this->outProjCamera)).clear();
-			(*((std::vector<Mat44>*) & outProjW2V)).clear();
-			(*((std::vector<Mat44>*) & outProjW2C)).clear();
-			(*((std::vector<Mat44>*) & outProjC2W)).clear();
-			(*((std::vector<Mat44>*) & outProjV2W)).clear();
-			if (canvasWidth != canvasHeight * 2)
-			{
-				THROW_EXCEPTION("outProjMode ProjectionMode::EQUIRECTANGULAR but canvasWidth != canvasHeight * 2");
-			}
-			break;
-
-		case ProjectionMode::MERCATOR:
-			(*(std::vector<Camera>*)(&this->outProjCamera)).clear();
-			(*((std::vector<Mat44>*) & outProjW2V)).clear();
-			(*((std::vector<Mat44>*) & outProjW2C)).clear();
-			(*((std::vector<Mat44>*) & outProjC2W)).clear();
-			(*((std::vector<Mat44>*) & outProjV2W)).clear();
-			if (canvasWidth != canvasHeight)
-			{
-				THROW_EXCEPTION("outProjMode ProjectionMode::MERCATOR but canvasWidth != canvasHeight");
-			}
-			break;
-
-		case ProjectionMode::CUBEMAP:
-			(*(std::vector<Camera>*)(&this->outProjCamera)).resize(6);
-			(*((std::vector<Mat44>*) & outProjW2V)).resize(6);
-			(*((std::vector<Mat44>*) & outProjW2C)).resize(6);
-			(*((std::vector<Mat44>*) & outProjC2W)).resize(6);
-			(*((std::vector<Mat44>*) & outProjV2W)).resize(6);
-			InitCamera_CUBEMAP(outProjCamera);
-			if (canvasWidth != canvasHeight)
-			{
-				THROW_EXCEPTION("outProjMode ProjectionMode::CUBEMAP but canvasWidth != canvasHeight");
-			}
-			break;
-
-		case ProjectionMode::JOSH1:
-			(*(std::vector<Camera>*)(&this->outProjCamera)).resize(6);
-			(*((std::vector<Mat44>*) & outProjW2V)).resize(6);
-			(*((std::vector<Mat44>*) & outProjW2C)).resize(6);
-			(*((std::vector<Mat44>*) & outProjC2W)).resize(6);
-			(*((std::vector<Mat44>*) & outProjV2W)).resize(6);
-			InitCamera_JOSH1(outProjCamera);
-			break;
-
-		case ProjectionMode::JOSH2:
-			(*(std::vector<Camera>*)(&this->outProjCamera)).resize(8);
-			(*((std::vector<Mat44>*) & outProjW2V)).resize(8);
-			(*((std::vector<Mat44>*) & outProjW2C)).resize(8);
-			(*((std::vector<Mat44>*) & outProjC2W)).resize(8);
-			(*((std::vector<Mat44>*) & outProjV2W)).resize(8);
-			InitCamera_JOSH2(outProjCamera);
-			break;
-
-		case ProjectionMode::JOSH3:
-			(*(std::vector<Camera>*)(&this->outProjCamera)).resize(2);
-			(*((std::vector<Mat44>*) & outProjW2V)).resize(2);
-			(*((std::vector<Mat44>*) & outProjW2C)).resize(2);
-			(*((std::vector<Mat44>*) & outProjC2W)).resize(2);
-			(*((std::vector<Mat44>*) & outProjV2W)).resize(2);
-			InitCamera_JOSH3(outProjCamera);
-			if (canvasWidth != canvasHeight)
-			{
-				THROW_EXCEPTION("outProjMode ProjectionMode::JOSH3 but canvasWidth != canvasHeight");
-			}
-			break;
-
-		default:
-			THROW_EXCEPTION("outProjMode is not supported");
-			break;
-		}
-
-		//
-		switch (rigMode)
-		{
-		case RigMode::MONO:
-			switch (inProjMode)
-			{
-			case ProjectionMode::PERSPECTIVE:
-				PanoRender_SetupEvent__rigMode_MONO__inProjMode_PERSPECTIVE();
-				break;
-
-			case ProjectionMode::EQUIRECTANGULAR:
-				PanoRender_SetupEvent__rigMode_MONO__inProjMode_EQUIRECTANGULAR();
-				break;
-
-			case ProjectionMode::MERCATOR:
-				PanoRender_SetupEvent__rigMode_MONO__inProjMode_MERCATOR();
-				break;
-
-			case ProjectionMode::MULTI_PERSPECTIVE:
-				PanoRender_SetupEvent__rigMode_MONO__inProjMode_MULTI_PERSPECTIVE();
-				break;
-
-			case ProjectionMode::CUBEMAP:
-				PanoRender_SetupEvent__rigMode_MONO__inProjMode_CUBEMAP();
-				break;
-
-			case ProjectionMode::JOSH1:
-				PanoRender_SetupEvent__rigMode_MONO__inProjMode_JOSH1();
-				break;
-
-			case ProjectionMode::JOSH2:
-				PanoRender_SetupEvent__rigMode_MONO__inProjMode_JOSH2();
-				break;
-
-			case ProjectionMode::JOSH3:
-				PanoRender_SetupEvent__rigMode_MONO__inProjMode_JOSH3();
-				break;
-
-			default:
-				THROW_EXCEPTION("inProjMode is not supported");
-				break;
-			}
-			break;
-
-		case RigMode::MULTI:
-			switch (inProjMode)
-			{
-			case ProjectionMode::PERSPECTIVE:
-				PanoRender_SetupEvent__rigMode_MULTI__inProjMode_PERSPECTIVE();
-				break;
-
-			case ProjectionMode::EQUIRECTANGULAR:
-				PanoRender_SetupEvent__rigMode_MULTI__inProjMode_EQUIRECTANGULAR();
-				break;
-
-			case ProjectionMode::MERCATOR:
-				PanoRender_SetupEvent__rigMode_MULTI__inProjMode_MERCATOR();
-				break;
-
-			case ProjectionMode::MULTI_PERSPECTIVE:
-				PanoRender_SetupEvent__rigMode_MULTI__inProjMode_MULTI_PERSPECTIVE();
-				break;
-
-			case ProjectionMode::CUBEMAP:
-				PanoRender_SetupEvent__rigMode_MULTI__inProjMode_CUBEMAP();
-				break;
-
-			case ProjectionMode::JOSH1:
-				PanoRender_SetupEvent__rigMode_MULTI__inProjMode_JOSH1();
-				break;
-
-			case ProjectionMode::JOSH2:
-				PanoRender_SetupEvent__rigMode_MULTI__inProjMode_JOSH2();
-				break;
-
-			case ProjectionMode::JOSH3:
-				PanoRender_SetupEvent__rigMode_MULTI__inProjMode_JOSH3();
-				break;
-
-			default:
-				THROW_EXCEPTION("inProjMode is not supported");
-				break;
-			}
-			break;
-
-		default:
-			THROW_EXCEPTION("rigMode is not supported");
-			break;
-		}
-
-		//
-		switch (rigMode)
-		{
-		case RigMode::MONO:
-			switch (outProjMode)
-			{
-			case ProjectionMode::MULTI_PERSPECTIVE:
-			case ProjectionMode::CUBEMAP:
-			case ProjectionMode::JOSH1:
-				(*(std::size_t*)(&layers)) = outProjCamera.size();
-				break;
-
-			case ProjectionMode::JOSH2:
-				(*(std::size_t*)(&layers)) = 12;
-				break;
-
-			case ProjectionMode::JOSH3:
-				(*(std::size_t*)(&layers)) = 6;
-				break;
-
-			}
-			break;
-
-		case RigMode::MULTI:
-			switch (outProjMode)
-			{
-			case ProjectionMode::PERSPECTIVE:
-			case ProjectionMode::EQUIRECTANGULAR:
-			case ProjectionMode::MERCATOR:
-				(*(std::size_t*)(&layers)) = rigW2V.size();
-				break;
-
-			case ProjectionMode::MULTI_PERSPECTIVE:
-			case ProjectionMode::CUBEMAP:
-			case ProjectionMode::JOSH1:
-				(*(std::size_t*)(&layers)) = outProjCamera.size() * rigW2V.size();
-				break;
-
-			case ProjectionMode::JOSH2:
-				(*(std::size_t*)(&layers)) = 12 * rigW2V.size();
-				break;
-
-			case ProjectionMode::JOSH3:
-				(*(std::size_t*)(&layers)) = 6 * rigW2V.size();
-				break;
-
-			default:
-				THROW_EXCEPTION("outProjMode is not supported");
-				break;
-			}
-			break;
-		}
-
-		//
-		UpdateTransforms();
-	}
-
 	void PanoRenderBase::InitGeometryShaderHeadersEvent()
 	{
 		CanvasRender::InitGeometryShaderHeadersEvent();
@@ -975,36 +654,6 @@ uniform mat4 u_outProjC2W[)");
 			0.0f, 1.0f, 0.0f, 0.0f,
 			1.0f, 0.0f, 0.0f, 0.0f,
 			0.0f, 0.0f, 0.0f, 1.0f);
-	}
-
-	void PanoRenderBase::UpdateTransforms()
-	{
-		for (std::size_t i = 0; i < rigW2V.size(); ++i)
-			(*(Mat44*)(&this->rigV2W[i])) = glm::inverse(rigW2V[i]);
-
-		for (std::size_t i = 0; i < inProjCamera.size(); ++i)
-		{
-			Vec3 eye = inProjCamera[i].transform * Vec4(0.0f, 0.0f, 0.0f, 1.0f);
-			Vec3 viewDir = inProjCamera[i].transform * Vec4(1.0f, 0.0f, 0.0f, 0.0f);
-			Vec3 up = inProjCamera[i].transform * Vec4(0.0f, 0.0f, 1.0f, 0.0f);
-
-			(*((Mat44*)&inProjW2V[i])) = glm::lookAt(eye, eye + viewDir, up);
-			(*((Mat44*)&inProjW2C[i])) = inProjCamera[i].projection * inProjW2V[i];
-			(*((Mat44*)&inProjV2W[i])) = glm::inverse(inProjW2V[i]);
-			(*((Mat44*)&inProjC2W[i])) = glm::inverse(inProjW2C[i]);
-		}
-
-		for (std::size_t i = 0; i < outProjCamera.size(); ++i)
-		{
-			Vec3 eye = outProjCamera[i].transform * Vec4(0.0f, 0.0f, 0.0f, 1.0f);
-			Vec3 viewDir = outProjCamera[i].transform * Vec4(1.0f, 0.0f, 0.0f, 0.0f);
-			Vec3 up = outProjCamera[i].transform * Vec4(0.0f, 0.0f, 1.0f, 0.0f);
-
-			(*((Mat44*)&outProjW2V[i])) = glm::lookAt(eye, eye + viewDir, up);
-			(*((Mat44*)&outProjW2C[i])) = outProjCamera[i].projection * outProjW2V[i];
-			(*((Mat44*)&outProjV2W[i])) = glm::inverse(outProjW2V[i]);
-			(*((Mat44*)&outProjC2W[i])) = glm::inverse(outProjW2C[i]);
-		}
 	}
 
 	void PanoRenderBase::PanoRender_SetupEvent__rigMode_MONO__inProjMode_PERSPECTIVE()
@@ -3098,34 +2747,350 @@ Ray3D GetFragViewRay(vec2 fragUV)
 		}
 	}
 
-	//
-	void PanoConverterRender::SetupEvent()
+	void PanoRenderBase::Setup()
 	{
-		PanoRenderBase::SetupEvent();
+		switch (rigMode)
+		{
+		case RigMode::MONO:
+			(*(std::vector<Mat44>*)(&this->rigW2V)).clear();
+			(*(std::vector<Mat44>*)(&this->rigV2W)).clear();
+			break;
+
+		case RigMode::MULTI:
+			if (rigW2V.size() < 2)
+				THROW_EXCEPTION("rigMode RigMode::MULTI but rigW2V.size() < 2");
+			(*(std::vector<Mat44>*)(&this->rigV2W)).resize(rigW2V.size());
+			for (std::size_t i = 0; i < rigW2V.size(); ++i)
+				(*(Mat44*)(&this->rigV2W[i])) = glm::inverse(rigW2V[i]);
+			break;
+
+		default:
+			THROW_EXCEPTION("rigMode is not supported");
+			break;
+		}
 
 		//
-		if (enableDepth && enableMask)
+		switch (inProjMode)
 		{
-			GLint n = 0;
-			glGetIntegerv(GL_MAX_DRAW_BUFFERS, &n);
-			if (n < 3)
-				THROW_EXCEPTION("GL_MAX_DRAW_BUFFERS must at least 3");
-		}
-		else if (enableDepth || enableMask)
-		{
-			GLint n = 0;
-			glGetIntegerv(GL_MAX_DRAW_BUFFERS, &n);
-			if (n < 2)
-				THROW_EXCEPTION("GL_MAX_DRAW_BUFFERS must at least 2");
+		case ProjectionMode::PERSPECTIVE:
+			if (inProjCamera.size() != 1)
+			{
+				THROW_EXCEPTION("inProjMode ProjectionMode::PERSPECTIVE but inProjCamera.size() != 1");
+			}
+			break;
+
+		case ProjectionMode::MULTI_PERSPECTIVE:
+			if (inProjCamera.size() < 2)
+			{
+				THROW_EXCEPTION("inProjMode ProjectionMode::MULTI_PERSPECTIVE but inProjCamera.size() < 2");
+			}
+			break;
+
+		case ProjectionMode::EQUIRECTANGULAR:
+		case ProjectionMode::MERCATOR:
+		case ProjectionMode::CUBEMAP:
+			(*(std::vector<Camera>*)(&this->inProjCamera)).clear();
+			(*((std::vector<Mat44>*) & inProjW2V)).clear();
+			(*((std::vector<Mat44>*) & inProjW2C)).clear();
+			(*((std::vector<Mat44>*) & inProjV2W)).clear();
+			(*((std::vector<Mat44>*) & inProjC2W)).clear();
+			break;
+
+		case ProjectionMode::JOSH1:
+			(*(std::vector<Camera>*)(&this->inProjCamera)).resize(6);
+			(*((std::vector<Mat44>*) & inProjW2V)).resize(6);
+			(*((std::vector<Mat44>*) & inProjW2C)).resize(6);
+			(*((std::vector<Mat44>*) & inProjV2W)).resize(6);
+			(*((std::vector<Mat44>*) & inProjC2W)).resize(6);
+			InitCamera_JOSH1(inProjCamera);
+			break;
+
+		case ProjectionMode::JOSH2:
+			(*(std::vector<Camera>*)(&this->inProjCamera)).resize(8);
+			(*((std::vector<Mat44>*) & inProjW2V)).resize(8);
+			(*((std::vector<Mat44>*) & inProjW2C)).resize(8);
+			(*((std::vector<Mat44>*) & inProjV2W)).resize(8);
+			(*((std::vector<Mat44>*) & inProjC2W)).resize(8);
+			InitCamera_JOSH2(inProjCamera);
+			break;
+
+		case ProjectionMode::JOSH3:
+			(*(std::vector<Camera>*)(&this->inProjCamera)).resize(2);
+			(*((std::vector<Mat44>*) & inProjW2V)).resize(2);
+			(*((std::vector<Mat44>*) & inProjW2C)).resize(2);
+			(*((std::vector<Mat44>*) & inProjV2W)).resize(2);
+			(*((std::vector<Mat44>*) & inProjC2W)).resize(2);
+			InitCamera_JOSH3(inProjCamera);
+			break;
+
+		default:
+			THROW_EXCEPTION("inProjMode is not supported");
+			break;
 		}
 
-		CreateTexture("canvas_field");
-		if (enableDepth)
-			CreateTexture("canvas_depth");
-		if (enableMask)
-			CreateTexture("canvas_mask");
+		//
+		switch (outProjMode)
+		{
+		case ProjectionMode::PERSPECTIVE:
+			if (outProjCamera.size() != 1)
+			{
+				THROW_EXCEPTION("outProjMode ProjectionMode::PERSPECTIVE but outProjCamera.size() != 1");
+			}
+			break;
+
+		case ProjectionMode::MULTI_PERSPECTIVE:
+			if (outProjCamera.size() < 2)
+			{
+				THROW_EXCEPTION("outProjMode ProjectionMode::MULTI_PERSPECTIVE but outProjCamera.size() < 2");
+			}
+			break;
+
+		case ProjectionMode::EQUIRECTANGULAR:
+			(*(std::vector<Camera>*)(&this->outProjCamera)).clear();
+			(*((std::vector<Mat44>*) & outProjW2V)).clear();
+			(*((std::vector<Mat44>*) & outProjW2C)).clear();
+			(*((std::vector<Mat44>*) & outProjC2W)).clear();
+			(*((std::vector<Mat44>*) & outProjV2W)).clear();
+			if (canvasWidth != canvasHeight * 2)
+			{
+				THROW_EXCEPTION("outProjMode ProjectionMode::EQUIRECTANGULAR but canvasWidth != canvasHeight * 2");
+			}
+			break;
+
+		case ProjectionMode::MERCATOR:
+			(*(std::vector<Camera>*)(&this->outProjCamera)).clear();
+			(*((std::vector<Mat44>*) & outProjW2V)).clear();
+			(*((std::vector<Mat44>*) & outProjW2C)).clear();
+			(*((std::vector<Mat44>*) & outProjC2W)).clear();
+			(*((std::vector<Mat44>*) & outProjV2W)).clear();
+			if (canvasWidth != canvasHeight)
+			{
+				THROW_EXCEPTION("outProjMode ProjectionMode::MERCATOR but canvasWidth != canvasHeight");
+			}
+			break;
+
+		case ProjectionMode::CUBEMAP:
+			(*(std::vector<Camera>*)(&this->outProjCamera)).resize(6);
+			(*((std::vector<Mat44>*) & outProjW2V)).resize(6);
+			(*((std::vector<Mat44>*) & outProjW2C)).resize(6);
+			(*((std::vector<Mat44>*) & outProjC2W)).resize(6);
+			(*((std::vector<Mat44>*) & outProjV2W)).resize(6);
+			InitCamera_CUBEMAP(outProjCamera);
+			if (canvasWidth != canvasHeight)
+			{
+				THROW_EXCEPTION("outProjMode ProjectionMode::CUBEMAP but canvasWidth != canvasHeight");
+			}
+			break;
+
+		case ProjectionMode::JOSH1:
+			(*(std::vector<Camera>*)(&this->outProjCamera)).resize(6);
+			(*((std::vector<Mat44>*) & outProjW2V)).resize(6);
+			(*((std::vector<Mat44>*) & outProjW2C)).resize(6);
+			(*((std::vector<Mat44>*) & outProjC2W)).resize(6);
+			(*((std::vector<Mat44>*) & outProjV2W)).resize(6);
+			InitCamera_JOSH1(outProjCamera);
+			break;
+
+		case ProjectionMode::JOSH2:
+			(*(std::vector<Camera>*)(&this->outProjCamera)).resize(8);
+			(*((std::vector<Mat44>*) & outProjW2V)).resize(8);
+			(*((std::vector<Mat44>*) & outProjW2C)).resize(8);
+			(*((std::vector<Mat44>*) & outProjC2W)).resize(8);
+			(*((std::vector<Mat44>*) & outProjV2W)).resize(8);
+			InitCamera_JOSH2(outProjCamera);
+			break;
+
+		case ProjectionMode::JOSH3:
+			(*(std::vector<Camera>*)(&this->outProjCamera)).resize(2);
+			(*((std::vector<Mat44>*) & outProjW2V)).resize(2);
+			(*((std::vector<Mat44>*) & outProjW2C)).resize(2);
+			(*((std::vector<Mat44>*) & outProjC2W)).resize(2);
+			(*((std::vector<Mat44>*) & outProjV2W)).resize(2);
+			InitCamera_JOSH3(outProjCamera);
+			if (canvasWidth != canvasHeight)
+			{
+				THROW_EXCEPTION("outProjMode ProjectionMode::JOSH3 but canvasWidth != canvasHeight");
+			}
+			break;
+
+		default:
+			THROW_EXCEPTION("outProjMode is not supported");
+			break;
+		}
+
+		//
+		switch (rigMode)
+		{
+		case RigMode::MONO:
+			switch (inProjMode)
+			{
+			case ProjectionMode::PERSPECTIVE:
+				PanoRender_SetupEvent__rigMode_MONO__inProjMode_PERSPECTIVE();
+				break;
+
+			case ProjectionMode::EQUIRECTANGULAR:
+				PanoRender_SetupEvent__rigMode_MONO__inProjMode_EQUIRECTANGULAR();
+				break;
+
+			case ProjectionMode::MERCATOR:
+				PanoRender_SetupEvent__rigMode_MONO__inProjMode_MERCATOR();
+				break;
+
+			case ProjectionMode::MULTI_PERSPECTIVE:
+				PanoRender_SetupEvent__rigMode_MONO__inProjMode_MULTI_PERSPECTIVE();
+				break;
+
+			case ProjectionMode::CUBEMAP:
+				PanoRender_SetupEvent__rigMode_MONO__inProjMode_CUBEMAP();
+				break;
+
+			case ProjectionMode::JOSH1:
+				PanoRender_SetupEvent__rigMode_MONO__inProjMode_JOSH1();
+				break;
+
+			case ProjectionMode::JOSH2:
+				PanoRender_SetupEvent__rigMode_MONO__inProjMode_JOSH2();
+				break;
+
+			case ProjectionMode::JOSH3:
+				PanoRender_SetupEvent__rigMode_MONO__inProjMode_JOSH3();
+				break;
+
+			default:
+				THROW_EXCEPTION("inProjMode is not supported");
+				break;
+			}
+			break;
+
+		case RigMode::MULTI:
+			switch (inProjMode)
+			{
+			case ProjectionMode::PERSPECTIVE:
+				PanoRender_SetupEvent__rigMode_MULTI__inProjMode_PERSPECTIVE();
+				break;
+
+			case ProjectionMode::EQUIRECTANGULAR:
+				PanoRender_SetupEvent__rigMode_MULTI__inProjMode_EQUIRECTANGULAR();
+				break;
+
+			case ProjectionMode::MERCATOR:
+				PanoRender_SetupEvent__rigMode_MULTI__inProjMode_MERCATOR();
+				break;
+
+			case ProjectionMode::MULTI_PERSPECTIVE:
+				PanoRender_SetupEvent__rigMode_MULTI__inProjMode_MULTI_PERSPECTIVE();
+				break;
+
+			case ProjectionMode::CUBEMAP:
+				PanoRender_SetupEvent__rigMode_MULTI__inProjMode_CUBEMAP();
+				break;
+
+			case ProjectionMode::JOSH1:
+				PanoRender_SetupEvent__rigMode_MULTI__inProjMode_JOSH1();
+				break;
+
+			case ProjectionMode::JOSH2:
+				PanoRender_SetupEvent__rigMode_MULTI__inProjMode_JOSH2();
+				break;
+
+			case ProjectionMode::JOSH3:
+				PanoRender_SetupEvent__rigMode_MULTI__inProjMode_JOSH3();
+				break;
+
+			default:
+				THROW_EXCEPTION("inProjMode is not supported");
+				break;
+			}
+			break;
+
+		default:
+			THROW_EXCEPTION("rigMode is not supported");
+			break;
+		}
+
+		//
+		switch (rigMode)
+		{
+		case RigMode::MONO:
+			switch (outProjMode)
+			{
+			case ProjectionMode::MULTI_PERSPECTIVE:
+			case ProjectionMode::CUBEMAP:
+			case ProjectionMode::JOSH1:
+				(*(std::size_t*)(&layers)) = outProjCamera.size();
+				break;
+
+			case ProjectionMode::JOSH2:
+				(*(std::size_t*)(&layers)) = 12;
+				break;
+
+			case ProjectionMode::JOSH3:
+				(*(std::size_t*)(&layers)) = 6;
+				break;
+
+			}
+			break;
+
+		case RigMode::MULTI:
+			switch (outProjMode)
+			{
+			case ProjectionMode::PERSPECTIVE:
+			case ProjectionMode::EQUIRECTANGULAR:
+			case ProjectionMode::MERCATOR:
+				(*(std::size_t*)(&layers)) = rigW2V.size();
+				break;
+
+			case ProjectionMode::MULTI_PERSPECTIVE:
+			case ProjectionMode::CUBEMAP:
+			case ProjectionMode::JOSH1:
+				(*(std::size_t*)(&layers)) = outProjCamera.size() * rigW2V.size();
+				break;
+
+			case ProjectionMode::JOSH2:
+				(*(std::size_t*)(&layers)) = 12 * rigW2V.size();
+				break;
+
+			case ProjectionMode::JOSH3:
+				(*(std::size_t*)(&layers)) = 6 * rigW2V.size();
+				break;
+
+			default:
+				THROW_EXCEPTION("outProjMode is not supported");
+				break;
+			}
+			break;
+		}
+
+		//
+		for (std::size_t i = 0; i < rigW2V.size(); ++i)
+			(*(Mat44*)(&this->rigV2W[i])) = glm::inverse(rigW2V[i]);
+
+		for (std::size_t i = 0; i < inProjCamera.size(); ++i)
+		{
+			Vec3 eye = inProjCamera[i].transform * Vec4(0.0f, 0.0f, 0.0f, 1.0f);
+			Vec3 viewDir = inProjCamera[i].transform * Vec4(1.0f, 0.0f, 0.0f, 0.0f);
+			Vec3 up = inProjCamera[i].transform * Vec4(0.0f, 0.0f, 1.0f, 0.0f);
+
+			(*((Mat44*)&inProjW2V[i])) = glm::lookAt(eye, eye + viewDir, up);
+			(*((Mat44*)&inProjW2C[i])) = inProjCamera[i].projection * inProjW2V[i];
+			(*((Mat44*)&inProjV2W[i])) = glm::inverse(inProjW2V[i]);
+			(*((Mat44*)&inProjC2W[i])) = glm::inverse(inProjW2C[i]);
+		}
+
+		for (std::size_t i = 0; i < outProjCamera.size(); ++i)
+		{
+			Vec3 eye = outProjCamera[i].transform * Vec4(0.0f, 0.0f, 0.0f, 1.0f);
+			Vec3 viewDir = outProjCamera[i].transform * Vec4(1.0f, 0.0f, 0.0f, 0.0f);
+			Vec3 up = outProjCamera[i].transform * Vec4(0.0f, 0.0f, 1.0f, 0.0f);
+
+			(*((Mat44*)&outProjW2V[i])) = glm::lookAt(eye, eye + viewDir, up);
+			(*((Mat44*)&outProjW2C[i])) = outProjCamera[i].projection * outProjW2V[i];
+			(*((Mat44*)&outProjV2W[i])) = glm::inverse(outProjW2V[i]);
+			(*((Mat44*)&outProjC2W[i])) = glm::inverse(outProjW2C[i]);
+		}
 	}
 
+	//
 	void PanoConverterRender::InitTexturesEvent()
 	{
 		PanoRenderBase::InitTexturesEvent();
@@ -3306,5 +3271,29 @@ void main(void)
 
 		//
 		PanoRenderBase::PostDrawEvent();
+	}
+
+	void PanoConverterRender::Setup()
+	{
+		if (enableDepth && enableMask)
+		{
+			GLint n = 0;
+			glGetIntegerv(GL_MAX_DRAW_BUFFERS, &n);
+			if (n < 3)
+				THROW_EXCEPTION("GL_MAX_DRAW_BUFFERS must at least 3");
+		}
+		else if (enableDepth || enableMask)
+		{
+			GLint n = 0;
+			glGetIntegerv(GL_MAX_DRAW_BUFFERS, &n);
+			if (n < 2)
+				THROW_EXCEPTION("GL_MAX_DRAW_BUFFERS must at least 2");
+		}
+
+		CreateTexture("canvas_field");
+		if (enableDepth)
+			CreateTexture("canvas_depth");
+		if (enableMask)
+			CreateTexture("canvas_mask");
 	}
 };

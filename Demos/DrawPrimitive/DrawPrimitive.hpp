@@ -22,9 +22,6 @@ namespace O3GL
 		};
 
 	protected:
-		virtual void SetupEvent();
-
-	protected:
 		virtual void InitSamplersEvent();
 		virtual void InitTexturesEvent();
 		virtual void InitBuffersEvent();
@@ -51,12 +48,7 @@ namespace O3GL
 		virtual void TimerEvent(const Timer::Message& m);
 
 	public:
-		QuadRender() :
-			viewing(glm::lookAt(Vec3(0.f, 0.f, 0.f), Vec3(0.f, 0.f, -1.f), Vec3(0.f, 1.f, 0.f))),
-			modelling(glm::translate(glm::identity<Mat44>(), Vec3(0.f, 0.f, -4.f))),
-			projection(glm::perspective(glm::radians(60.0f), 4.0f / 3.0f, 0.1f, 100.0f)),
-			mode(Mode::TEXTURE), t(0.0)
-		{}
+		QuadRender();
 
 		Mat44 GetViewing() const { return viewing; }
 		Mat44 GetModelling() const { return modelling; }
@@ -82,14 +74,15 @@ namespace O3GL
 	public:
 		DrawPrimitiveWindow(const std::string& name, int x, int y, int width, int height, unsigned int tick = 10) :
 			Window<key>(name, GLUT_DOUBLE | GLUT_RGBA | GLUT_DEPTH, x, y, width, height, tick)
-		{}
+		{
+			renders["quad"] = PTR<Render>(new QuadRender());
+		}
 
 		DrawPrimitiveWindow(int window, int x, int y, int width, int height, unsigned int tick = 10) :
 			Window<key>(window, x, y, width, height, tick)
-		{}
-
-	protected:
-		virtual void SetupEvent();
+		{
+			renders["quad"] = PTR<Render>(new QuadRender());
+		}
 
 	protected:
 		virtual void InitGLStatusEvent() const;
@@ -100,12 +93,6 @@ namespace O3GL
 	};
 
 	//
-	template<int key>
-	void DrawPrimitiveWindow<key>::SetupEvent()
-	{
-		renders["quad"] = PTR<Render>(new QuadRender());
-	}
-
 	template<int key>
 	void DrawPrimitiveWindow<key>::InitGLStatusEvent() const
 	{

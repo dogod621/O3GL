@@ -30,9 +30,6 @@ namespace O3GL
 		}
 
 		//
-		SetupEvent();
-
-		//
 		InitSamplersEvent();
 		InitTexturesEvent();
 		InitBuffersEvent();

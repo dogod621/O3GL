@@ -9,47 +9,6 @@
 namespace O3GL
 {
 	//
-	void CanvasRender::SetupEvent()
-	{
-		samplers["plane_nearest"] = PTR<Sampler>(new Sampler());
-		samplers["plane_bilinear"] = PTR<Sampler>(new Sampler());
-		samplers["plane_trilinear"] = PTR<Sampler>(new Sampler());
-		samplers["plane_anisotropy"] = PTR<Sampler>(new Sampler());
-
-		samplers["cube_nearest"] = PTR<Sampler>(new Sampler());
-		samplers["cube_bilinear"] = PTR<Sampler>(new Sampler());
-		samplers["cube_trilinear"] = PTR<Sampler>(new Sampler());
-		samplers["cube_anisotropy"] = PTR<Sampler>(new Sampler());
-
-		samplers["equirectangular_nearest"] = PTR<Sampler>(new Sampler());
-		samplers["equirectangular_bilinear"] = PTR<Sampler>(new Sampler());
-		samplers["equirectangular_trilinear"] = PTR<Sampler>(new Sampler());
-		samplers["equirectangular_anisotropy"] = PTR<Sampler>(new Sampler());
-
-		samplers["mercator_nearest"] = PTR<Sampler>(new Sampler());
-		samplers["mercator_bilinear"] = PTR<Sampler>(new Sampler());
-		samplers["mercator_trilinear"] = PTR<Sampler>(new Sampler());
-		samplers["mercator_anisotropy"] = PTR<Sampler>(new Sampler());
-
-		buffers["canvas_pos"] = PTR<Buffer>(new Buffer());
-		buffers["canvas_index"] = PTR<Buffer>(new Buffer());
-
-		vertexArrays["canvas"] = PTR<VertexArray>(new VertexArray());
-
-		shaderSources["canvas_vert"] = PTR<ShaderSource>(new ShaderSource());
-		shaderSources["canvas_geom"] = PTR<ShaderSource>(new ShaderSource());
-		shaderSources["canvas_frag"] = PTR<ShaderSource>(new ShaderSource());
-
-		shaders["canvas_vert"] = PTR<Shader>(new Shader(GL_VERTEX_SHADER));
-		shaders["canvas_geom"] = PTR<Shader>(new Shader(GL_GEOMETRY_SHADER));
-		shaders["canvas_frag"] = PTR<Shader>(new Shader(GL_FRAGMENT_SHADER));
-
-		programs["canvas"] = PTR<Program>(new Program());
-
-		if (!windowMode)
-			frameBuffers["canvas"] = PTR<FrameBuffer>(new FrameBuffer());
-	}
-
 	void CanvasRender::InitSamplersEvent()
 	{
 		GLfloat maxNumSamples;
@@ -461,5 +420,46 @@ void main(void)
 			return CurrentWindowHeight();
 		else
 			return canvasHeight;
+	}
+
+	void CanvasRender::Setup()
+	{
+		samplers["plane_nearest"] = PTR<Sampler>(new Sampler());
+		samplers["plane_bilinear"] = PTR<Sampler>(new Sampler());
+		samplers["plane_trilinear"] = PTR<Sampler>(new Sampler());
+		samplers["plane_anisotropy"] = PTR<Sampler>(new Sampler());
+
+		samplers["cube_nearest"] = PTR<Sampler>(new Sampler());
+		samplers["cube_bilinear"] = PTR<Sampler>(new Sampler());
+		samplers["cube_trilinear"] = PTR<Sampler>(new Sampler());
+		samplers["cube_anisotropy"] = PTR<Sampler>(new Sampler());
+
+		samplers["equirectangular_nearest"] = PTR<Sampler>(new Sampler());
+		samplers["equirectangular_bilinear"] = PTR<Sampler>(new Sampler());
+		samplers["equirectangular_trilinear"] = PTR<Sampler>(new Sampler());
+		samplers["equirectangular_anisotropy"] = PTR<Sampler>(new Sampler());
+
+		samplers["mercator_nearest"] = PTR<Sampler>(new Sampler());
+		samplers["mercator_bilinear"] = PTR<Sampler>(new Sampler());
+		samplers["mercator_trilinear"] = PTR<Sampler>(new Sampler());
+		samplers["mercator_anisotropy"] = PTR<Sampler>(new Sampler());
+
+		buffers["canvas_pos"] = PTR<Buffer>(new Buffer());
+		buffers["canvas_index"] = PTR<Buffer>(new Buffer());
+
+		vertexArrays["canvas"] = PTR<VertexArray>(new VertexArray());
+
+		shaderSources["canvas_vert"] = PTR<ShaderSource>(new ShaderSource());
+		shaderSources["canvas_geom"] = PTR<ShaderSource>(new ShaderSource());
+		shaderSources["canvas_frag"] = PTR<ShaderSource>(new ShaderSource());
+
+		shaders["canvas_vert"] = PTR<Shader>(new Shader(GL_VERTEX_SHADER));
+		shaders["canvas_geom"] = PTR<Shader>(new Shader(GL_GEOMETRY_SHADER));
+		shaders["canvas_frag"] = PTR<Shader>(new Shader(GL_FRAGMENT_SHADER));
+
+		programs["canvas"] = PTR<Program>(new Program());
+
+		if (!windowMode)
+			frameBuffers["canvas"] = PTR<FrameBuffer>(new FrameBuffer());
 	}
 };

@@ -408,9 +408,6 @@ namespace O3GL
 		WindowBase() : renders() {}
 
 	protected:
-		virtual void SetupEvent() {}
-
-	protected:
 		virtual void InitGLStatusEvent() const {}
 
 	protected:
@@ -559,7 +556,6 @@ namespace O3GL
 	void Window<key>::Init()
 	{
 		glutSetWindow(*this);
-		SetupEvent();
 		glutDisplayFunc(Window<key>::DisplayCallback);
 		glutOverlayDisplayFunc(Window<key>::OverlayDisplayCallback);
 		glutReshapeFunc(Window<key>::ReshapeCallback);

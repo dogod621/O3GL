@@ -5,29 +5,6 @@
 namespace O3GL
 {
 	//
-	void QuadRender::SetupEvent()
-	{
-		samplers["bilinear"] = PTR<Sampler>(new Sampler());
-		textures["color"] = PTR<Texture>(new Texture(GL_TEXTURE_2D));
-
-		buffers["quad_pos"] = PTR<Buffer>(new Buffer());
-		buffers["quad_normal"] = PTR<Buffer>(new Buffer());
-		buffers["quad_uv"] = PTR<Buffer>(new Buffer());
-		buffers["quad_index"] = PTR<Buffer>(new Buffer());
-
-		vertexArrays["quad"] = PTR<VertexArray>(new VertexArray());
-
-		shaderSources["unlit_vert"] = PTR<ShaderSource>(new ShaderSource());
-		shaderSources["unlit_geom"] = PTR<ShaderSource>(new ShaderSource());
-		shaderSources["unlit_frag"] = PTR<ShaderSource>(new ShaderSource());
-
-		shaders["unlit_vert"] = PTR<Shader>(new Shader(GL_VERTEX_SHADER));
-		shaders["unlit_geom"] = PTR<Shader>(new Shader(GL_GEOMETRY_SHADER));
-		shaders["unlit_frag"] = PTR<Shader>(new Shader(GL_FRAGMENT_SHADER));
-
-		programs["unlit"] = PTR<Program>(new Program());
-	}
-
 	void QuadRender::InitSamplersEvent()
 	{
 		samplers["bilinear"]->SetInfo<GLint>(GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
@@ -325,5 +302,32 @@ void main(void)
 		t += m.timeElapsed;
 		float angle = (float)(t / 600.0);
 		SetModelling(glm::rotate(glm::translate(glm::identity<Mat44>(), Vec3(std::sin(angle), std::cos(angle), -4.f)), angle, glm::vec3(1.0, 0.0, 0.0)));
+	}
+
+	QuadRender::QuadRender() :
+		viewing(glm::lookAt(Vec3(0.f, 0.f, 0.f), Vec3(0.f, 0.f, -1.f), Vec3(0.f, 1.f, 0.f))),
+		modelling(glm::translate(glm::identity<Mat44>(), Vec3(0.f, 0.f, -4.f))),
+		projection(glm::perspective(glm::radians(60.0f), 4.0f / 3.0f, 0.1f, 100.0f)),
+		mode(Mode::TEXTURE), t(0.0)
+	{
+		samplers["bilinear"] = PTR<Sampler>(new Sampler());
+		textures["color"] = PTR<Texture>(new Texture(GL_TEXTURE_2D));
+
+		buffers["quad_pos"] = PTR<Buffer>(new Buffer());
+		buffers["quad_normal"] = PTR<Buffer>(new Buffer());
+		buffers["quad_uv"] = PTR<Buffer>(new Buffer());
+		buffers["quad_index"] = PTR<Buffer>(new Buffer());
+
+		vertexArrays["quad"] = PTR<VertexArray>(new VertexArray());
+
+		shaderSources["unlit_vert"] = PTR<ShaderSource>(new ShaderSource());
+		shaderSources["unlit_geom"] = PTR<ShaderSource>(new ShaderSource());
+		shaderSources["unlit_frag"] = PTR<ShaderSource>(new ShaderSource());
+
+		shaders["unlit_vert"] = PTR<Shader>(new Shader(GL_VERTEX_SHADER));
+		shaders["unlit_geom"] = PTR<Shader>(new Shader(GL_GEOMETRY_SHADER));
+		shaders["unlit_frag"] = PTR<Shader>(new Shader(GL_FRAGMENT_SHADER));
+
+		programs["unlit"] = PTR<Program>(new Program());
 	}
 };
