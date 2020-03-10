@@ -41,13 +41,14 @@ namespace O3GL
 		virtual void PreDrawEvent() const;
 		virtual void PostDrawEvent() const;
 
-	protected:
-		virtual void UpdateTransforms();
-
+	public:
 		static void InitCamera_CUBEMAP(const std::vector<Camera>& cameras);
 		static void InitCamera_JOSH1(const std::vector<Camera>& cameras);
 		static void InitCamera_JOSH2(const std::vector<Camera>& cameras);
 		static void InitCamera_JOSH3(const std::vector<Camera>& cameras);
+
+	protected:
+		virtual void UpdateTransforms();
 
 		void PanoRender_SetupEvent__rigMode_MONO__inProjMode_PERSPECTIVE();
 		void PanoRender_SetupEvent__rigMode_MONO__inProjMode_EQUIRECTANGULAR();
