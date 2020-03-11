@@ -1,5 +1,5 @@
 // O3GL
-#include "O3GL/Renders/DispalyRender.hpp"
+#include "O3GL/Renders/DisplayRender.hpp"
 
 // 
 namespace O3GL
