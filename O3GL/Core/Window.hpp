@@ -457,6 +457,16 @@ namespace O3GL
 		{
 			return renders.at(name);
 		}
+
+		void SetRender(const std::string& name, PTR<Render> v)
+		{
+			renders["name"] = v;
+		}
+
+		void RemoveRender(const std::string& name)
+		{
+			renders.erase("name");
+		}
 	};
 
 	//

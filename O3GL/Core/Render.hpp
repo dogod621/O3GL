@@ -161,7 +161,8 @@ namespace O3GL
 		std::map<std::string, PTR<Shader		>> shaders;
 		std::map<std::string, PTR<Program		>> programs;
 		std::map<std::string, PTR<FrameBuffer	>> frameBuffers;
-		std::map<std::string, PTR<Render		>> renders;
+		std::map<std::string, PTR<Render		>> preprocessRenders;
+		std::map<std::string, PTR<Render		>> postprocessRenders;
 
 	public:
 		PTR<Sampler> GetSampler(const std::string& name)
@@ -204,9 +205,14 @@ namespace O3GL
 			return frameBuffers.at(name);
 		}
 
-		PTR<Render> GetRender(const std::string& name)
+		PTR<Render> GetPreprocessRender(const std::string& name)
 		{
-			return renders.at(name);
+			return preprocessRenders.at(name);
+		}
+
+		PTR<Render> GetPostprocessRender(const std::string& name)
+		{
+			return postprocessRenders.at(name);
 		}
 
 		CONST_PTR<Sampler> GetSampler(const std::string& name) const
@@ -249,9 +255,109 @@ namespace O3GL
 			return frameBuffers.at(name);
 		}
 
-		CONST_PTR<Render> GetRender(const std::string& name) const
+		CONST_PTR<Render> GetPreprocessRender(const std::string& name) const
 		{
-			return renders.at(name);
+			return preprocessRenders.at(name);
+		}
+
+		CONST_PTR<Render> GetPostprocessRender(const std::string& name) const
+		{
+			return postprocessRenders.at(name);
+		}
+
+		void SetSampler(const std::string& name, PTR<Sampler> v)
+		{
+			samplers["name"] = v;
+		}
+
+		void SetTexture(const std::string& name, PTR<Texture> v)
+		{
+			textures["name"] = v;
+		}
+
+		void SetBuffer(const std::string& name, PTR<Buffer> v)
+		{
+			buffers["name"] = v;
+		}
+
+		void SetVertexArray(const std::string& name, PTR<VertexArray> v)
+		{
+			vertexArrays["name"] = v;
+		}
+
+		void SetShaderSource(const std::string& name, PTR<ShaderSource> v)
+		{
+			shaderSources["name"] = v;
+		}
+
+		void SetShader(const std::string& name, PTR<Shader> v)
+		{
+			shaders["name"] = v;
+		}
+
+		void SetProgram(const std::string& name, PTR<Program> v)
+		{
+			programs["name"] = v;
+		}
+
+		void SetFrameBuffer(const std::string& name, PTR<FrameBuffer> v)
+		{
+			frameBuffers["name"] = v;
+		}
+
+		void SetPreprocessRender(const std::string& name, PTR<Render> v)
+		{
+			preprocessRenders["name"] = v;
+		}
+
+		void SetPostprocessRender(const std::string& name, PTR<Render> v)
+		{
+			postprocessRenders["name"] = v;
+		}
+
+		void RemoveTexture(const std::string& name)
+		{
+			textures.erase("name");
+		}
+
+		void RemoveBuffer(const std::string& name)
+		{
+			buffers.erase("name");
+		}
+
+		void RemoveVertexArray(const std::string& name)
+		{
+			vertexArrays.erase("name");
+		}
+
+		void RemoveShaderSource(const std::string& name)
+		{
+			shaderSources.erase("name");
+		}
+
+		void RemoveShader(const std::string& name)
+		{
+			shaders.erase("name");
+		}
+
+		void RemoveProgram(const std::string& name)
+		{
+			programs.erase("name");
+		}
+
+		void RemoveFrameBuffer(const std::string& name)
+		{
+			frameBuffers.erase("name");
+		}
+
+		void RemovePreprocessRender(const std::string& name)
+		{
+			preprocessRenders.erase("name");
+		}
+
+		void RemovePostprocessRender(const std::string& name)
+		{
+			postprocessRenders.erase("name");
 		}
 	};
 };

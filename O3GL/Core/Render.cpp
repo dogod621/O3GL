@@ -17,14 +17,15 @@ namespace O3GL
 		shaders(),
 		programs(),
 		frameBuffers(),
-		renders()
+		preprocessRenders(),
+		postprocessRenders()
 	{
 	}
 
 	void Render::Init()
 	{
 		//
-		for (std::map<std::string, PTR<Render>>::iterator it = renders.begin(); it != renders.end(); ++it)
+		for (std::map<std::string, PTR<Render>>::iterator it = preprocessRenders.begin(); it != preprocessRenders.end(); ++it)
 		{
 			it->second->Init();
 		}
@@ -51,6 +52,12 @@ namespace O3GL
 		InitVertexArraysEvent();
 
 		InitFrameBuffersEvent();
+
+		//
+		for (std::map<std::string, PTR<Render>>::iterator it = postprocessRenders.begin(); it != postprocessRenders.end(); ++it)
+		{
+			it->second->Init();
+		}
 	}
 
 	double Render::Draw() const
@@ -88,127 +95,183 @@ namespace O3GL
 
 	void Render::DisplayCallback(const Display::Message& m)
 	{
-		for (std::map<std::string, PTR<Render>>::iterator it = renders.begin(); it != renders.end(); ++it)
+		for (std::map<std::string, PTR<Render>>::iterator it = preprocessRenders.begin(); it != preprocessRenders.end(); ++it)
 		{
 			it->second->DisplayCallback(m);
 		}
 		DisplayEvent(m);
+		for (std::map<std::string, PTR<Render>>::iterator it = postprocessRenders.begin(); it != postprocessRenders.end(); ++it)
+		{
+			it->second->DisplayCallback(m);
+		}
 	}
 
 	void Render::OverlayDisplayCallback(const OverlayDisplay::Message& m)
 	{
-		for (std::map<std::string, PTR<Render>>::iterator it = renders.begin(); it != renders.end(); ++it)
+		for (std::map<std::string, PTR<Render>>::iterator it = preprocessRenders.begin(); it != preprocessRenders.end(); ++it)
 		{
 			it->second->OverlayDisplayCallback(m);
 		}
 		OverlayDisplayEvent(m);
+		for (std::map<std::string, PTR<Render>>::iterator it = postprocessRenders.begin(); it != postprocessRenders.end(); ++it)
+		{
+			it->second->OverlayDisplayCallback(m);
+		}
 	}
 
 	void Render::ReshapeCallback(const Reshape::Message& m)
 	{
-		for (std::map<std::string, PTR<Render>>::iterator it = renders.begin(); it != renders.end(); ++it)
+		for (std::map<std::string, PTR<Render>>::iterator it = preprocessRenders.begin(); it != preprocessRenders.end(); ++it)
 		{
 			it->second->ReshapeCallback(m);
 		}
 		ReshapeEvent(m);
+		for (std::map<std::string, PTR<Render>>::iterator it = postprocessRenders.begin(); it != postprocessRenders.end(); ++it)
+		{
+			it->second->ReshapeCallback(m);
+		}
 	}
 
 	void Render::KeyboardCallback(const Keyboard::Message& m)
 	{
-		for (std::map<std::string, PTR<Render>>::iterator it = renders.begin(); it != renders.end(); ++it)
+		for (std::map<std::string, PTR<Render>>::iterator it = preprocessRenders.begin(); it != preprocessRenders.end(); ++it)
 		{
 			it->second->KeyboardCallback(m);
 		}
 		KeyboardEvent(m);
+		for (std::map<std::string, PTR<Render>>::iterator it = postprocessRenders.begin(); it != postprocessRenders.end(); ++it)
+		{
+			it->second->KeyboardCallback(m);
+		}
 	}
 
 	void Render::KeyboardUpCallback(const KeyboardUp::Message& m)
 	{
-		for (std::map<std::string, PTR<Render>>::iterator it = renders.begin(); it != renders.end(); ++it)
+		for (std::map<std::string, PTR<Render>>::iterator it = preprocessRenders.begin(); it != preprocessRenders.end(); ++it)
 		{
 			it->second->KeyboardUpCallback(m);
 		}
 		KeyboardUpEvent(m);
+		for (std::map<std::string, PTR<Render>>::iterator it = postprocessRenders.begin(); it != postprocessRenders.end(); ++it)
+		{
+			it->second->KeyboardUpCallback(m);
+		}
 	}
 
 	void Render::SpecialCallback(const Special::Message& m)
 	{
-		for (std::map<std::string, PTR<Render>>::iterator it = renders.begin(); it != renders.end(); ++it)
+		for (std::map<std::string, PTR<Render>>::iterator it = preprocessRenders.begin(); it != preprocessRenders.end(); ++it)
 		{
 			it->second->SpecialCallback(m);
 		}
 		SpecialEvent(m);
+		for (std::map<std::string, PTR<Render>>::iterator it = postprocessRenders.begin(); it != postprocessRenders.end(); ++it)
+		{
+			it->second->SpecialCallback(m);
+		}
 	}
 
 	void Render::SpecialUpCallback(const SpecialUp::Message& m)
 	{
-		for (std::map<std::string, PTR<Render>>::iterator it = renders.begin(); it != renders.end(); ++it)
+		for (std::map<std::string, PTR<Render>>::iterator it = preprocessRenders.begin(); it != preprocessRenders.end(); ++it)
 		{
 			it->second->SpecialUpCallback(m);
 		}
 		SpecialUpEvent(m);
+		for (std::map<std::string, PTR<Render>>::iterator it = postprocessRenders.begin(); it != postprocessRenders.end(); ++it)
+		{
+			it->second->SpecialUpCallback(m);
+		}
 	}
 
 	void Render::MouseCallback(const Mouse::Message& m)
 	{
-		for (std::map<std::string, PTR<Render>>::iterator it = renders.begin(); it != renders.end(); ++it)
+		for (std::map<std::string, PTR<Render>>::iterator it = preprocessRenders.begin(); it != preprocessRenders.end(); ++it)
 		{
 			it->second->MouseCallback(m);
 		}
 		MouseEvent(m);
+		for (std::map<std::string, PTR<Render>>::iterator it = postprocessRenders.begin(); it != postprocessRenders.end(); ++it)
+		{
+			it->second->MouseCallback(m);
+		}
 	}
 
 	void Render::MotionCallback(const Motion::Message& m)
 	{
-		for (std::map<std::string, PTR<Render>>::iterator it = renders.begin(); it != renders.end(); ++it)
+		for (std::map<std::string, PTR<Render>>::iterator it = preprocessRenders.begin(); it != preprocessRenders.end(); ++it)
 		{
 			it->second->MotionCallback(m);
 		}
 		MotionEvent(m);
+		for (std::map<std::string, PTR<Render>>::iterator it = postprocessRenders.begin(); it != postprocessRenders.end(); ++it)
+		{
+			it->second->MotionCallback(m);
+		}
 	}
 
 	void Render::PassiveMotionCallback(const PassiveMotion::Message& m)
 	{
-		for (std::map<std::string, PTR<Render>>::iterator it = renders.begin(); it != renders.end(); ++it)
+		for (std::map<std::string, PTR<Render>>::iterator it = preprocessRenders.begin(); it != preprocessRenders.end(); ++it)
 		{
 			it->second->PassiveMotionCallback(m);
 		}
 		PassiveMotionEvent(m);
+		for (std::map<std::string, PTR<Render>>::iterator it = postprocessRenders.begin(); it != postprocessRenders.end(); ++it)
+		{
+			it->second->PassiveMotionCallback(m);
+		}
 	}
 
 	void Render::VisibilityCallback(const Visibility::Message& m)
 	{
-		for (std::map<std::string, PTR<Render>>::iterator it = renders.begin(); it != renders.end(); ++it)
+		for (std::map<std::string, PTR<Render>>::iterator it = preprocessRenders.begin(); it != preprocessRenders.end(); ++it)
 		{
 			it->second->VisibilityCallback(m);
 		}
 		VisibilityEvent(m);
+		for (std::map<std::string, PTR<Render>>::iterator it = postprocessRenders.begin(); it != postprocessRenders.end(); ++it)
+		{
+			it->second->VisibilityCallback(m);
+		}
 	}
 
 	void Render::EntryCallback(const Entry::Message& m)
 	{
-		for (std::map<std::string, PTR<Render>>::iterator it = renders.begin(); it != renders.end(); ++it)
+		for (std::map<std::string, PTR<Render>>::iterator it = preprocessRenders.begin(); it != preprocessRenders.end(); ++it)
 		{
 			it->second->EntryCallback(m);
 		}
 		EntryEvent(m);
+		for (std::map<std::string, PTR<Render>>::iterator it = postprocessRenders.begin(); it != postprocessRenders.end(); ++it)
+		{
+			it->second->EntryCallback(m);
+		}
 	}
 
 	void Render::CloseCallback(const Close::Message& m)
 	{
-		for (std::map<std::string, PTR<Render>>::iterator it = renders.begin(); it != renders.end(); ++it)
+		for (std::map<std::string, PTR<Render>>::iterator it = preprocessRenders.begin(); it != preprocessRenders.end(); ++it)
 		{
 			it->second->CloseCallback(m);
 		}
 		CloseEvent(m);
+		for (std::map<std::string, PTR<Render>>::iterator it = postprocessRenders.begin(); it != postprocessRenders.end(); ++it)
+		{
+			it->second->CloseCallback(m);
+		}
 	}
 
 	void Render::TimerCallback(const Timer::Message& m)
 	{
-		for (std::map<std::string, PTR<Render>>::iterator it = renders.begin(); it != renders.end(); ++it)
+		for (std::map<std::string, PTR<Render>>::iterator it = preprocessRenders.begin(); it != preprocessRenders.end(); ++it)
 		{
 			it->second->TimerCallback(m);
 		}
 		TimerEvent(m);
+		for (std::map<std::string, PTR<Render>>::iterator it = postprocessRenders.begin(); it != postprocessRenders.end(); ++it)
+		{
+			it->second->TimerCallback(m);
+		}
 	}
 };
