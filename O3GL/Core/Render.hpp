@@ -161,7 +161,9 @@ namespace O3GL
 		std::map<std::string, PTR<Shader		>> shaders;
 		std::map<std::string, PTR<Program		>> programs;
 		std::map<std::string, PTR<FrameBuffer	>> frameBuffers;
+		std::map<std::string, PTR<Render		>> addPreprocessRenders;
 		std::map<std::string, PTR<Render		>> preprocessRenders;
+		std::map<std::string, PTR<Render		>> addPostprocessRenders;
 		std::map<std::string, PTR<Render		>> postprocessRenders;
 
 	public:
@@ -215,6 +217,16 @@ namespace O3GL
 			return postprocessRenders.at(name);
 		}
 
+		PTR<Render> GetAddPreprocessRender(const std::string& name)
+		{
+			return addPreprocessRenders.at(name);
+		}
+
+		PTR<Render> GetAddPostprocessRender(const std::string& name)
+		{
+			return addPostprocessRenders.at(name);
+		}
+
 		CONST_PTR<Sampler> GetSampler(const std::string& name) const
 		{
 			return samplers.at(name);
@@ -263,6 +275,16 @@ namespace O3GL
 		CONST_PTR<Render> GetPostprocessRender(const std::string& name) const
 		{
 			return postprocessRenders.at(name);
+		}
+
+		CONST_PTR<Render> GetAddPreprocessRender(const std::string& name) const
+		{
+			return addPreprocessRenders.at(name);
+		}
+
+		CONST_PTR<Render> GetAddPostprocessRender(const std::string& name) const
+		{
+			return addPostprocessRenders.at(name);
 		}
 
 		void SetSampler(const std::string& name, PTR<Sampler> v)
@@ -315,6 +337,16 @@ namespace O3GL
 			postprocessRenders[name] = v;
 		}
 
+		void AddPreprocessRender(const std::string& name, PTR<Render> v)
+		{
+			addPreprocessRenders[name] = v;
+		}
+
+		void AddPostprocessRender(const std::string& name, PTR<Render> v)
+		{
+			addPostprocessRenders[name] = v;
+		}
+
 		void RemoveTexture(const std::string& name)
 		{
 			textures.erase(name);
@@ -352,12 +384,12 @@ namespace O3GL
 
 		void RemovePreprocessRender(const std::string& name)
 		{
-			preprocessRenders.erase(name);
+			addPreprocessRenders.erase(name);
 		}
 
 		void RemovePostprocessRender(const std::string& name)
 		{
-			postprocessRenders.erase(name);
+			addPostprocessRenders.erase(name);
 		}
 	};
 };

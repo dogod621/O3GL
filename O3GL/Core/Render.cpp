@@ -25,6 +25,10 @@ namespace O3GL
 	void Render::Init()
 	{
 		//
+		for (std::map<std::string, PTR<Render>>::iterator it = addPreprocessRenders.begin(); it != addPreprocessRenders.end(); ++it)
+		{
+			it->second->Init();
+		}
 		for (std::map<std::string, PTR<Render>>::iterator it = preprocessRenders.begin(); it != preprocessRenders.end(); ++it)
 		{
 			it->second->Init();
@@ -55,6 +59,10 @@ namespace O3GL
 
 		//
 		for (std::map<std::string, PTR<Render>>::iterator it = postprocessRenders.begin(); it != postprocessRenders.end(); ++it)
+		{
+			it->second->Init();
+		}
+		for (std::map<std::string, PTR<Render>>::iterator it = addPostprocessRenders.begin(); it != addPostprocessRenders.end(); ++it)
 		{
 			it->second->Init();
 		}
@@ -95,6 +103,10 @@ namespace O3GL
 
 	void Render::DisplayCallback(const Display::Message& m)
 	{
+		for (std::map<std::string, PTR<Render>>::iterator it = addPreprocessRenders.begin(); it != addPreprocessRenders.end(); ++it)
+		{
+			it->second->DisplayCallback(m);
+		}
 		for (std::map<std::string, PTR<Render>>::iterator it = preprocessRenders.begin(); it != preprocessRenders.end(); ++it)
 		{
 			it->second->DisplayCallback(m);
@@ -104,10 +116,18 @@ namespace O3GL
 		{
 			it->second->DisplayCallback(m);
 		}
+		for (std::map<std::string, PTR<Render>>::iterator it = addPostprocessRenders.begin(); it != addPostprocessRenders.end(); ++it)
+		{
+			it->second->DisplayCallback(m);
+		}
 	}
 
 	void Render::OverlayDisplayCallback(const OverlayDisplay::Message& m)
 	{
+		for (std::map<std::string, PTR<Render>>::iterator it = addPreprocessRenders.begin(); it != addPreprocessRenders.end(); ++it)
+		{
+			it->second->OverlayDisplayCallback(m);
+		}
 		for (std::map<std::string, PTR<Render>>::iterator it = preprocessRenders.begin(); it != preprocessRenders.end(); ++it)
 		{
 			it->second->OverlayDisplayCallback(m);
@@ -117,10 +137,18 @@ namespace O3GL
 		{
 			it->second->OverlayDisplayCallback(m);
 		}
+		for (std::map<std::string, PTR<Render>>::iterator it = addPostprocessRenders.begin(); it != addPostprocessRenders.end(); ++it)
+		{
+			it->second->OverlayDisplayCallback(m);
+		}
 	}
 
 	void Render::ReshapeCallback(const Reshape::Message& m)
 	{
+		for (std::map<std::string, PTR<Render>>::iterator it = addPreprocessRenders.begin(); it != addPreprocessRenders.end(); ++it)
+		{
+			it->second->ReshapeCallback(m);
+		}
 		for (std::map<std::string, PTR<Render>>::iterator it = preprocessRenders.begin(); it != preprocessRenders.end(); ++it)
 		{
 			it->second->ReshapeCallback(m);
@@ -130,10 +158,18 @@ namespace O3GL
 		{
 			it->second->ReshapeCallback(m);
 		}
+		for (std::map<std::string, PTR<Render>>::iterator it = addPostprocessRenders.begin(); it != addPostprocessRenders.end(); ++it)
+		{
+			it->second->ReshapeCallback(m);
+		}
 	}
 
 	void Render::KeyboardCallback(const Keyboard::Message& m)
 	{
+		for (std::map<std::string, PTR<Render>>::iterator it = addPreprocessRenders.begin(); it != addPreprocessRenders.end(); ++it)
+		{
+			it->second->KeyboardCallback(m);
+		}
 		for (std::map<std::string, PTR<Render>>::iterator it = preprocessRenders.begin(); it != preprocessRenders.end(); ++it)
 		{
 			it->second->KeyboardCallback(m);
@@ -143,10 +179,18 @@ namespace O3GL
 		{
 			it->second->KeyboardCallback(m);
 		}
+		for (std::map<std::string, PTR<Render>>::iterator it = addPostprocessRenders.begin(); it != addPostprocessRenders.end(); ++it)
+		{
+			it->second->KeyboardCallback(m);
+		}
 	}
 
 	void Render::KeyboardUpCallback(const KeyboardUp::Message& m)
 	{
+		for (std::map<std::string, PTR<Render>>::iterator it = addPreprocessRenders.begin(); it != addPreprocessRenders.end(); ++it)
+		{
+			it->second->KeyboardUpCallback(m);
+		}
 		for (std::map<std::string, PTR<Render>>::iterator it = preprocessRenders.begin(); it != preprocessRenders.end(); ++it)
 		{
 			it->second->KeyboardUpCallback(m);
@@ -156,10 +200,18 @@ namespace O3GL
 		{
 			it->second->KeyboardUpCallback(m);
 		}
+		for (std::map<std::string, PTR<Render>>::iterator it = addPostprocessRenders.begin(); it != addPostprocessRenders.end(); ++it)
+		{
+			it->second->KeyboardUpCallback(m);
+		}
 	}
 
 	void Render::SpecialCallback(const Special::Message& m)
 	{
+		for (std::map<std::string, PTR<Render>>::iterator it = addPreprocessRenders.begin(); it != addPreprocessRenders.end(); ++it)
+		{
+			it->second->SpecialCallback(m);
+		}
 		for (std::map<std::string, PTR<Render>>::iterator it = preprocessRenders.begin(); it != preprocessRenders.end(); ++it)
 		{
 			it->second->SpecialCallback(m);
@@ -169,10 +221,18 @@ namespace O3GL
 		{
 			it->second->SpecialCallback(m);
 		}
+		for (std::map<std::string, PTR<Render>>::iterator it = addPostprocessRenders.begin(); it != addPostprocessRenders.end(); ++it)
+		{
+			it->second->SpecialCallback(m);
+		}
 	}
 
 	void Render::SpecialUpCallback(const SpecialUp::Message& m)
 	{
+		for (std::map<std::string, PTR<Render>>::iterator it = addPreprocessRenders.begin(); it != addPreprocessRenders.end(); ++it)
+		{
+			it->second->SpecialUpCallback(m);
+		}
 		for (std::map<std::string, PTR<Render>>::iterator it = preprocessRenders.begin(); it != preprocessRenders.end(); ++it)
 		{
 			it->second->SpecialUpCallback(m);
@@ -182,10 +242,18 @@ namespace O3GL
 		{
 			it->second->SpecialUpCallback(m);
 		}
+		for (std::map<std::string, PTR<Render>>::iterator it = addPostprocessRenders.begin(); it != addPostprocessRenders.end(); ++it)
+		{
+			it->second->SpecialUpCallback(m);
+		}
 	}
 
 	void Render::MouseCallback(const Mouse::Message& m)
 	{
+		for (std::map<std::string, PTR<Render>>::iterator it = addPreprocessRenders.begin(); it != addPreprocessRenders.end(); ++it)
+		{
+			it->second->MouseCallback(m);
+		}
 		for (std::map<std::string, PTR<Render>>::iterator it = preprocessRenders.begin(); it != preprocessRenders.end(); ++it)
 		{
 			it->second->MouseCallback(m);
@@ -195,10 +263,18 @@ namespace O3GL
 		{
 			it->second->MouseCallback(m);
 		}
+		for (std::map<std::string, PTR<Render>>::iterator it = addPostprocessRenders.begin(); it != addPostprocessRenders.end(); ++it)
+		{
+			it->second->MouseCallback(m);
+		}
 	}
 
 	void Render::MotionCallback(const Motion::Message& m)
 	{
+		for (std::map<std::string, PTR<Render>>::iterator it = addPreprocessRenders.begin(); it != addPreprocessRenders.end(); ++it)
+		{
+			it->second->MotionCallback(m);
+		}
 		for (std::map<std::string, PTR<Render>>::iterator it = preprocessRenders.begin(); it != preprocessRenders.end(); ++it)
 		{
 			it->second->MotionCallback(m);
@@ -208,10 +284,18 @@ namespace O3GL
 		{
 			it->second->MotionCallback(m);
 		}
+		for (std::map<std::string, PTR<Render>>::iterator it = addPostprocessRenders.begin(); it != addPostprocessRenders.end(); ++it)
+		{
+			it->second->MotionCallback(m);
+		}
 	}
 
 	void Render::PassiveMotionCallback(const PassiveMotion::Message& m)
 	{
+		for (std::map<std::string, PTR<Render>>::iterator it = addPreprocessRenders.begin(); it != addPreprocessRenders.end(); ++it)
+		{
+			it->second->PassiveMotionCallback(m);
+		}
 		for (std::map<std::string, PTR<Render>>::iterator it = preprocessRenders.begin(); it != preprocessRenders.end(); ++it)
 		{
 			it->second->PassiveMotionCallback(m);
@@ -221,10 +305,18 @@ namespace O3GL
 		{
 			it->second->PassiveMotionCallback(m);
 		}
+		for (std::map<std::string, PTR<Render>>::iterator it = addPostprocessRenders.begin(); it != addPostprocessRenders.end(); ++it)
+		{
+			it->second->PassiveMotionCallback(m);
+		}
 	}
 
 	void Render::VisibilityCallback(const Visibility::Message& m)
 	{
+		for (std::map<std::string, PTR<Render>>::iterator it = addPreprocessRenders.begin(); it != addPreprocessRenders.end(); ++it)
+		{
+			it->second->VisibilityCallback(m);
+		}
 		for (std::map<std::string, PTR<Render>>::iterator it = preprocessRenders.begin(); it != preprocessRenders.end(); ++it)
 		{
 			it->second->VisibilityCallback(m);
@@ -234,10 +326,18 @@ namespace O3GL
 		{
 			it->second->VisibilityCallback(m);
 		}
+		for (std::map<std::string, PTR<Render>>::iterator it = addPostprocessRenders.begin(); it != addPostprocessRenders.end(); ++it)
+		{
+			it->second->VisibilityCallback(m);
+		}
 	}
 
 	void Render::EntryCallback(const Entry::Message& m)
 	{
+		for (std::map<std::string, PTR<Render>>::iterator it = addPreprocessRenders.begin(); it != addPreprocessRenders.end(); ++it)
+		{
+			it->second->EntryCallback(m);
+		}
 		for (std::map<std::string, PTR<Render>>::iterator it = preprocessRenders.begin(); it != preprocessRenders.end(); ++it)
 		{
 			it->second->EntryCallback(m);
@@ -247,10 +347,18 @@ namespace O3GL
 		{
 			it->second->EntryCallback(m);
 		}
+		for (std::map<std::string, PTR<Render>>::iterator it = addPostprocessRenders.begin(); it != addPostprocessRenders.end(); ++it)
+		{
+			it->second->EntryCallback(m);
+		}
 	}
 
 	void Render::CloseCallback(const Close::Message& m)
 	{
+		for (std::map<std::string, PTR<Render>>::iterator it = addPreprocessRenders.begin(); it != addPreprocessRenders.end(); ++it)
+		{
+			it->second->CloseCallback(m);
+		}
 		for (std::map<std::string, PTR<Render>>::iterator it = preprocessRenders.begin(); it != preprocessRenders.end(); ++it)
 		{
 			it->second->CloseCallback(m);
@@ -260,16 +368,28 @@ namespace O3GL
 		{
 			it->second->CloseCallback(m);
 		}
+		for (std::map<std::string, PTR<Render>>::iterator it = addPostprocessRenders.begin(); it != addPostprocessRenders.end(); ++it)
+		{
+			it->second->CloseCallback(m);
+		}
 	}
 
 	void Render::TimerCallback(const Timer::Message& m)
 	{
+		for (std::map<std::string, PTR<Render>>::iterator it = addPreprocessRenders.begin(); it != addPreprocessRenders.end(); ++it)
+		{
+			it->second->TimerCallback(m);
+		}
 		for (std::map<std::string, PTR<Render>>::iterator it = preprocessRenders.begin(); it != preprocessRenders.end(); ++it)
 		{
 			it->second->TimerCallback(m);
 		}
 		TimerEvent(m);
 		for (std::map<std::string, PTR<Render>>::iterator it = postprocessRenders.begin(); it != postprocessRenders.end(); ++it)
+		{
+			it->second->TimerCallback(m);
+		}
+		for (std::map<std::string, PTR<Render>>::iterator it = addPostprocessRenders.begin(); it != addPostprocessRenders.end(); ++it)
 		{
 			it->second->TimerCallback(m);
 		}

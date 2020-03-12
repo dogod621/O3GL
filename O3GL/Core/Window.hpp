@@ -462,11 +462,6 @@ namespace O3GL
 		{
 			renders[name] = v;
 		}
-
-		void RemoveRender(const std::string& name)
-		{
-			renders.erase(name);
-		}
 	};
 
 	//
