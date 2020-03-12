@@ -267,97 +267,97 @@ namespace O3GL
 
 		void SetSampler(const std::string& name, PTR<Sampler> v)
 		{
-			samplers["name"] = v;
+			samplers[name] = v;
 		}
 
 		void SetTexture(const std::string& name, PTR<Texture> v)
 		{
-			textures["name"] = v;
+			textures[name] = v;
 		}
 
 		void SetBuffer(const std::string& name, PTR<Buffer> v)
 		{
-			buffers["name"] = v;
+			buffers[name] = v;
 		}
 
 		void SetVertexArray(const std::string& name, PTR<VertexArray> v)
 		{
-			vertexArrays["name"] = v;
+			vertexArrays[name] = v;
 		}
 
 		void SetShaderSource(const std::string& name, PTR<ShaderSource> v)
 		{
-			shaderSources["name"] = v;
+			shaderSources[name] = v;
 		}
 
 		void SetShader(const std::string& name, PTR<Shader> v)
 		{
-			shaders["name"] = v;
+			shaders[name] = v;
 		}
 
 		void SetProgram(const std::string& name, PTR<Program> v)
 		{
-			programs["name"] = v;
+			programs[name] = v;
 		}
 
 		void SetFrameBuffer(const std::string& name, PTR<FrameBuffer> v)
 		{
-			frameBuffers["name"] = v;
+			frameBuffers[name] = v;
 		}
 
 		void SetPreprocessRender(const std::string& name, PTR<Render> v)
 		{
-			preprocessRenders["name"] = v;
+			preprocessRenders[name] = v;
 		}
 
 		void SetPostprocessRender(const std::string& name, PTR<Render> v)
 		{
-			postprocessRenders["name"] = v;
+			postprocessRenders[name] = v;
 		}
 
 		void RemoveTexture(const std::string& name)
 		{
-			textures.erase("name");
+			textures.erase(name);
 		}
 
 		void RemoveBuffer(const std::string& name)
 		{
-			buffers.erase("name");
+			buffers.erase(name);
 		}
 
 		void RemoveVertexArray(const std::string& name)
 		{
-			vertexArrays.erase("name");
+			vertexArrays.erase(name);
 		}
 
 		void RemoveShaderSource(const std::string& name)
 		{
-			shaderSources.erase("name");
+			shaderSources.erase(name);
 		}
 
 		void RemoveShader(const std::string& name)
 		{
-			shaders.erase("name");
+			shaders.erase(name);
 		}
 
 		void RemoveProgram(const std::string& name)
 		{
-			programs.erase("name");
+			programs.erase(name);
 		}
 
 		void RemoveFrameBuffer(const std::string& name)
 		{
-			frameBuffers.erase("name");
+			frameBuffers.erase(name);
 		}
 
 		void RemovePreprocessRender(const std::string& name)
 		{
-			preprocessRenders.erase("name");
+			preprocessRenders.erase(name);
 		}
 
 		void RemovePostprocessRender(const std::string& name)
 		{
-			postprocessRenders.erase("name");
+			postprocessRenders.erase(name);
 		}
 	};
 };

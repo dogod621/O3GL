@@ -460,12 +460,12 @@ namespace O3GL
 
 		void SetRender(const std::string& name, PTR<Render> v)
 		{
-			renders["name"] = v;
+			renders[name] = v;
 		}
 
 		void RemoveRender(const std::string& name)
 		{
-			renders.erase("name");
+			renders.erase(name);
 		}
 	};
 
