@@ -93,8 +93,8 @@ namespace O3GL
 			const CONST_PTR<Texture>& panoFieldTexture) :
 			CanvasRender(canvasWidth, canvasHeight),
 			rigMode(rigMode), rigW2V(rigW2V), rigV2W(),
-			inProjMode(inProjMode), inProjTransform(glm::identity<Mat44>()), inProjCamera(inProjCamera),
-			outProjMode(outProjMode), outProjTransform(glm::identity<Mat44>()), outProjCamera(outProjCamera),
+			inProjMode(inProjMode), inProjTransform(), inProjCamera(inProjCamera),
+			outProjMode(outProjMode), outProjTransform(), outProjCamera(outProjCamera),
 			panoFieldSampler(), panoFieldTexture(panoFieldTexture),
 			enableField(true), enableDepth(false), enableMask(false),
 			inProjW2V(inProjCamera.size()), inProjW2C(inProjCamera.size()), inProjC2W(inProjCamera.size()), inProjV2W(inProjCamera.size()),
@@ -112,8 +112,8 @@ namespace O3GL
 			const CONST_PTR<Texture>& panoFieldTexture, const CONST_PTR<Texture>& panoDepthTexture) :
 			CanvasRender(canvasWidth, canvasHeight),
 			rigMode(rigMode), rigW2V(rigW2V), rigV2W(),
-			inProjMode(inProjMode), inProjTransform(glm::identity<Mat44>()), inProjCamera(inProjCamera),
-			outProjMode(outProjMode), outProjTransform(glm::identity<Mat44>()), outProjCamera(outProjCamera),
+			inProjMode(inProjMode), inProjTransform(), inProjCamera(inProjCamera),
+			outProjMode(outProjMode), outProjTransform(), outProjCamera(outProjCamera),
 			panoFieldSampler(), panoDepthSampler(), panoFieldTexture(panoFieldTexture), panoDepthTexture(panoDepthTexture),
 			enableField(true), enableDepth(true), enableMask(false),
 			inProjW2V(inProjCamera.size()), inProjW2C(inProjCamera.size()), inProjC2W(inProjCamera.size()), inProjV2W(inProjCamera.size()),
@@ -131,8 +131,8 @@ namespace O3GL
 			const CONST_PTR<Texture>& panoFieldTexture, const CONST_PTR<Texture>& panoDepthTexture, const CONST_PTR<Texture>& panoMaskTexture) :
 			CanvasRender(canvasWidth, canvasHeight),
 			rigMode(rigMode), rigW2V(rigW2V), rigV2W(),
-			inProjMode(inProjMode), inProjTransform(glm::identity<Mat44>()), inProjCamera(inProjCamera),
-			outProjMode(outProjMode), outProjTransform(glm::identity<Mat44>()), outProjCamera(outProjCamera),
+			inProjMode(inProjMode), inProjTransform(), inProjCamera(inProjCamera),
+			outProjMode(outProjMode), outProjTransform(), outProjCamera(outProjCamera),
 			panoFieldSampler(), panoDepthSampler(), panoMaskSampler(), panoFieldTexture(panoFieldTexture), panoDepthTexture(panoDepthTexture), panoMaskTexture(panoMaskTexture),
 			enableField(true), enableDepth(true), enableMask(true),
 			inProjW2V(inProjCamera.size()), inProjW2C(inProjCamera.size()), inProjC2W(inProjCamera.size()), inProjV2W(inProjCamera.size()),
@@ -144,12 +144,24 @@ namespace O3GL
 
 		void SetInProjTransform(Mat44 inProjTransform) const
 		{
-			*((Mat44*)&this->inProjTransform) = inProjTransform;
+			for (const Mat44& m : this->inProjTransform)
+				*((Mat44*)&m) = inProjTransform;
 		}
 
 		void SetOutProjTransform(Mat44 outProjTransform) const
 		{
-			*((Mat44*)&this->outProjTransform) = outProjTransform;
+			for (const Mat44& m : this->outProjTransform)
+				*((Mat44*)&m) = outProjTransform;
+		}
+
+		void SetInProjTransform(const std::vector<Mat44>& inProjTransform) const
+		{
+			*((std::vector<Mat44>*) & this->inProjTransform) = inProjTransform;
+		}
+
+		void SetOutProjTransform(const std::vector<Mat44>& outProjTransform) const
+		{
+			*((std::vector<Mat44>*) & this->outProjTransform) = outProjTransform;
 		}
 
 	protected:
@@ -190,7 +202,7 @@ namespace O3GL
 
 	protected:
 		const ProjectionMode inProjMode;
-		const Mat44 inProjTransform;
+		const std::vector<Mat44> inProjTransform;
 
 		// for inProjMode: MULTI_PERSPECTIVE, CUBEMAP, JOSH1, JOSH2
 		const std::vector<Camera> inProjCamera;
@@ -201,7 +213,7 @@ namespace O3GL
 
 	protected:
 		const ProjectionMode outProjMode;
-		const Mat44 outProjTransform;
+		const std::vector<Mat44> outProjTransform;
 
 		// for outProjMode: PERSPECTIVE, MULTI_PERSPECTIVE, CUBEMAP, JOSH1, JOSH2
 		const std::vector<Camera> outProjCamera;
@@ -214,6 +226,29 @@ namespace O3GL
 		const RigMode rigMode;
 		const std::vector<Mat44> rigW2V;
 		const std::vector<Mat44> rigV2W;
+
+	public:
+		const ProjectionMode& GetInProjMode() const { return inProjMode; }
+		const std::vector<Mat44>& GetInProjTransform() const { return inProjTransform; }
+
+		const std::vector<Camera>& GetInProjCamera() const { return inProjCamera; }
+		const std::vector<Mat44>& GetInProjW2V() const { return inProjW2V; }
+		const std::vector<Mat44>& GetInProjW2C() const { return inProjW2C; }
+		const std::vector<Mat44>& GetInProjV2W() const { return inProjV2W; }
+		const std::vector<Mat44>& GetInProjC2W() const { return inProjC2W; }
+
+		const ProjectionMode& GetOutProjMode() const { return outProjMode; }
+		const std::vector<Mat44>& GetOutProjTransform() const { return outProjTransform; }
+
+		const std::vector<Camera>& GetOutProjCamera() const { return outProjCamera; }
+		const std::vector<Mat44>& GetOutProjW2V() const { return outProjW2V; }
+		const std::vector<Mat44>& GetOutProjW2C() const { return outProjW2C; }
+		const std::vector<Mat44>& GetOutProjV2W() const { return outProjV2W; }
+		const std::vector<Mat44>& GetOutProjC2W() const { return outProjC2W; }
+
+		const RigMode& GetRigMode() const { return rigMode; }
+		const std::vector<Mat44>& GetRigW2V() const { return rigW2V; }
+		const std::vector<Mat44>& GetRigV2W() const { return rigV2W; }
 	};
 
 	//

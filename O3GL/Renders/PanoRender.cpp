@@ -59,9 +59,14 @@ void main()
 
 		//
 		shaderSources["canvas_frag"]->push_back(R"(
-uniform mat4 u_inProjTransformINV;
-uniform mat4 u_outProjTransform;
-			)");
+uniform mat4 u_inProjTransformINV[)");
+
+		shaderSources["canvas_frag"]->push_back(std::to_string(inProjTransform.size()) + "];");
+
+		shaderSources["canvas_frag"]->push_back(R"(
+uniform mat4 u_outProjTransform[)");
+
+		shaderSources["canvas_frag"]->push_back(std::to_string(outProjTransform.size()) + "];");
 
 		if (layers > 1)
 		{
@@ -395,7 +400,14 @@ uniform mat4 u_outProjC2W[)");
 		CanvasRender::InitProgramParametersEvent();
 
 		//
-		programs.at("canvas")->Uniform<GLfloat, 4, 4>("u_inProjTransformINV", glm::inverse(inProjTransform));
+		std::vector<Mat44> inProjTransformINV;
+		inProjTransformINV.resize(inProjTransform.size());
+		for (std::size_t i = 0; i < inProjTransform.size(); ++i)
+		{
+			inProjTransformINV[i] = glm::inverse(inProjTransform[i]);
+		}
+
+		programs.at("canvas")->Uniform<GLfloat, 4, 4>("u_inProjTransformINV", inProjTransformINV);
 		programs.at("canvas")->Uniform<GLfloat, 4, 4>("u_outProjTransform", outProjTransform);
 
 		switch (rigMode)
@@ -663,7 +675,7 @@ uniform sampler2D u_panoField;
 
 vec4 PanoField(vec3 dir)
 {
-	vec3 dir2 = (u_inProjTransformINV * vec4(dir, 0.0f)).xyz;
+	vec3 dir2 = (u_inProjTransformINV[0] * vec4(dir, 0.0f)).xyz;
 
 	vec4 s = u_inProjW2C[0] * vec4(dir2, 1.0f);
 	s /= s.w;
@@ -683,7 +695,7 @@ uniform sampler2D u_panoDepth;
 
 float PanoDepth(vec3 dir)
 {
-	vec3 dir2 = (u_inProjTransformINV * vec4(dir, 0.0f)).xyz;
+	vec3 dir2 = (u_inProjTransformINV[0] * vec4(dir, 0.0f)).xyz;
 
 	vec4 s = u_inProjW2C[0] * vec4(dir2, 1.0f);
 	s /= s.w;
@@ -704,7 +716,7 @@ uniform sampler2D u_panoMask;
 
 float PanoMask(vec3 dir)
 {
-	vec3 dir2 = (u_inProjTransformINV * vec4(dir, 0.0f)).xyz;
+	vec3 dir2 = (u_inProjTransformINV[0] * vec4(dir, 0.0f)).xyz;
 
 	vec4 s = u_inProjW2C[0] * vec4(dir2, 1.0f);
 	s /= s.w;
@@ -726,7 +738,7 @@ uniform sampler2D u_panoField;
 
 vec4 PanoField(vec3 dir)
 {
-	return texture(u_panoField, Dir_To_EquirectangularUV((u_inProjTransformINV * vec4(dir, 0.0f)).xyz));
+	return texture(u_panoField, Dir_To_EquirectangularUV((u_inProjTransformINV[0] * vec4(dir, 0.0f)).xyz));
 }
 			)");
 
@@ -737,7 +749,7 @@ uniform sampler2D u_panoDepth;
 
 float PanoDepth(vec3 dir)
 {
-	return texture(u_panoDepth, Dir_To_EquirectangularUV((u_inProjTransformINV * vec4(dir, 0.0f)).xyz)).r;
+	return texture(u_panoDepth, Dir_To_EquirectangularUV((u_inProjTransformINV[0] * vec4(dir, 0.0f)).xyz)).r;
 }
 				)");
 		}
@@ -749,7 +761,7 @@ uniform sampler2D u_panoMask;
 
 float PanoMask(vec3 dir)
 {
-	return texture(u_panoMask, Dir_To_EquirectangularUV((u_inProjTransformINV * vec4(dir, 0.0f)).xyz)).r;
+	return texture(u_panoMask, Dir_To_EquirectangularUV((u_inProjTransformINV[0] * vec4(dir, 0.0f)).xyz)).r;
 }
 				)");
 		}
@@ -762,7 +774,7 @@ uniform sampler2D u_panoField;
 
 vec4 PanoField(vec3 dir)
 {
-	return texture(u_panoField, Dir_To_MercatorUV((u_inProjTransformINV * vec4(dir, 0.0f)).xyz));
+	return texture(u_panoField, Dir_To_MercatorUV((u_inProjTransformINV[0] * vec4(dir, 0.0f)).xyz));
 }
 			)");
 
@@ -773,7 +785,7 @@ uniform sampler2D u_panoDepth;
 
 float PanoDepth(vec3 dir)
 {
-	return texture(u_panoDepth, Dir_To_MercatorUV((u_inProjTransformINV * vec4(dir, 0.0f)).xyz)).r;
+	return texture(u_panoDepth, Dir_To_MercatorUV((u_inProjTransformINV[0] * vec4(dir, 0.0f)).xyz)).r;
 }
 				)");
 		}
@@ -785,7 +797,7 @@ uniform sampler2D u_panoMask;
 
 float PanoMask(vec3 dir)
 {
-	return texture(u_panoMask, Dir_To_MercatorUV((u_inProjTransformINV * vec4(dir, 0.0f)).xyz)).r;
+	return texture(u_panoMask, Dir_To_MercatorUV((u_inProjTransformINV[0] * vec4(dir, 0.0f)).xyz)).r;
 }
 				)");
 		}
@@ -798,7 +810,7 @@ uniform sampler2DArray u_panoField;
 
 vec4 PanoField(vec3 dir)
 {
-	vec3 dir2 = (u_inProjTransformINV * vec4(dir, 0.0f)).xyz;
+	vec3 dir2 = (u_inProjTransformINV[0] * vec4(dir, 0.0f)).xyz;
 
 	vec4 s;
 	float weight = 0.0f;
@@ -830,7 +842,7 @@ uniform sampler2DArray u_panoDepth;
 
 float PanoDepth(vec3 dir)
 {
-	vec3 dir2 = (u_inProjTransformINV * vec4(dir, 0.0f)).xyz;
+	vec3 dir2 = (u_inProjTransformINV[0] * vec4(dir, 0.0f)).xyz;
 
 	vec4 s;
 	float weight = 0.0f;
@@ -863,7 +875,7 @@ uniform sampler2DArray u_panoMask;
 
 float PanoMask(vec3 dir)
 {
-	vec3 dir2 = (u_inProjTransformINV * vec4(dir, 0.0f)).xyz;
+	vec3 dir2 = (u_inProjTransformINV[0] * vec4(dir, 0.0f)).xyz;
 
 	vec4 s;
 	float weight = 0.0f;
@@ -897,7 +909,7 @@ uniform samplerCube u_panoField;
 
 vec4 PanoField(vec3 dir)
 {
-	return texture(u_panoField, (u_inProjTransformINV * vec4(dir, 0.0f)).xyz);
+	return texture(u_panoField, (u_inProjTransformINV[0] * vec4(dir, 0.0f)).xyz);
 }
 			)");
 
@@ -908,7 +920,7 @@ uniform samplerCube u_panoDepth;
 
 float PanoDepth(vec3 dir)
 {
-	return texture(u_panoDepth, (u_inProjTransformINV * vec4(dir, 0.0f)).xyz).r;
+	return texture(u_panoDepth, (u_inProjTransformINV[0] * vec4(dir, 0.0f)).xyz).r;
 }
 				)");
 		}
@@ -920,7 +932,7 @@ uniform samplerCube u_panoMask;
 
 float PanoMask(vec3 dir)
 {
-	return texture(u_panoMask, (u_inProjTransformINV * vec4(dir, 0.0f)).xyz).r;
+	return texture(u_panoMask, (u_inProjTransformINV[0] * vec4(dir, 0.0f)).xyz).r;
 }
 				)");
 		}
@@ -962,7 +974,7 @@ vec3 Dir_To_JOSH1UVI(vec3 dir)
 
 vec4 PanoField(vec3 dir)
 {
-	return texture(u_panoField, Dir_To_JOSH1UVI((u_inProjTransformINV * vec4(dir, 0.0f)).xyz));
+	return texture(u_panoField, Dir_To_JOSH1UVI((u_inProjTransformINV[0] * vec4(dir, 0.0f)).xyz));
 }
 			)");
 
@@ -973,7 +985,7 @@ uniform sampler2DArray u_panoDepth;
 
 float PanoDepth(vec3 dir)
 {
-	return texture(u_panoDepth, Dir_To_JOSH1UVI((u_inProjTransformINV * vec4(dir, 0.0f)).xyz)).r;
+	return texture(u_panoDepth, Dir_To_JOSH1UVI((u_inProjTransformINV[0] * vec4(dir, 0.0f)).xyz)).r;
 }
 				)");
 		}
@@ -985,7 +997,7 @@ uniform sampler2DArray u_panoMask;
 
 float PanoMask(vec3 dir)
 {
-	return texture(u_panoMask, Dir_To_JOSH1UVI((u_inProjTransformINV * vec4(dir, 0.0f)).xyz)).r;
+	return texture(u_panoMask, Dir_To_JOSH1UVI((u_inProjTransformINV[0] * vec4(dir, 0.0f)).xyz)).r;
 }
 				)");
 		}
@@ -1087,7 +1099,7 @@ vec3 Dir_To_Josh2UVI(vec3 dir)
 
 vec4 PanoField(vec3 dir)
 {
-	return texture(u_panoField, Dir_To_Josh2UVI((u_inProjTransformINV * vec4(dir, 0.0f)).xyz));
+	return texture(u_panoField, Dir_To_Josh2UVI((u_inProjTransformINV[0] * vec4(dir, 0.0f)).xyz));
 }
 			)");
 
@@ -1098,7 +1110,7 @@ uniform sampler2DArray u_panoDepth;
 
 float PanoDepth(vec3 dir)
 {
-	return texture(u_panoDepth, Dir_To_Josh2UVI((u_inProjTransformINV * vec4(dir, 0.0f)).xyz)).r;
+	return texture(u_panoDepth, Dir_To_Josh2UVI((u_inProjTransformINV[0] * vec4(dir, 0.0f)).xyz)).r;
 }
 				)");
 		}
@@ -1110,7 +1122,7 @@ uniform sampler2DArray u_panoMask;
 
 float PanoMask(vec3 dir)
 {
-	return texture(u_panoMask, Dir_To_Josh2UVI((u_inProjTransformINV * vec4(dir, 0.0f)).xyz)).r;
+	return texture(u_panoMask, Dir_To_Josh2UVI((u_inProjTransformINV[0] * vec4(dir, 0.0f)).xyz)).r;
 }
 				)");
 		}
@@ -1128,7 +1140,7 @@ uniform sampler2DArray u_panoField;
 
 vec4 PanoField(vec3 dir)
 {
-	vec3 dir2 = (u_inProjTransformINV * vec4(dir, 0.0f)).xyz;
+	vec3 dir2 = (u_inProjTransformINV[0] * vec4(dir, 0.0f)).xyz;
 
 	vec2 uv = Dir_To_MercatorUV(dir2);
 	int vi = clamp(int(uv.y * 2.0f), 0, 1);
@@ -1169,7 +1181,7 @@ uniform sampler2DArray u_panoDepth;
 
 float PanoDepth(vec3 dir)
 {
-	vec3 dir2 = (u_inProjTransformINV * vec4(dir, 0.0f)).xyz;
+	vec3 dir2 = (u_inProjTransformINV[0] * vec4(dir, 0.0f)).xyz;
 
 	vec2 uv = Dir_To_MercatorUV(dir2);
 	int vi = clamp(int(uv.y * 2.0f), 0, 1);
@@ -1211,7 +1223,7 @@ uniform sampler2DArray u_panoMask;
 
 float PanoMask(vec3 dir)
 {
-	vec3 dir2 = (u_inProjTransformINV * vec4(dir, 0.0f)).xyz;
+	vec3 dir2 = (u_inProjTransformINV[0] * vec4(dir, 0.0f)).xyz;
 
 	vec2 uv = Dir_To_MercatorUV(dir2);
 	int vi = clamp(int(uv.y * 2.0f), 0, 1);
@@ -1254,7 +1266,7 @@ uniform sampler2DArray u_panoField;
 
 vec4 PanoField(vec3 dir)
 {
-	vec3 dir2 = (u_inProjTransformINV * vec4(dir, 0.0f)).xyz;
+	vec3 dir2 = (u_inProjTransformINV[RigID()] * vec4(dir, 0.0f)).xyz;
 
 	vec4 s = u_inProjW2C[0] * vec4(dir2, 1.0f);
 	s /= s.w;
@@ -1274,7 +1286,7 @@ uniform sampler2DArray u_panoDepth;
 
 float PanoDepth(vec3 dir)
 {
-	vec3 dir2 = (u_inProjTransformINV * vec4(dir, 0.0f)).xyz;
+	vec3 dir2 = (u_inProjTransformINV[RigID()] * vec4(dir, 0.0f)).xyz;
 
 	vec4 s = u_inProjW2C[0] * vec4(dir2, 1.0f);
 	s /= s.w;
@@ -1295,7 +1307,7 @@ uniform sampler2DArray u_panoMask;
 
 float PanoMask(vec3 dir)
 {
-	vec3 dir2 = (u_inProjTransformINV * vec4(dir, 0.0f)).xyz;
+	vec3 dir2 = (u_inProjTransformINV[RigID()] * vec4(dir, 0.0f)).xyz;
 
 	vec4 s = u_inProjW2C[0] * vec4(dir2, 1.0f);
 	s /= s.w;
@@ -1317,7 +1329,7 @@ uniform sampler2DArray u_panoField;
 
 vec4 PanoField(vec3 dir)
 {
-	return texture(u_panoField, vec3(Dir_To_EquirectangularUV((u_inProjTransformINV * vec4(dir, 0.0f)).xyz), RigID()));
+	return texture(u_panoField, vec3(Dir_To_EquirectangularUV((u_inProjTransformINV[RigID()] * vec4(dir, 0.0f)).xyz), RigID()));
 }
 			)");
 
@@ -1328,7 +1340,7 @@ uniform sampler2DArray u_panoDepth;
 
 float PanoDepth(vec3 dir)
 {
-	return texture(u_panoDepth, vec3(Dir_To_EquirectangularUV((u_inProjTransformINV * vec4(dir, 0.0f)).xyz), RigID())).r;
+	return texture(u_panoDepth, vec3(Dir_To_EquirectangularUV((u_inProjTransformINV[RigID()] * vec4(dir, 0.0f)).xyz), RigID())).r;
 }
 				)");
 		}
@@ -1340,7 +1352,7 @@ uniform sampler2DArray u_panoMask;
 
 float PanoMask(vec3 dir)
 {
-	return texture(u_panoMask, vec3(Dir_To_EquirectangularUV((u_inProjTransformINV * vec4(dir, 0.0f)).xyz), RigID())).r;
+	return texture(u_panoMask, vec3(Dir_To_EquirectangularUV((u_inProjTransformINV[RigID()] * vec4(dir, 0.0f)).xyz), RigID())).r;
 }
 				)");
 		}
@@ -1353,7 +1365,7 @@ uniform sampler2DArray u_panoField;
 
 vec4 PanoField(vec3 dir)
 {
-	return texture(u_panoField, vec3(Dir_To_MercatorUV((u_inProjTransformINV * vec4(dir, 0.0f)).xyz), RigID()));
+	return texture(u_panoField, vec3(Dir_To_MercatorUV((u_inProjTransformINV[RigID()] * vec4(dir, 0.0f)).xyz), RigID()));
 }
 			)");
 
@@ -1364,7 +1376,7 @@ uniform sampler2DArray u_panoDepth;
 
 float PanoDepth(vec3 dir)
 {
-	return texture(u_panoDepth, vec3(Dir_To_MercatorUV((u_inProjTransformINV * vec4(dir, 0.0f)).xyz), RigID())).r;
+	return texture(u_panoDepth, vec3(Dir_To_MercatorUV((u_inProjTransformINV[RigID()] * vec4(dir, 0.0f)).xyz), RigID())).r;
 }
 				)");
 		}
@@ -1376,7 +1388,7 @@ uniform sampler2DArray u_panoMask;
 
 float PanoMask(vec3 dir)
 {
-	return texture(u_panoMask, vec3(Dir_To_MercatorUV((u_inProjTransformINV * vec4(dir, 0.0f)).xyz), RigID())).r;
+	return texture(u_panoMask, vec3(Dir_To_MercatorUV((u_inProjTransformINV[RigID()] * vec4(dir, 0.0f)).xyz), RigID())).r;
 }
 				)");
 		}
@@ -1389,7 +1401,7 @@ uniform sampler2DArray u_panoField;
 
 vec4 PanoField(vec3 dir)
 {
-	vec3 dir2 = (u_inProjTransformINV * vec4(dir, 0.0f)).xyz;
+	vec3 dir2 = (u_inProjTransformINV[RigID()] * vec4(dir, 0.0f)).xyz;
 
 	vec4 s;
 	float weight = 0.0f;
@@ -1421,7 +1433,7 @@ uniform sampler2DArray u_panoDepth;
 
 float PanoDepth(vec3 dir)
 {
-	vec3 dir2 = (u_inProjTransformINV * vec4(dir, 0.0f)).xyz;
+	vec3 dir2 = (u_inProjTransformINV[RigID()] * vec4(dir, 0.0f)).xyz;
 
 	vec4 s;
 	float weight = 0.0f;
@@ -1454,7 +1466,7 @@ uniform sampler2DArray u_panoMask;
 
 float PanoMask(vec3 dir)
 {
-	vec3 dir2 = (u_inProjTransformINV * vec4(dir, 0.0f)).xyz;
+	vec3 dir2 = (u_inProjTransformINV[RigID()] * vec4(dir, 0.0f)).xyz;
 
 	vec4 s;
 	float weight = 0.0f;
@@ -1488,7 +1500,7 @@ uniform samplerCubeArray u_panoField;
 
 vec4 PanoField(vec3 dir)
 {
-	return texture(u_panoField, vec4((u_inProjTransformINV * vec4(dir, 0.0f)).xyz, RigID()));
+	return texture(u_panoField, vec4((u_inProjTransformINV[RigID()] * vec4(dir, 0.0f)).xyz, RigID()));
 }
 			)");
 
@@ -1499,7 +1511,7 @@ uniform samplerCubeArray u_panoDepth;
 
 float PanoDepth(vec3 dir)
 {
-	return texture(u_panoDepth, vec4((u_inProjTransformINV * vec4(dir, 0.0f)).xyz, RigID())).r;
+	return texture(u_panoDepth, vec4((u_inProjTransformINV[RigID()] * vec4(dir, 0.0f)).xyz, RigID())).r;
 }
 				)");
 		}
@@ -1511,7 +1523,7 @@ uniform samplerCubeArray u_panoMask;
 
 float PanoMask(vec3 dir)
 {
-	return texture(u_panoMask, vec4((u_inProjTransformINV * vec4(dir, 0.0f)).xyz, RigID())).r;
+	return texture(u_panoMask, vec4((u_inProjTransformINV[RigID()] * vec4(dir, 0.0f)).xyz, RigID())).r;
 }
 				)");
 		}
@@ -1553,7 +1565,7 @@ vec3 Dir_To_JOSH1UVI(vec3 dir)
 
 vec4 PanoField(vec3 dir)
 {
-	return texture(u_panoField, Dir_To_JOSH1UVI((u_inProjTransformINV * vec4(dir, 0.0f)).xyz) * vec3(1, 1, u_numRigCameras) + vec3(0, 0, RigID()));
+	return texture(u_panoField, Dir_To_JOSH1UVI((u_inProjTransformINV[RigID()] * vec4(dir, 0.0f)).xyz) * vec3(1, 1, u_numRigCameras) + vec3(0, 0, RigID()));
 }
 			)");
 
@@ -1564,7 +1576,7 @@ uniform sampler2DArray u_panoDepth;
 
 float PanoDepth(vec3 dir)
 {
-	return texture(u_panoDepth, Dir_To_JOSH1UVI((u_inProjTransformINV * vec4(dir, 0.0f)).xyz) * vec3(1, 1, u_numRigCameras) + vec3(0, 0, RigID())).r;
+	return texture(u_panoDepth, Dir_To_JOSH1UVI((u_inProjTransformINV[RigID()] * vec4(dir, 0.0f)).xyz) * vec3(1, 1, u_numRigCameras) + vec3(0, 0, RigID())).r;
 }
 				)");
 		}
@@ -1576,7 +1588,7 @@ uniform sampler2DArray u_panoMask;
 
 float PanoMask(vec3 dir)
 {
-	return texture(u_panoMask, Dir_To_JOSH1UVI((u_inProjTransformINV * vec4(dir, 0.0f)).xyz) * vec3(1, 1, u_numRigCameras) + vec3(0, 0, RigID())).r;
+	return texture(u_panoMask, Dir_To_JOSH1UVI((u_inProjTransformINV[RigID()] * vec4(dir, 0.0f)).xyz) * vec3(1, 1, u_numRigCameras) + vec3(0, 0, RigID())).r;
 }
 				)");
 		}
@@ -1678,7 +1690,7 @@ vec3 Dir_To_Josh2UVI(vec3 dir)
 
 vec4 PanoField(vec3 dir)
 {
-	return texture(u_panoField, Dir_To_Josh2UVI((u_inProjTransformINV * vec4(dir, 0.0f)).xyz) * vec3(1, 1, u_numRigCameras) + vec3(0, 0, RigID()));
+	return texture(u_panoField, Dir_To_Josh2UVI((u_inProjTransformINV[RigID()] * vec4(dir, 0.0f)).xyz) * vec3(1, 1, u_numRigCameras) + vec3(0, 0, RigID()));
 }
 			)");
 
@@ -1690,7 +1702,7 @@ uniform sampler2DArray u_panoDepth;
 
 float PanoDepth(vec3 dir)
 {
-	return texture(u_panoDepth, Dir_To_Josh2UVI((u_inProjTransformINV * vec4(dir, 0.0f)).xyz) * vec3(1, 1, u_numRigCameras) + vec3(0, 0, RigID())).r;
+	return texture(u_panoDepth, Dir_To_Josh2UVI((u_inProjTransformINV[RigID()] * vec4(dir, 0.0f)).xyz) * vec3(1, 1, u_numRigCameras) + vec3(0, 0, RigID())).r;
 }
 				)");
 		}
@@ -1702,7 +1714,7 @@ uniform sampler2DArray u_panoMask;
 
 float PanoMask(vec3 dir)
 {
-	return texture(u_panoMask, Dir_To_Josh2UVI((u_inProjTransformINV * vec4(dir, 0.0f)).xyz) * vec3(1, 1, u_numRigCameras) + vec3(0, 0, RigID())).r;
+	return texture(u_panoMask, Dir_To_Josh2UVI((u_inProjTransformINV[RigID()] * vec4(dir, 0.0f)).xyz) * vec3(1, 1, u_numRigCameras) + vec3(0, 0, RigID())).r;
 }
 				)");
 		}
@@ -1720,7 +1732,7 @@ uniform sampler2DArray u_panoField;
 
 vec4 PanoField(vec3 dir)
 {
-	vec3 dir2 = (u_inProjTransformINV * vec4(dir, 0.0f)).xyz;
+	vec3 dir2 = (u_inProjTransformINV[RigID()] * vec4(dir, 0.0f)).xyz;
 
 	vec2 uv = Dir_To_MercatorUV(dir2);
 	int vi = clamp(int(uv.y * 2.0f), 0, 1);
@@ -1763,7 +1775,7 @@ uniform sampler2DArray u_panoDepth;
 
 float PanoDepth(vec3 dir)
 {
-	vec3 dir2 = (u_inProjTransformINV * vec4(dir, 0.0f)).xyz;
+	vec3 dir2 = (u_inProjTransformINV[RigID()] * vec4(dir, 0.0f)).xyz;
 
 	vec2 uv = Dir_To_MercatorUV(dir2);
 	int vi = clamp(int(uv.y * 2.0f), 0, 1);
@@ -1806,7 +1818,7 @@ uniform sampler2DArray u_panoMask;
 
 float PanoMask(vec3 dir)
 {
-	vec3 dir2 = (u_inProjTransformINV * vec4(dir, 0.0f)).xyz;
+	vec3 dir2 = (u_inProjTransformINV[RigID()] * vec4(dir, 0.0f)).xyz;
 
 	vec2 uv = Dir_To_MercatorUV(dir2);
 	int vi = clamp(int(uv.y * 2.0f), 0, 1);
@@ -1850,8 +1862,8 @@ Ray3D GetFragViewRay(vec2 fragUV)
 {
 	vec4 ndc = vec4(fragUV * 2.0f - 1.0f, 1.0f, 1.0f);
 	vec4 clip = ndc * CAM_FAR; // -(-CAM_FAR)
-	vec3 eye = (u_outProjTransform * u_outProjV2W[0] * vec4(0.0f, 0.0f, 0.0f, 1.0f)).xyz;
-	return Ray3D(eye, normalize((u_outProjTransform * u_outProjC2W[0] * clip).xyz - eye));
+	vec3 eye = (u_outProjTransform[0] * u_outProjV2W[0] * vec4(0.0f, 0.0f, 0.0f, 1.0f)).xyz;
+	return Ray3D(eye, normalize((u_outProjTransform[0] * u_outProjC2W[0] * clip).xyz - eye));
 }
 			)");
 	}
@@ -1862,8 +1874,8 @@ Ray3D GetFragViewRay(vec2 fragUV)
 Ray3D GetFragViewRay(vec2 fragUV)
 {
 	return Ray3D(
-			(u_outProjTransform * vec4(0.0f, 0.0f, 0.0f, 1.0f)).xyz, 
-			(u_outProjTransform * vec4(EquirectangularUV_To_Dir(fragUV), 0.0f)).xyz);
+			(u_outProjTransform[0] * vec4(0.0f, 0.0f, 0.0f, 1.0f)).xyz, 
+			(u_outProjTransform[0] * vec4(EquirectangularUV_To_Dir(fragUV), 0.0f)).xyz);
 }
 			)");
 	}
@@ -1874,8 +1886,8 @@ Ray3D GetFragViewRay(vec2 fragUV)
 Ray3D GetFragViewRay(vec2 fragUV)
 {
 	return Ray3D(
-			(u_outProjTransform * vec4(0.0f, 0.0f, 0.0f, 1.0f)).xyz, 
-			(u_outProjTransform * vec4(MercatorUV_To_Dir(fragUV), 0.0f)).xyz);
+			(u_outProjTransform[0] * vec4(0.0f, 0.0f, 0.0f, 1.0f)).xyz, 
+			(u_outProjTransform[0] * vec4(MercatorUV_To_Dir(fragUV), 0.0f)).xyz);
 }
 			)");
 	}
@@ -1888,8 +1900,8 @@ Ray3D GetFragViewRay(vec2 fragUV)
 	int layerID = LayerID();
 	vec4 ndc = vec4(fragUV * 2.0f - 1.0f, 1.0f, 1.0f);
 	vec4 clip = ndc * CAM_FAR; // -(-CAM_FAR)
-	vec3 eye = (u_outProjTransform * u_outProjV2W[layerID] * vec4(0.0f, 0.0f, 0.0f, 1.0f)).xyz;
-	return Ray3D(eye, normalize((u_outProjTransform * u_outProjC2W[layerID] * clip).xyz - eye));
+	vec3 eye = (u_outProjTransform[0] * u_outProjV2W[layerID] * vec4(0.0f, 0.0f, 0.0f, 1.0f)).xyz;
+	return Ray3D(eye, normalize((u_outProjTransform[0] * u_outProjC2W[layerID] * clip).xyz - eye));
 }
 			)");
 	}
@@ -1911,8 +1923,8 @@ Ray3D GetFragViewRayFace(int id, vec2 faceUV)
 {
 	vec4 ndc = vec4(faceUV * 2.0f - 1.0f, 1.0f, 1.0f);
 	vec4 clip = ndc * CAM_FAR; // -(-CAM_FAR)
-	vec3 eye = (u_outProjTransform * u_outProjV2W[id] * vec4(0.0f, 0.0f, 0.0f, 1.0f)).xyz;
-	return Ray3D(eye, normalize((u_outProjTransform * u_outProjC2W[id] * clip).xyz - eye));
+	vec3 eye = (u_outProjTransform[0] * u_outProjV2W[id] * vec4(0.0f, 0.0f, 0.0f, 1.0f)).xyz;
+	return Ray3D(eye, normalize((u_outProjTransform[0] * u_outProjC2W[id] * clip).xyz - eye));
 }
 
 Ray3D GetFragViewRayFace0(vec2 warpUV)
@@ -2125,22 +2137,22 @@ Ray3D GetFragViewRay(vec2 fragUV)
 		vec3 uvi = vec3(fragUV * 2.0f - vec2(ui, vi), vi * 2 + ui);
 
 		return Ray3D(
-			(u_outProjTransform * vec4(0.0f, 0.0f, 0.0f, 1.0f)).xyz, 
-			(u_outProjTransform * vec4(MercatorUV_To_Dir((fragUV + vec2(ui, vi)) * 0.5f), 0.0f)).xyz);
+			(u_outProjTransform[0] * vec4(0.0f, 0.0f, 0.0f, 1.0f)).xyz, 
+			(u_outProjTransform[0] * vec4(MercatorUV_To_Dir((fragUV + vec2(ui, vi)) * 0.5f), 0.0f)).xyz);
 	}
 	else if (layerID == 4)
 	{
 		vec4 ndc = vec4(fragUV * 2.0f - 1.0f, 1.0f, 1.0f);
 		vec4 clip = ndc * CAM_FAR; // -(-CAM_FAR)
-		vec3 eye = (u_outProjTransform * u_outProjV2W[0] * vec4(0.0f, 0.0f, 0.0f, 1.0f)).xyz;
-		return Ray3D(eye, normalize((u_outProjTransform * u_outProjC2W[0] * clip).xyz - eye));
+		vec3 eye = (u_outProjTransform[0] * u_outProjV2W[0] * vec4(0.0f, 0.0f, 0.0f, 1.0f)).xyz;
+		return Ray3D(eye, normalize((u_outProjTransform[0] * u_outProjC2W[0] * clip).xyz - eye));
 	}
 	else
 	{
 		vec4 ndc = vec4(fragUV * 2.0f - 1.0f, 1.0f, 1.0f);
 		vec4 clip = ndc * CAM_FAR; // -(-CAM_FAR)
-		vec3 eye = (u_outProjTransform * u_outProjV2W[1] * vec4(0.0f, 0.0f, 0.0f, 1.0f)).xyz;
-		return Ray3D(eye, normalize((u_outProjTransform * u_outProjC2W[1] * clip).xyz - eye));
+		vec3 eye = (u_outProjTransform[0] * u_outProjV2W[1] * vec4(0.0f, 0.0f, 0.0f, 1.0f)).xyz;
+		return Ray3D(eye, normalize((u_outProjTransform[0] * u_outProjC2W[1] * clip).xyz - eye));
 	}
 }
 			)");
@@ -2148,42 +2160,323 @@ Ray3D GetFragViewRay(vec2 fragUV)
 
 	void PanoRenderBase::PanoRender_InitFragmentShaderHeadersEvent__rigMode_MULTI__outProjMode_PERSPECTIVE()
 	{
-		PanoRender_InitFragmentShaderHeadersEvent__rigMode_MONO__outProjMode_PERSPECTIVE();
+		shaderSources["canvas_frag"]->push_back(R"(
+Ray3D GetFragViewRay(vec2 fragUV)
+{
+	vec4 ndc = vec4(fragUV * 2.0f - 1.0f, 1.0f, 1.0f);
+	vec4 clip = ndc * CAM_FAR; // -(-CAM_FAR)
+	vec3 eye = (u_outProjTransform[RigID()] * u_outProjV2W[0] * vec4(0.0f, 0.0f, 0.0f, 1.0f)).xyz;
+	return Ray3D(eye, normalize((u_outProjTransform[RigID()] * u_outProjC2W[0] * clip).xyz - eye));
+}
+			)");
 	}
 
 	void PanoRenderBase::PanoRender_InitFragmentShaderHeadersEvent__rigMode_MULTI__outProjMode_EQUIRECTANGULAR()
 	{
-		PanoRender_InitFragmentShaderHeadersEvent__rigMode_MONO__outProjMode_EQUIRECTANGULAR();
+		shaderSources["canvas_frag"]->push_back(R"(
+Ray3D GetFragViewRay(vec2 fragUV)
+{
+	return Ray3D(
+			(u_outProjTransform[RigID()] * vec4(0.0f, 0.0f, 0.0f, 1.0f)).xyz, 
+			(u_outProjTransform[RigID()] * vec4(EquirectangularUV_To_Dir(fragUV), 0.0f)).xyz);
+}
+			)");
 	}
 
 	void PanoRenderBase::PanoRender_InitFragmentShaderHeadersEvent__rigMode_MULTI__outProjMode_MERCATOR()
 	{
-		PanoRender_InitFragmentShaderHeadersEvent__rigMode_MONO__outProjMode_MERCATOR();
+		shaderSources["canvas_frag"]->push_back(R"(
+Ray3D GetFragViewRay(vec2 fragUV)
+{
+	return Ray3D(
+			(u_outProjTransform[RigID()] * vec4(0.0f, 0.0f, 0.0f, 1.0f)).xyz, 
+			(u_outProjTransform[RigID()] * vec4(MercatorUV_To_Dir(fragUV), 0.0f)).xyz);
+}
+			)");
 	}
 
 	void PanoRenderBase::PanoRender_InitFragmentShaderHeadersEvent__rigMode_MULTI__outProjMode_MULTI_PERSPECTIVE()
 	{
-		PanoRender_InitFragmentShaderHeadersEvent__rigMode_MONO__outProjMode_MULTI_PERSPECTIVE();
+		shaderSources["canvas_frag"]->push_back(R"(
+Ray3D GetFragViewRay(vec2 fragUV)
+{
+	int layerID = LayerID();
+	vec4 ndc = vec4(fragUV * 2.0f - 1.0f, 1.0f, 1.0f);
+	vec4 clip = ndc * CAM_FAR; // -(-CAM_FAR)
+	vec3 eye = (u_outProjTransform[RigID()] * u_outProjV2W[layerID] * vec4(0.0f, 0.0f, 0.0f, 1.0f)).xyz;
+	return Ray3D(eye, normalize((u_outProjTransform[RigID()] * u_outProjC2W[layerID] * clip).xyz - eye));
+}
+			)");
 	}
 
 	void PanoRenderBase::PanoRender_InitFragmentShaderHeadersEvent__rigMode_MULTI__outProjMode_CUBEMAP()
 	{
-		PanoRender_InitFragmentShaderHeadersEvent__rigMode_MULTI__outProjMode_MULTI_PERSPECTIVE();
+		shaderSources["canvas_frag"]->push_back(R"(
+Ray3D GetFragViewRay(vec2 fragUV)
+{
+	int layerID = LayerID();
+	vec4 ndc = vec4(fragUV * 2.0f - 1.0f, 1.0f, 1.0f);
+	vec4 clip = ndc * CAM_FAR; // -(-CAM_FAR)
+	vec3 eye = (u_outProjTransform[RigID()] * u_outProjV2W[layerID] * vec4(0.0f, 0.0f, 0.0f, 1.0f)).xyz;
+	return Ray3D(eye, normalize((u_outProjTransform[RigID()] * u_outProjC2W[layerID] * clip).xyz - eye));
+}
+			)");
 	}
 
 	void PanoRenderBase::PanoRender_InitFragmentShaderHeadersEvent__rigMode_MULTI__outProjMode_JOSH1()
 	{
-		PanoRender_InitFragmentShaderHeadersEvent__rigMode_MULTI__outProjMode_MULTI_PERSPECTIVE();
+		shaderSources["canvas_frag"]->push_back(R"(
+Ray3D GetFragViewRay(vec2 fragUV)
+{
+	int layerID = LayerID();
+	vec4 ndc = vec4(fragUV * 2.0f - 1.0f, 1.0f, 1.0f);
+	vec4 clip = ndc * CAM_FAR; // -(-CAM_FAR)
+	vec3 eye = (u_outProjTransform[RigID()] * u_outProjV2W[layerID] * vec4(0.0f, 0.0f, 0.0f, 1.0f)).xyz;
+	return Ray3D(eye, normalize((u_outProjTransform[RigID()] * u_outProjC2W[layerID] * clip).xyz - eye));
+}
+			)");
 	}
 
 	void PanoRenderBase::PanoRender_InitFragmentShaderHeadersEvent__rigMode_MULTI__outProjMode_JOSH2()
 	{
-		PanoRender_InitFragmentShaderHeadersEvent__rigMode_MONO__outProjMode_JOSH2();
+		shaderSources["canvas_frag"]->push_back(R"(
+Ray3D GetFragViewRayFace(int id, vec2 faceUV)
+{
+	vec4 ndc = vec4(faceUV * 2.0f - 1.0f, 1.0f, 1.0f);
+	vec4 clip = ndc * CAM_FAR; // -(-CAM_FAR)
+	vec3 eye = (u_outProjTransform[RigID()] * u_outProjV2W[id] * vec4(0.0f, 0.0f, 0.0f, 1.0f)).xyz;
+	return Ray3D(eye, normalize((u_outProjTransform[RigID()] * u_outProjC2W[id] * clip).xyz - eye));
+}
+
+Ray3D GetFragViewRayFace0(vec2 warpUV)
+{
+	vec2 faceUV = warpUV;
+	return GetFragViewRayFace(0, faceUV);
+}
+
+Ray3D GetFragViewRayFace1(vec2 warpUV)
+{
+	float scale = (0.5f + (1.0f - warpUV.x)) * 2.0f;
+	vec2 faceUV = vec2(
+		warpUV.x, 
+		warpUV.y / scale);
+	return GetFragViewRayFace(1, faceUV);
+}
+
+Ray3D GetFragViewRayFace2(vec2 warpUV)
+{
+	float scale = (0.5f + (1.0f - warpUV.x)) * 2.0f;
+	vec2 faceUV = vec2(
+		warpUV.x, 
+		warpUV.y / scale);
+	return GetFragViewRayFace(2, faceUV);
+}
+
+Ray3D GetFragViewRayFace3(vec2 warpUV)
+{
+	float scale = (0.5f + warpUV.x) * 2.0f;
+	vec2 faceUV = vec2(
+		warpUV.x, 
+		warpUV.y / scale);
+	return GetFragViewRayFace(3, faceUV);
+}
+
+Ray3D GetFragViewRayFace4(vec2 warpUV)
+{
+	float scale = (0.5f + warpUV.y) * 2.0f;
+	vec2 faceUV = vec2(
+		warpUV.x / scale,
+		warpUV.y);
+	return GetFragViewRayFace(4, faceUV);
+}
+
+Ray3D GetFragViewRayFace5(vec2 warpUV)
+{
+	float scale = (0.5f + ( 1.0f - warpUV.y) ) * 2.0f;
+	vec2 faceUV = vec2(
+		warpUV.x / scale,
+		warpUV.y);
+	return GetFragViewRayFace(5, faceUV);
+}
+
+Ray3D GetFragViewRayFace6(vec2 warpUV)
+{
+	float scale = (0.5f + warpUV.y) * 2.0f;
+	vec2 faceUV = vec2(
+		warpUV.x / scale,
+		warpUV.y);
+	return GetFragViewRayFace(6, faceUV);
+}
+
+Ray3D GetFragViewRayFace7(vec2 warpUV)
+{
+	float scale = (0.5f + ( 1.0f - warpUV.y) ) * 2.0f;
+	vec2 faceUV = vec2(
+		warpUV.x / scale,
+		warpUV.y);
+	return GetFragViewRayFace(7, faceUV);
+}
+
+Ray3D GetFragViewRay(vec2 fragUV)
+{
+	int layerID = LayerID();
+	if(layerID == 0)
+	{
+		if((fragUV.x + fragUV.y) > 1.0f)
+		{
+			return GetFragViewRayFace4( fragUV + 
+				vec2(0.0f - (1.0f - fragUV.y), 0.0f) );
+		}
+		else
+		{
+			return GetFragViewRayFace2( fragUV + 
+				vec2( 0.0f, 2.0f - fragUV.x) );
+		}
+	}
+	else if (layerID == 4)
+	{
+		{
+			return GetFragViewRayFace2( fragUV + 
+				vec2( 0.0f, 1.0f - fragUV.x) );
+		}
+	}
+	else if (layerID == 8)
+	{
+		if(fragUV.y > fragUV.x)
+		{
+			return GetFragViewRayFace2( fragUV + 
+				vec2( 0.0f, 0.0f - fragUV.x) );
+		}
+		else
+		{
+			return GetFragViewRayFace5( fragUV + 
+				vec2( 0.0f - fragUV.y, 0.0f) );
+		}
+	} //---------------------------------------
+	else if (layerID == 1)
+	{
+		{
+			return GetFragViewRayFace4( fragUV + 
+				vec2(1.0f - (1.0f - fragUV.y), 0.0f) );
+		}
+	}
+	else if (layerID == 5)
+	{
+		{
+			return GetFragViewRayFace0( fragUV );
+		}
+	}
+	else if (layerID == 9)
+	{
+		{
+			return GetFragViewRayFace5( fragUV + 
+				vec2( 1.0f - fragUV.y, 0.0f) );
+		}
+	}//---------------------------------------
+	else if (layerID == 2)
+	{
+		if(fragUV.y > fragUV.x)
+		{
+			return GetFragViewRayFace4( fragUV + 
+				vec2(2.0f - (1.0f - fragUV.y), 0.0f) );
+		}
+		else
+		{
+			return GetFragViewRayFace3( fragUV + 
+				vec2( 0.0f, 2.0f - (1.0f - fragUV.x) ) );
+		}
+	}
+	else if (layerID == 6)
+	{
+		{
+			return GetFragViewRayFace3( fragUV + 
+				vec2( 0.0f, 1.0f - (1.0f - fragUV.x) ) );
+		}
+	}
+	else if (layerID == 10)
+	{
+		if((fragUV.x + fragUV.y) >1.0f)
+		{
+			return GetFragViewRayFace3( fragUV + 
+				vec2( 0.0f, 0.0f - (1.0f - fragUV.x) ) );
+		}
+		else
+		{
+			return GetFragViewRayFace5( fragUV + 
+				vec2( 2.0f - fragUV.y, 0.0f) );
+		}
+	}//---------------------------------------
+	else if (layerID == 3)
+	{
+		if((fragUV.x + fragUV.y) >1.0f)
+		{
+			return GetFragViewRayFace6( fragUV + 
+				vec2( 0.0f - (1.0f - fragUV.y), 0.0f) );
+		}
+		else
+		{
+			return GetFragViewRayFace1( fragUV + 
+				vec2( 0.0f, 2.0f - fragUV.x) );
+		}
+	}
+	else if (layerID == 7)
+	{
+		{
+			return GetFragViewRayFace1( fragUV + 
+				vec2( 0.0f, 1.0f - fragUV.x) );
+		}
+	}
+	else if (layerID == 11)
+	{
+		if(fragUV.y > fragUV.x)
+		{
+			return GetFragViewRayFace1( fragUV + 
+				vec2( 0.0f, 0.0f - fragUV.x) );
+		}
+		else
+		{
+			return GetFragViewRayFace7( fragUV + 
+				vec2( 0.0f - fragUV.y, 0.0f) );
+		}
+	}//---------------------------------------
+	return Ray3D(vec3(0.0f), vec3(0.0f));
+}
+			)");
 	}
 
 	void PanoRenderBase::PanoRender_InitFragmentShaderHeadersEvent__rigMode_MULTI__outProjMode_JOSH3()
 	{
-		PanoRender_InitFragmentShaderHeadersEvent__rigMode_MONO__outProjMode_JOSH3();
+		shaderSources["canvas_frag"]->push_back(R"(
+Ray3D GetFragViewRay(vec2 fragUV)
+{
+	int layerID = LayerID();
+
+	if(layerID < 4)
+	{
+		int vi = layerID / 2;
+		int ui = layerID % 2;
+		vec3 uvi = vec3(fragUV * 2.0f - vec2(ui, vi), vi * 2 + ui);
+
+		return Ray3D(
+			(u_outProjTransform[RigID()] * vec4(0.0f, 0.0f, 0.0f, 1.0f)).xyz, 
+			(u_outProjTransform[RigID()] * vec4(MercatorUV_To_Dir((fragUV + vec2(ui, vi)) * 0.5f), 0.0f)).xyz);
+	}
+	else if (layerID == 4)
+	{
+		vec4 ndc = vec4(fragUV * 2.0f - 1.0f, 1.0f, 1.0f);
+		vec4 clip = ndc * CAM_FAR; // -(-CAM_FAR)
+		vec3 eye = (u_outProjTransform[RigID()] * u_outProjV2W[0] * vec4(0.0f, 0.0f, 0.0f, 1.0f)).xyz;
+		return Ray3D(eye, normalize((u_outProjTransform[RigID()] * u_outProjC2W[0] * clip).xyz - eye));
+	}
+	else
+	{
+		vec4 ndc = vec4(fragUV * 2.0f - 1.0f, 1.0f, 1.0f);
+		vec4 clip = ndc * CAM_FAR; // -(-CAM_FAR)
+		vec3 eye = (u_outProjTransform[RigID()] * u_outProjV2W[1] * vec4(0.0f, 0.0f, 0.0f, 1.0f)).xyz;
+		return Ray3D(eye, normalize((u_outProjTransform[RigID()] * u_outProjC2W[1] * clip).xyz - eye));
+	}
+}
+			)");
 	}
 
 	void PanoRenderBase::CreateTexture(const std::string& name)
@@ -2631,9 +2924,37 @@ Ray3D GetFragViewRay(vec2 fragUV)
 				break;
 			}
 			break;
+
+		default:
+			THROW_EXCEPTION("rigMode is not supported");
+			break;
 		}
 
 		//
+		switch (rigMode)
+		{
+		case RigMode::MONO:
+			((std::vector<Mat44>*) & inProjTransform)->resize(1);
+			((std::vector<Mat44>*) & outProjTransform)->resize(1);
+			*((Mat44*)&inProjTransform[0]) = glm::identity<Mat44>();
+			*((Mat44*)&outProjTransform[0]) = glm::identity<Mat44>();
+			break;
+
+		case RigMode::MULTI:
+			((std::vector<Mat44>*) & inProjTransform)->resize(rigW2V.size());
+			((std::vector<Mat44>*) & outProjTransform)->resize(rigW2V.size());
+			for (std::size_t i = 0; i < rigW2V.size(); ++i)
+			{
+				*((Mat44*)&inProjTransform[i]) = glm::identity<Mat44>();
+				*((Mat44*)&outProjTransform[i]) = glm::identity<Mat44>();
+			}
+			break;
+
+		default:
+			THROW_EXCEPTION("rigMode is not supported");
+			break;
+		}
+
 		for (std::size_t i = 0; i < rigW2V.size(); ++i)
 			(*(Mat44*)(&this->rigV2W[i])) = glm::inverse(rigW2V[i]);
 

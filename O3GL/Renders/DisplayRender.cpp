@@ -5,6 +5,20 @@
 namespace O3GL
 {
 	//
+	void DisplayRender::InitTexturesEvent()
+	{
+		GLint tf = GL_RGBA8;
+		GLint tw = CanvasWidth();
+		GLint th = CanvasHeight();
+
+		GLint cf = textures["canvas"]->GetInfo<GLint>(0, GL_TEXTURE_INTERNAL_FORMAT);
+		GLint cw = textures["canvas"]->GetInfo<GLint>(0, GL_TEXTURE_WIDTH);
+		GLint ch = textures["canvas"]->GetInfo<GLint>(0, GL_TEXTURE_HEIGHT);
+
+		if ((tf != cf) || (tw != cw) || (th != ch))
+			textures["canvas"]->Storage2D(1, tf, tw, th);
+	}
+
 	void DisplayRender::InitFragmentShaderHeadersEvent()
 	{
 		CanvasRender::InitFragmentShaderHeadersEvent();
@@ -26,6 +40,19 @@ uniform int u_dispalyLayer;
 		if (enableLayer)
 		{
 			programs.at("canvas")->Uniform<GLint, 1>("u_dispalyLayer", dispalyLayer);
+		}
+	}
+
+	void DisplayRender::InitFrameBuffersEvent()
+	{
+		CanvasRender::InitFrameBuffersEvent();
+
+		//
+		if (!windowMode)
+		{
+			frameBuffers["canvas"]->Attach(GL_COLOR_ATTACHMENT0, *textures["canvas"], 0);
+			std::vector<GLenum> attachments{ GL_COLOR_ATTACHMENT0 };
+			frameBuffers["canvas"]->DrawBuffer(attachments);
 		}
 	}
 
@@ -466,48 +493,108 @@ vec4 Output(vec4 rgba)
 		DisplayRender::InitFragmentShaderHeadersEvent();
 
 		//
-		switch (leftColorTexture->Target())
+		if (leftOnly)
 		{
-		case GL_TEXTURE_2D:
-			shaderSources["canvas_frag"]->push_back(R"(
+			switch (leftColorTexture->Target())
+			{
+			case GL_TEXTURE_2D_ARRAY:
+				shaderSources["canvas_frag"]->push_back(R"(
+uniform sampler2DArray u_color;
+					)");
+				break;
+
+			case GL_TEXTURE_CUBE_MAP_ARRAY:
+				shaderSources["canvas_frag"]->push_back(R"(
+uniform samplerCubeArray u_color;
+					)");
+				break;
+
+			default:
+				THROW_EXCEPTION("colorTexture->Target(): " + std::to_string(leftColorTexture->Target()) + " is not supported");
+				break;
+			}
+		}
+		else
+		{
+			switch (leftColorTexture->Target())
+			{
+			case GL_TEXTURE_2D:
+				shaderSources["canvas_frag"]->push_back(R"(
 uniform sampler2D u_leftColor;
 uniform sampler2D u_rightColor;
-				)");
-			break;
+					)");
+				break;
 
-		case GL_TEXTURE_2D_ARRAY:
-			shaderSources["canvas_frag"]->push_back(R"(
+			case GL_TEXTURE_2D_ARRAY:
+				shaderSources["canvas_frag"]->push_back(R"(
 uniform sampler2DArray u_leftColor;
 uniform sampler2DArray u_rightColor;
-				)");
-			break;
+					)");
+				break;
 
-		case GL_TEXTURE_CUBE_MAP:
-			shaderSources["canvas_frag"]->push_back(R"(
+			case GL_TEXTURE_CUBE_MAP:
+				shaderSources["canvas_frag"]->push_back(R"(
 uniform samplerCube u_leftColor;
 uniform samplerCube u_rightColor;
-				)");
-			break;
+					)");
+				break;
 
-		case GL_TEXTURE_CUBE_MAP_ARRAY:
-			shaderSources["canvas_frag"]->push_back(R"(
+			case GL_TEXTURE_CUBE_MAP_ARRAY:
+				shaderSources["canvas_frag"]->push_back(R"(
 uniform samplerCubeArray u_leftColor;
 uniform samplerCubeArray u_rightColor;
-				)");
-			break;
+					)");
+				break;
 
-		default:
-			THROW_EXCEPTION("leftColorTexture->Target(): " + std::to_string(leftColorTexture->Target()) + " is not supported");
-			break;
+			default:
+				THROW_EXCEPTION("leftColorTexture->Target(): " + std::to_string(leftColorTexture->Target()) + " is not supported");
+				break;
+			}
 		}
 	}
 
 	void AnaglyphDisplayRender::InitFragmentShaderMainsEvent()
 	{
-		switch (leftColorTexture->Target())
+		if (leftOnly)
 		{
-		case GL_TEXTURE_2D:
-			shaderSources["canvas_frag"]->push_back(R"(
+			switch (leftColorTexture->Target())
+			{
+			case GL_TEXTURE_2D_ARRAY:
+				shaderSources["canvas_frag"]->push_back(R"(
+void main(void)
+{
+	vec2 uv = gl_FragCoord.xy / vec2(u_canvasWidth, u_canvasHeight);
+	vec4 left = texture(u_color, vec3(uv, 0));
+	vec4 right = texture(u_color, vec3(uv, 1));
+	gl_FragColor = vec4(left.r, right.g, right.b, 1.0f);
+}
+					)");
+				break;
+
+			case GL_TEXTURE_CUBE_MAP_ARRAY:
+				shaderSources["canvas_frag"]->push_back(R"(
+void main(void)
+{
+	vec2 uv = gl_FragCoord.xy / vec2(u_canvasWidth, u_canvasHeight);
+	vec3 view = EquirectangularUV_To_Dir(uv);
+	vec4 left = texture(u_color, vec4(view, 0));
+	vec4 right = texture(u_color, vec4(view, 1));
+	gl_FragColor = vec4(left.r, right.g, right.b, 1.0f);
+}
+					)");
+				break;
+
+			default:
+				THROW_EXCEPTION("colorTexture->Target(): " + std::to_string(leftColorTexture->Target()) + " is not supported");
+				break;
+			}
+		}
+		else
+		{
+			switch (leftColorTexture->Target())
+			{
+			case GL_TEXTURE_2D:
+				shaderSources["canvas_frag"]->push_back(R"(
 void main(void)
 {
 	vec2 uv = gl_FragCoord.xy / vec2(u_canvasWidth, u_canvasHeight);
@@ -515,11 +602,11 @@ void main(void)
 	vec4 right = texture(u_rightColor, uv);
 	gl_FragColor = vec4(left.r, right.g, right.b, 1.0f);
 }
-				)");
-			break;
+					)");
+				break;
 
-		case GL_TEXTURE_2D_ARRAY:
-			shaderSources["canvas_frag"]->push_back(R"(
+			case GL_TEXTURE_2D_ARRAY:
+				shaderSources["canvas_frag"]->push_back(R"(
 void main(void)
 {
 	vec3 uvi = vec3(gl_FragCoord.xy / vec2(u_canvasWidth, u_canvasHeight), u_dispalyLayer);
@@ -527,11 +614,11 @@ void main(void)
 	vec4 right = texture(u_rightColor, uvi);
 	gl_FragColor = vec4(left.r, right.g, right.b, 1.0f);
 }
-				)");
-			break;
+					)");
+				break;
 
-		case GL_TEXTURE_CUBE_MAP:
-			shaderSources["canvas_frag"]->push_back(R"(
+			case GL_TEXTURE_CUBE_MAP:
+				shaderSources["canvas_frag"]->push_back(R"(
 void main(void)
 {
 	vec2 uv = gl_FragCoord.xy / vec2(u_canvasWidth, u_canvasHeight);
@@ -540,11 +627,11 @@ void main(void)
 	vec4 right = texture(u_rightColor, view);
 	gl_FragColor = vec4(left.r, right.g, right.b, 1.0f);
 }
-				)");
-			break;
+					)");
+				break;
 
-		case GL_TEXTURE_CUBE_MAP_ARRAY:
-			shaderSources["canvas_frag"]->push_back(R"(
+			case GL_TEXTURE_CUBE_MAP_ARRAY:
+				shaderSources["canvas_frag"]->push_back(R"(
 void main(void)
 {
 	vec2 uv = gl_FragCoord.xy / vec2(u_canvasWidth, u_canvasHeight);
@@ -553,12 +640,13 @@ void main(void)
 	vec4 right = texture(u_rightColor, viewi);
 	gl_FragColor = vec4(left.r, right.g, right.b, 1.0f);
 }
-				)");
-			break;
+					)");
+				break;
 
-		default:
-			THROW_EXCEPTION("leftColorTexture->Target(): " + std::to_string(leftColorTexture->Target()) + " is not supported");
-			break;
+			default:
+				THROW_EXCEPTION("leftColorTexture->Target(): " + std::to_string(leftColorTexture->Target()) + " is not supported");
+				break;
+			}
 		}
 	}
 
@@ -585,40 +673,83 @@ void main(void)
 
 	void AnaglyphDisplayRender::Setup()
 	{
-		if (leftColorTexture->Target() != rightColorTexture->Target())
+		if (!leftOnly)
 		{
-			THROW_EXCEPTION("leftColorTexture->Target(): " + std::to_string(leftColorTexture->Target()) + " is not as same  as rightColorTexture->Target() : " + std::to_string(rightColorTexture->Target()));
+			if (leftColorTexture->Target() != rightColorTexture->Target())
+			{
+				THROW_EXCEPTION("leftColorTexture->Target(): " + std::to_string(leftColorTexture->Target()) + " is not as same  as rightColorTexture->Target() : " + std::to_string(rightColorTexture->Target()));
+			}
+		}
+
+		if (leftOnly)
+		{
+			switch (leftColorTexture->Target())
+			{
+			case GL_TEXTURE_2D_ARRAY:
+				leftColorSampler = samplers["plane_trilinear"];
+				break;
+
+			case GL_TEXTURE_CUBE_MAP_ARRAY:
+				leftColorSampler = samplers["cube_trilinear"];
+				break;
+
+			default:
+				THROW_EXCEPTION("colorTexture->Target(): " + std::to_string(leftColorTexture->Target()) + " is not supported");
+				break;
+			}
+		}
+		else
+		{
+			switch (leftColorTexture->Target())
+			{
+			case GL_TEXTURE_2D:
+			case GL_TEXTURE_2D_ARRAY:
+				leftColorSampler = samplers["plane_trilinear"];
+				rightColorSampler = samplers["plane_trilinear"];
+				break;
+
+			case GL_TEXTURE_CUBE_MAP:
+			case GL_TEXTURE_CUBE_MAP_ARRAY:
+				leftColorSampler = samplers["cube_trilinear"];
+				rightColorSampler = samplers["cube_trilinear"];
+				break;
+
+			default:
+				THROW_EXCEPTION("leftColorTexture->Target(): " + std::to_string(leftColorTexture->Target()) + " is not supported");
+				break;
+			}
 		}
 
 		switch (leftColorTexture->Target())
 		{
-		case GL_TEXTURE_2D:
 		case GL_TEXTURE_2D_ARRAY:
-			leftColorSampler = samplers["plane_trilinear"];
-			rightColorSampler = samplers["plane_trilinear"];
-			break;
-
-		case GL_TEXTURE_CUBE_MAP:
-		case GL_TEXTURE_CUBE_MAP_ARRAY:
-			leftColorSampler = samplers["cube_trilinear"];
-			rightColorSampler = samplers["cube_trilinear"];
-			break;
-
-		default:
-			THROW_EXCEPTION("leftColorTexture->Target(): " + std::to_string(leftColorTexture->Target()) + " is not supported");
-			break;
-		}
-
-		switch (leftColorTexture->Target())
-		{
-		case GL_TEXTURE_2D_ARRAY:
-			SetEnableLayer(true);
-			SetNumLayer(leftColorTexture->GetInfo<GLint>(0, GL_TEXTURE_DEPTH));
+			if (leftOnly)
+			{
+				if (leftColorTexture->GetInfo<GLint>(0, GL_TEXTURE_DEPTH) != 2)
+				{
+					THROW_EXCEPTION("colorTexture layers must be 2");
+				}
+			}
+			else
+			{
+				SetEnableLayer(true);
+				SetNumLayer(leftColorTexture->GetInfo<GLint>(0, GL_TEXTURE_DEPTH));
+			}
 			break;
 
 		case GL_TEXTURE_CUBE_MAP_ARRAY:
-			SetEnableLayer(true);
-			SetNumLayer(leftColorTexture->GetInfo<GLint>(0, GL_TEXTURE_DEPTH) / 6);
+			if (leftOnly)
+			{
+				if (leftColorTexture->GetInfo<GLint>(0, GL_TEXTURE_DEPTH) != 12)
+				{
+					THROW_EXCEPTION("colorTexture layers must be 2");
+				}
+			}
+			else
+			{
+				SetEnableLayer(true);
+				SetNumLayer(leftColorTexture->GetInfo<GLint>(0, GL_TEXTURE_DEPTH) / 6);
+			}
 			break;
 		}
 	}

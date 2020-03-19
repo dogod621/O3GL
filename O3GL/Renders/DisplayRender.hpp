@@ -7,11 +7,13 @@
 namespace O3GL
 {
 	//
-	class DisplayRender : public O3GL::CanvasRender
+	class DisplayRender : public CanvasRender
 	{
 	protected:
+		virtual void InitTexturesEvent();
 		virtual void InitFragmentShaderHeadersEvent();
 		virtual void InitProgramParametersEvent() const;
+		virtual void InitFrameBuffersEvent();
 
 	protected:
 		virtual void KeyboardEvent(const Keyboard::Message& m);
@@ -29,7 +31,9 @@ namespace O3GL
 			enableLayer(false),
 			dispalyLayer(0),
 			numLayer(0)
-		{}
+		{
+			textures["canvas"] = PTR<Texture>(new Texture(GL_TEXTURE_2D));
+		}
 
 	public:
 		void SetEnableLayer(bool enableLayer) const
@@ -141,7 +145,8 @@ namespace O3GL
 
 	public:
 		AnaglyphDisplayRender(const CONST_PTR<Texture>& leftColorTexture, const CONST_PTR<Texture>& rightColorTexture) :
-			DisplayRender(), leftColorSampler(), rightColorSampler(), leftColorTexture(leftColorTexture), rightColorTexture(rightColorTexture)
+			DisplayRender(), leftColorSampler(), rightColorSampler(), leftColorTexture(leftColorTexture), rightColorTexture(rightColorTexture),
+			leftOnly(false)
 		{
 			Setup();
 		}
@@ -149,7 +154,24 @@ namespace O3GL
 		AnaglyphDisplayRender(
 			GLint canvasWidth, GLint canvasHeight,
 			const CONST_PTR<Texture>& leftColorTexture, const CONST_PTR<Texture>& rightColorTexture) :
-			DisplayRender(canvasWidth, canvasHeight), leftColorSampler(), rightColorSampler(), leftColorTexture(leftColorTexture), rightColorTexture(rightColorTexture)
+			DisplayRender(canvasWidth, canvasHeight), leftColorSampler(), rightColorSampler(), leftColorTexture(leftColorTexture), rightColorTexture(rightColorTexture),
+			leftOnly(false)
+		{
+			Setup();
+		}
+
+		AnaglyphDisplayRender(const CONST_PTR<Texture>& colorTexture) :
+			DisplayRender(), leftColorSampler(), rightColorSampler(), leftColorTexture(leftColorTexture), rightColorTexture(),
+			leftOnly(true)
+		{
+			Setup();
+		}
+
+		AnaglyphDisplayRender(
+			GLint canvasWidth, GLint canvasHeight,
+			const CONST_PTR<Texture>& lcolorTexture) :
+			DisplayRender(canvasWidth, canvasHeight), leftColorSampler(), rightColorSampler(), leftColorTexture(leftColorTexture), rightColorTexture(),
+			leftOnly(true)
 		{
 			Setup();
 		}
@@ -158,6 +180,7 @@ namespace O3GL
 		void Setup();
 
 	protected:
+		const bool leftOnly;
 		CONST_PTR<Sampler> leftColorSampler;
 		CONST_PTR<Sampler> rightColorSampler;
 		CONST_PTR<Texture> leftColorTexture;
