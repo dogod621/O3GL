@@ -136,7 +136,11 @@ namespace O3GL
 		void Init();
 		double Draw() const;
 		void PrintShaderSources(const std::string& name) const;
-
+		void UpdateProgramParameters()
+		{
+			InitProgramParametersEvent();
+		}
+		
 		void DisplayCallback(const Display::Message& m);
 		void OverlayDisplayCallback(const OverlayDisplay::Message& m);
 		void ReshapeCallback(const Reshape::Message& m);
