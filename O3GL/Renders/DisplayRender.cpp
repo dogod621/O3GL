@@ -7,16 +7,19 @@ namespace O3GL
 	//
 	void DisplayRender::InitTexturesEvent()
 	{
-		GLint tf = GL_RGBA8;
-		GLint tw = CanvasWidth();
-		GLint th = CanvasHeight();
+		if (!windowMode)
+		{
+			GLint tf = GL_RGBA8;
+			GLint tw = CanvasWidth();
+			GLint th = CanvasHeight();
 
-		GLint cf = textures["canvas"]->GetInfo<GLint>(0, GL_TEXTURE_INTERNAL_FORMAT);
-		GLint cw = textures["canvas"]->GetInfo<GLint>(0, GL_TEXTURE_WIDTH);
-		GLint ch = textures["canvas"]->GetInfo<GLint>(0, GL_TEXTURE_HEIGHT);
+			GLint cf = textures["canvas"]->GetInfo<GLint>(0, GL_TEXTURE_INTERNAL_FORMAT);
+			GLint cw = textures["canvas"]->GetInfo<GLint>(0, GL_TEXTURE_WIDTH);
+			GLint ch = textures["canvas"]->GetInfo<GLint>(0, GL_TEXTURE_HEIGHT);
 
-		if ((tf != cf) || (tw != cw) || (th != ch))
-			textures["canvas"]->Storage2D(1, tf, tw, th);
+			if ((tf != cf) || (tw != cw) || (th != ch))
+				textures["canvas"]->Storage2D(1, tf, tw, th);
+		}
 	}
 
 	void DisplayRender::InitFragmentShaderHeadersEvent()
