@@ -661,13 +661,17 @@ void main(void)
 		leftColorTexture->Begin(*leftColorSampler);
 		programs.at("canvas")->Uniform<GLint, 1>("u_leftColor", (GLint)leftColorTexture->Unit());
 
-		rightColorTexture->Begin(*rightColorSampler);
-		programs.at("canvas")->Uniform<GLint, 1>("u_rightColor", (GLint)rightColorTexture->Unit());
+		if (!leftOnly)
+		{
+			rightColorTexture->Begin(*rightColorSampler);
+			programs.at("canvas")->Uniform<GLint, 1>("u_rightColor", (GLint)rightColorTexture->Unit());
+		}
 	}
 
 	void AnaglyphDisplayRender::PostDrawEvent() const
 	{
-		rightColorTexture->End();
+		if (!leftOnly)
+			rightColorTexture->End();
 		leftColorTexture->End();
 
 		//
