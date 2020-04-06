@@ -161,7 +161,7 @@ namespace O3GL
 		}
 
 		AnaglyphDisplayRender(const CONST_PTR<Texture>& colorTexture) :
-			DisplayRender(), leftColorSampler(), rightColorSampler(), leftColorTexture(leftColorTexture), rightColorTexture(),
+			DisplayRender(), leftColorSampler(), rightColorSampler(), leftColorTexture(colorTexture), rightColorTexture(),
 			leftOnly(true)
 		{
 			Setup();
@@ -169,8 +169,8 @@ namespace O3GL
 
 		AnaglyphDisplayRender(
 			GLint canvasWidth, GLint canvasHeight,
-			const CONST_PTR<Texture>& lcolorTexture) :
-			DisplayRender(canvasWidth, canvasHeight), leftColorSampler(), rightColorSampler(), leftColorTexture(leftColorTexture), rightColorTexture(),
+			const CONST_PTR<Texture>& colorTexture) :
+			DisplayRender(canvasWidth, canvasHeight), leftColorSampler(), rightColorSampler(), leftColorTexture(colorTexture), rightColorTexture(),
 			leftOnly(true)
 		{
 			Setup();
