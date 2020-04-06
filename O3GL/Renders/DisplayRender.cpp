@@ -728,10 +728,10 @@ void main(void)
 		case GL_TEXTURE_2D_ARRAY:
 			if (leftOnly)
 			{
-				if (leftColorTexture->GetInfo<GLint>(0, GL_TEXTURE_DEPTH) != 2)
+				/*if (leftColorTexture->GetInfo<GLint>(0, GL_TEXTURE_DEPTH) != 2)
 				{
 					THROW_EXCEPTION("colorTexture layers must be 2");
-				}
+				}*/
 			}
 			else
 			{
@@ -743,10 +743,10 @@ void main(void)
 		case GL_TEXTURE_CUBE_MAP_ARRAY:
 			if (leftOnly)
 			{
-				if (leftColorTexture->GetInfo<GLint>(0, GL_TEXTURE_DEPTH) != 12)
+				/*if (leftColorTexture->GetInfo<GLint>(0, GL_TEXTURE_DEPTH) != 12)
 				{
 					THROW_EXCEPTION("colorTexture layers must be 2");
-				}
+				}*/
 			}
 			else
 			{
