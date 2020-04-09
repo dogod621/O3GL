@@ -3064,19 +3064,19 @@ Ray3D GetFragViewRay(vec2 fragUV)
 				THROW_EXCEPTION("pano Mask targets is not correct");
 		}
 
-		if (panoFieldTexture->GetInfo<GLint>(0, GL_TEXTURE_DEPTH) != inProjCamera.size())
-			THROW_EXCEPTION("panoFieldTexture depth is not correct");
+		/*if (panoFieldTexture->GetInfo<GLint>(0, GL_TEXTURE_DEPTH) != inProjCamera.size())
+			THROW_EXCEPTION("panoFieldTexture depth is not correct");*/
 		panoFieldSampler = samplers.at("plane_bilinear");
 		if (enableDepth)
 		{
-			if (panoDepthTexture->GetInfo<GLint>(0, GL_TEXTURE_DEPTH) != inProjCamera.size())
-				THROW_EXCEPTION("panoDepthTexture depth is not correct");
+			/*if (panoDepthTexture->GetInfo<GLint>(0, GL_TEXTURE_DEPTH) != inProjCamera.size())
+				THROW_EXCEPTION("panoDepthTexture depth is not correct");*/
 			panoDepthSampler = samplers.at("plane_bilinear");
 		}
 		if (enableMask)
 		{
-			if (panoMaskTexture->GetInfo<GLint>(0, GL_TEXTURE_DEPTH) != inProjCamera.size())
-				THROW_EXCEPTION("panoMaskTexture depth is not correct");
+			/*if (panoMaskTexture->GetInfo<GLint>(0, GL_TEXTURE_DEPTH) != inProjCamera.size())
+				THROW_EXCEPTION("panoMaskTexture depth is not correct");*/
 			panoMaskSampler = samplers.at("plane_bilinear");
 		}
 	}
@@ -3124,19 +3124,19 @@ Ray3D GetFragViewRay(vec2 fragUV)
 				THROW_EXCEPTION("pano Mask targets is not correct");
 		}
 
-		if (panoFieldTexture->GetInfo<GLint>(0, GL_TEXTURE_DEPTH) != 12)
-			THROW_EXCEPTION("panoFieldTexture depth is not correct");
+		/*if (panoFieldTexture->GetInfo<GLint>(0, GL_TEXTURE_DEPTH) != 12)
+			THROW_EXCEPTION("panoFieldTexture depth is not correct");*/
 		panoFieldSampler = samplers.at("plane_bilinear");
 		if (enableDepth)
 		{
-			if (panoDepthTexture->GetInfo<GLint>(0, GL_TEXTURE_DEPTH) != 12)
-				THROW_EXCEPTION("panoDepthTexture depth is not correct");
+			/*if (panoDepthTexture->GetInfo<GLint>(0, GL_TEXTURE_DEPTH) != 12)
+				THROW_EXCEPTION("panoDepthTexture depth is not correct");*/
 			panoDepthSampler = samplers.at("plane_bilinear");
 		}
 		if (enableMask)
 		{
-			if (panoMaskTexture->GetInfo<GLint>(0, GL_TEXTURE_DEPTH) != 12)
-				THROW_EXCEPTION("panoMaskTexture depth is not correct");
+			/*if (panoMaskTexture->GetInfo<GLint>(0, GL_TEXTURE_DEPTH) != 12)
+				THROW_EXCEPTION("panoMaskTexture depth is not correct");*/
 			panoMaskSampler = samplers.at("plane_bilinear");
 		}
 
@@ -3158,19 +3158,19 @@ Ray3D GetFragViewRay(vec2 fragUV)
 				THROW_EXCEPTION("pano Mask targets is not correct");
 		}
 
-		if (panoFieldTexture->GetInfo<GLint>(0, GL_TEXTURE_DEPTH) != 6)
-			THROW_EXCEPTION("panoFieldTexture depth is not correct");
+		/*if (panoFieldTexture->GetInfo<GLint>(0, GL_TEXTURE_DEPTH) != 6)
+			THROW_EXCEPTION("panoFieldTexture depth is not correct");*/
 		panoFieldSampler = samplers.at("plane_bilinear");
 		if (enableDepth)
 		{
-			if (panoDepthTexture->GetInfo<GLint>(0, GL_TEXTURE_DEPTH) != 6)
-				THROW_EXCEPTION("panoDepthTexture depth is not correct");
+			/*if (panoDepthTexture->GetInfo<GLint>(0, GL_TEXTURE_DEPTH) != 6)
+				THROW_EXCEPTION("panoDepthTexture depth is not correct");*/
 			panoDepthSampler = samplers.at("plane_bilinear");
 		}
 		if (enableMask)
 		{
-			if (panoMaskTexture->GetInfo<GLint>(0, GL_TEXTURE_DEPTH) != 6)
-				THROW_EXCEPTION("panoMaskTexture depth is not correct");
+			/*if (panoMaskTexture->GetInfo<GLint>(0, GL_TEXTURE_DEPTH) != 6)
+				THROW_EXCEPTION("panoMaskTexture depth is not correct");*/
 			panoMaskSampler = samplers.at("plane_bilinear");
 		}
 
@@ -3192,19 +3192,19 @@ Ray3D GetFragViewRay(vec2 fragUV)
 				THROW_EXCEPTION("pano Mask targets is not correct");
 		}
 
-		if (panoFieldTexture->GetInfo<GLint>(0, GL_TEXTURE_DEPTH) != rigW2V.size())
-			THROW_EXCEPTION("panoFieldTexture depth is not correct");
+		/*if (panoFieldTexture->GetInfo<GLint>(0, GL_TEXTURE_DEPTH) != rigW2V.size())
+			THROW_EXCEPTION("panoFieldTexture depth is not correct");*/
 		panoFieldSampler = samplers.at("plane_bilinear");
 		if (enableDepth)
 		{
-			if (panoDepthTexture->GetInfo<GLint>(0, GL_TEXTURE_DEPTH) != rigW2V.size())
-				THROW_EXCEPTION("panoDepthTexture depth is not correct");
+			/*if (panoDepthTexture->GetInfo<GLint>(0, GL_TEXTURE_DEPTH) != rigW2V.size())
+				THROW_EXCEPTION("panoDepthTexture depth is not correct");*/
 			panoDepthSampler = samplers.at("plane_bilinear");
 		}
 		if (enableMask)
 		{
-			if (panoMaskTexture->GetInfo<GLint>(0, GL_TEXTURE_DEPTH) != rigW2V.size())
-				THROW_EXCEPTION("panoMaskTexture depth is not correct");
+			/*if (panoMaskTexture->GetInfo<GLint>(0, GL_TEXTURE_DEPTH) != rigW2V.size())
+				THROW_EXCEPTION("panoMaskTexture depth is not correct");*/
 			panoMaskSampler = samplers.at("plane_bilinear");
 		}
 	}
@@ -3224,19 +3224,19 @@ Ray3D GetFragViewRay(vec2 fragUV)
 				THROW_EXCEPTION("pano Mask targets is not correct");
 		}
 
-		if (panoFieldTexture->GetInfo<GLint>(0, GL_TEXTURE_DEPTH) != rigW2V.size())
-			THROW_EXCEPTION("panoFieldTexture depth is not correct");
+		/*if (panoFieldTexture->GetInfo<GLint>(0, GL_TEXTURE_DEPTH) != rigW2V.size())
+			THROW_EXCEPTION("panoFieldTexture depth is not correct");*/
 		panoFieldSampler = samplers.at("equirectangular_bilinear");
 		if (enableDepth)
 		{
-			if (panoDepthTexture->GetInfo<GLint>(0, GL_TEXTURE_DEPTH) != rigW2V.size())
-				THROW_EXCEPTION("panoDepthTexture depth is not correct");
+			/*if (panoDepthTexture->GetInfo<GLint>(0, GL_TEXTURE_DEPTH) != rigW2V.size())
+				THROW_EXCEPTION("panoDepthTexture depth is not correct");*/
 			panoDepthSampler = samplers.at("equirectangular_bilinear");
 		}
 		if (enableMask)
 		{
-			if (panoMaskTexture->GetInfo<GLint>(0, GL_TEXTURE_DEPTH) != rigW2V.size())
-				THROW_EXCEPTION("panoMaskTexture depth is not correct");
+			/*if (panoMaskTexture->GetInfo<GLint>(0, GL_TEXTURE_DEPTH) != rigW2V.size())
+				THROW_EXCEPTION("panoMaskTexture depth is not correct");*/
 			panoMaskSampler = samplers.at("equirectangular_bilinear");
 		}
 	}
@@ -3256,19 +3256,19 @@ Ray3D GetFragViewRay(vec2 fragUV)
 				THROW_EXCEPTION("pano Mask targets is not correct");
 		}
 
-		if (panoFieldTexture->GetInfo<GLint>(0, GL_TEXTURE_DEPTH) != rigW2V.size())
-			THROW_EXCEPTION("panoFieldTexture depth is not correct");
+		/*if (panoFieldTexture->GetInfo<GLint>(0, GL_TEXTURE_DEPTH) != rigW2V.size())
+			THROW_EXCEPTION("panoFieldTexture depth is not correct");*/
 		panoFieldSampler = samplers.at("mercator_bilinear");
 		if (enableDepth)
 		{
-			if (panoDepthTexture->GetInfo<GLint>(0, GL_TEXTURE_DEPTH) != rigW2V.size())
-				THROW_EXCEPTION("panoDepthTexture depth is not correct");
+			/*if (panoDepthTexture->GetInfo<GLint>(0, GL_TEXTURE_DEPTH) != rigW2V.size())
+				THROW_EXCEPTION("panoDepthTexture depth is not correct");*/
 			panoDepthSampler = samplers.at("mercator_bilinear");
 		}
 		if (enableMask)
 		{
-			if (panoMaskTexture->GetInfo<GLint>(0, GL_TEXTURE_DEPTH) != rigW2V.size())
-				THROW_EXCEPTION("panoMaskTexture depth is not correct");
+			/*if (panoMaskTexture->GetInfo<GLint>(0, GL_TEXTURE_DEPTH) != rigW2V.size())
+				THROW_EXCEPTION("panoMaskTexture depth is not correct");*/
 			panoMaskSampler = samplers.at("mercator_bilinear");
 		}
 	}
@@ -3288,19 +3288,19 @@ Ray3D GetFragViewRay(vec2 fragUV)
 				THROW_EXCEPTION("pano Mask targets is not correct");
 		}
 
-		if (panoFieldTexture->GetInfo<GLint>(0, GL_TEXTURE_DEPTH) != inProjCamera.size() * rigW2V.size())
-			THROW_EXCEPTION("panoFieldTexture depth is not correct");
+		/*if (panoFieldTexture->GetInfo<GLint>(0, GL_TEXTURE_DEPTH) != inProjCamera.size() * rigW2V.size())
+			THROW_EXCEPTION("panoFieldTexture depth is not correct");*/
 		panoFieldSampler = samplers.at("plane_bilinear");
 		if (enableDepth)
 		{
-			if (panoDepthTexture->GetInfo<GLint>(0, GL_TEXTURE_DEPTH) != inProjCamera.size() * rigW2V.size())
-				THROW_EXCEPTION("panoDepthTexture depth is not correct");
+			/*if (panoDepthTexture->GetInfo<GLint>(0, GL_TEXTURE_DEPTH) != inProjCamera.size() * rigW2V.size())
+				THROW_EXCEPTION("panoDepthTexture depth is not correct");*/
 			panoDepthSampler = samplers.at("plane_bilinear");
 		}
 		if (enableMask)
 		{
-			if (panoMaskTexture->GetInfo<GLint>(0, GL_TEXTURE_DEPTH) != inProjCamera.size() * rigW2V.size())
-				THROW_EXCEPTION("panoMaskTexture depth is not correct");
+			/*if (panoMaskTexture->GetInfo<GLint>(0, GL_TEXTURE_DEPTH) != inProjCamera.size() * rigW2V.size())
+				THROW_EXCEPTION("panoMaskTexture depth is not correct");*/
 			panoMaskSampler = samplers.at("plane_bilinear");
 		}
 	}
@@ -3320,19 +3320,19 @@ Ray3D GetFragViewRay(vec2 fragUV)
 				THROW_EXCEPTION("pano Mask targets is not correct");
 		}
 
-		if (panoFieldTexture->GetInfo<GLint>(0, GL_TEXTURE_DEPTH) != rigW2V.size() * 6)
-			THROW_EXCEPTION("panoFieldTexture depth is not correct");
+		/*if (panoFieldTexture->GetInfo<GLint>(0, GL_TEXTURE_DEPTH) != rigW2V.size() * 6)
+			THROW_EXCEPTION("panoFieldTexture depth is not correct");*/
 		panoFieldSampler = samplers.at("cube_bilinear");
 		if (enableDepth)
 		{
-			if (panoDepthTexture->GetInfo<GLint>(0, GL_TEXTURE_DEPTH) != rigW2V.size() * 6)
-				THROW_EXCEPTION("panoDepthTexture depth is not correct");
+			/*if (panoDepthTexture->GetInfo<GLint>(0, GL_TEXTURE_DEPTH) != rigW2V.size() * 6)
+				THROW_EXCEPTION("panoDepthTexture depth is not correct");*/
 			panoDepthSampler = samplers.at("cube_bilinear");
 		}
 		if (enableMask)
 		{
-			if (panoMaskTexture->GetInfo<GLint>(0, GL_TEXTURE_DEPTH) != rigW2V.size() * 6)
-				THROW_EXCEPTION("panoMaskTexture depth is not correct");
+			/*if (panoMaskTexture->GetInfo<GLint>(0, GL_TEXTURE_DEPTH) != rigW2V.size() * 6)
+				THROW_EXCEPTION("panoMaskTexture depth is not correct");*/
 			panoMaskSampler = samplers.at("cube_bilinear");
 		}
 	}
@@ -3358,19 +3358,19 @@ Ray3D GetFragViewRay(vec2 fragUV)
 				THROW_EXCEPTION("pano Mask targets is not correct");
 		}
 
-		if (panoFieldTexture->GetInfo<GLint>(0, GL_TEXTURE_DEPTH) != 12 * rigW2V.size())
-			THROW_EXCEPTION("panoFieldTexture depth is not correct");
+		/*if (panoFieldTexture->GetInfo<GLint>(0, GL_TEXTURE_DEPTH) != 12 * rigW2V.size())
+			THROW_EXCEPTION("panoFieldTexture depth is not correct");*/
 		panoFieldSampler = samplers.at("plane_bilinear");
 		if (enableDepth)
 		{
-			if (panoDepthTexture->GetInfo<GLint>(0, GL_TEXTURE_DEPTH) != 12 * rigW2V.size())
-				THROW_EXCEPTION("panoDepthTexture depth is not correct");
+			/*if (panoDepthTexture->GetInfo<GLint>(0, GL_TEXTURE_DEPTH) != 12 * rigW2V.size())
+				THROW_EXCEPTION("panoDepthTexture depth is not correct");*/
 			panoDepthSampler = samplers.at("plane_bilinear");
 		}
 		if (enableMask)
 		{
-			if (panoMaskTexture->GetInfo<GLint>(0, GL_TEXTURE_DEPTH) != 12 * rigW2V.size())
-				THROW_EXCEPTION("panoMaskTexture depth is not correct");
+			/*if (panoMaskTexture->GetInfo<GLint>(0, GL_TEXTURE_DEPTH) != 12 * rigW2V.size())
+				THROW_EXCEPTION("panoMaskTexture depth is not correct");*/
 			panoMaskSampler = samplers.at("plane_bilinear");
 		}
 
@@ -3392,19 +3392,19 @@ Ray3D GetFragViewRay(vec2 fragUV)
 				THROW_EXCEPTION("pano Mask targets is not correct");
 		}
 
-		if (panoFieldTexture->GetInfo<GLint>(0, GL_TEXTURE_DEPTH) != 6 * rigW2V.size())
-			THROW_EXCEPTION("panoFieldTexture depth is not correct");
+		/*if (panoFieldTexture->GetInfo<GLint>(0, GL_TEXTURE_DEPTH) != 6 * rigW2V.size())
+			THROW_EXCEPTION("panoFieldTexture depth is not correct");*/
 		panoFieldSampler = samplers.at("plane_bilinear");
 		if (enableDepth)
 		{
-			if (panoDepthTexture->GetInfo<GLint>(0, GL_TEXTURE_DEPTH) != 6 * rigW2V.size())
-				THROW_EXCEPTION("panoDepthTexture depth is not correct");
+			/*if (panoDepthTexture->GetInfo<GLint>(0, GL_TEXTURE_DEPTH) != 6 * rigW2V.size())
+				THROW_EXCEPTION("panoDepthTexture depth is not correct");*/
 			panoDepthSampler = samplers.at("plane_bilinear");
 		}
 		if (enableMask)
 		{
-			if (panoMaskTexture->GetInfo<GLint>(0, GL_TEXTURE_DEPTH) != 6 * rigW2V.size())
-				THROW_EXCEPTION("panoMaskTexture depth is not correct");
+			/*if (panoMaskTexture->GetInfo<GLint>(0, GL_TEXTURE_DEPTH) != 6 * rigW2V.size())
+				THROW_EXCEPTION("panoMaskTexture depth is not correct");*/
 			panoMaskSampler = samplers.at("plane_bilinear");
 		}
 
