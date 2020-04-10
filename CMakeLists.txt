@@ -178,13 +178,8 @@ add_definitions(-D_USE_MATH_DEFINES)
 # Setup O3GL
 OPTION(O3GL_BUILD_SHARED_LIBS "Build O3GL shared library." OFF)
 OPTION(O3GL_BUILD_STATIC_LIBS "Build O3GL static library." ON)
+option(O3GL_BUILD_DEMOS "Build O3GL demos" ON)
 
 set(O3GL_INCLUDE_DIR ${CMAKE_CURRENT_SOURCE_DIR} CACHE PATH "")
 
 add_subdirectory("O3GL")
-
-# Setup Demos
-option(O3GL_BUILD_DEMOS "Build O3GL demos" ON)
-if(${O3GL_BUILD_DEMOS})
-	add_subdirectory("Demos")
-endif()
