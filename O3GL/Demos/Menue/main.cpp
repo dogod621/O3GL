@@ -1,6 +1,6 @@
 // O3GL
 #include "FrameCounterMenu.hpp"
-#include "Demos/Window/PrintInfo.hpp"
+#include "O3GL/Demos/Window/PrintInfo.hpp"
 
 //
 int main()
