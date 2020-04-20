@@ -16,7 +16,8 @@ namespace O3GL
 		CUBEMAP,
 		JOSH1,
 		JOSH2,
-		JOSH3
+		JOSH3,
+		JOSH1_X
 	};
 
 	enum class RigMode
@@ -40,7 +41,7 @@ namespace O3GL
 
 	public:
 		static void InitCamera_CUBEMAP(const std::vector<Camera>& cameras);
-		static void InitCamera_JOSH1(const std::vector<Camera>& cameras);
+		static void InitCamera_JOSH1(const std::vector<Camera>& cameras, GLfloat fovY);
 		static void InitCamera_JOSH2(const std::vector<Camera>& cameras);
 		static void InitCamera_JOSH3(const std::vector<Camera>& cameras);
 
@@ -53,6 +54,7 @@ namespace O3GL
 		void PanoRender_InitFragmentShaderHeadersEvent__rigMode_MONO__inProjMode_JOSH1();
 		void PanoRender_InitFragmentShaderHeadersEvent__rigMode_MONO__inProjMode_JOSH2();
 		void PanoRender_InitFragmentShaderHeadersEvent__rigMode_MONO__inProjMode_JOSH3();
+		void PanoRender_InitFragmentShaderHeadersEvent__rigMode_MONO__inProjMode_JOSH1_X();
 
 		void PanoRender_InitFragmentShaderHeadersEvent__rigMode_MULTI__inProjMode_PERSPECTIVE();
 		void PanoRender_InitFragmentShaderHeadersEvent__rigMode_MULTI__inProjMode_EQUIRECTANGULAR();
@@ -62,6 +64,7 @@ namespace O3GL
 		void PanoRender_InitFragmentShaderHeadersEvent__rigMode_MULTI__inProjMode_JOSH1();
 		void PanoRender_InitFragmentShaderHeadersEvent__rigMode_MULTI__inProjMode_JOSH2();
 		void PanoRender_InitFragmentShaderHeadersEvent__rigMode_MULTI__inProjMode_JOSH3();
+		void PanoRender_InitFragmentShaderHeadersEvent__rigMode_MULTI__inProjMode_JOSH1_X();
 
 		void PanoRender_InitFragmentShaderHeadersEvent__rigMode_MONO__outProjMode_PERSPECTIVE();
 		void PanoRender_InitFragmentShaderHeadersEvent__rigMode_MONO__outProjMode_EQUIRECTANGULAR();
@@ -71,6 +74,7 @@ namespace O3GL
 		void PanoRender_InitFragmentShaderHeadersEvent__rigMode_MONO__outProjMode_JOSH1();
 		void PanoRender_InitFragmentShaderHeadersEvent__rigMode_MONO__outProjMode_JOSH2();
 		void PanoRender_InitFragmentShaderHeadersEvent__rigMode_MONO__outProjMode_JOSH3();
+		void PanoRender_InitFragmentShaderHeadersEvent__rigMode_MONO__outProjMode_JOSH1_X();
 
 		void PanoRender_InitFragmentShaderHeadersEvent__rigMode_MULTI__outProjMode_PERSPECTIVE();
 		void PanoRender_InitFragmentShaderHeadersEvent__rigMode_MULTI__outProjMode_EQUIRECTANGULAR();
@@ -80,6 +84,7 @@ namespace O3GL
 		void PanoRender_InitFragmentShaderHeadersEvent__rigMode_MULTI__outProjMode_JOSH1();
 		void PanoRender_InitFragmentShaderHeadersEvent__rigMode_MULTI__outProjMode_JOSH2();
 		void PanoRender_InitFragmentShaderHeadersEvent__rigMode_MULTI__outProjMode_JOSH3();
+		void PanoRender_InitFragmentShaderHeadersEvent__rigMode_MULTI__outProjMode_JOSH1_X();
 
 		void CreateTexture(const std::string& name);
 		void AllocateTexture(const std::string& name, GLint f, GLint w, GLint h);
@@ -97,7 +102,8 @@ namespace O3GL
 			outProjMode(outProjMode), outProjTransform(), outProjCamera(outProjCamera),
 			panoFieldSampler(), panoFieldTexture(panoFieldTexture),
 			enableField(true), enableDepth(false), enableMask(false),
-			inProjW2V(inProjCamera.size()), inProjW2C(inProjCamera.size()), inProjC2W(inProjCamera.size()), inProjV2W(inProjCamera.size()),
+			JOSH1_fovY(90.0f),
+			inProjW2V(inProjCamera.size()), inProjW2C(inProjCamera.size()), inProjC2W(inProjCamera.size()), inProjV2W(inProjCamera.size()), inProjCameraWeight(),
 			outProjW2V(outProjCamera.size()), outProjW2C(outProjCamera.size()), outProjV2W(outProjCamera.size()), outProjC2W(outProjCamera.size()),
 			layers(1)
 		{
@@ -116,7 +122,8 @@ namespace O3GL
 			outProjMode(outProjMode), outProjTransform(), outProjCamera(outProjCamera),
 			panoFieldSampler(), panoDepthSampler(), panoFieldTexture(panoFieldTexture), panoDepthTexture(panoDepthTexture),
 			enableField(true), enableDepth(true), enableMask(false),
-			inProjW2V(inProjCamera.size()), inProjW2C(inProjCamera.size()), inProjC2W(inProjCamera.size()), inProjV2W(inProjCamera.size()),
+			JOSH1_fovY(90.0f),
+			inProjW2V(inProjCamera.size()), inProjW2C(inProjCamera.size()), inProjC2W(inProjCamera.size()), inProjV2W(inProjCamera.size()), inProjCameraWeight(),
 			outProjW2V(outProjCamera.size()), outProjW2C(outProjCamera.size()), outProjV2W(outProjCamera.size()), outProjC2W(outProjCamera.size()),
 			layers(1)
 		{
@@ -135,7 +142,8 @@ namespace O3GL
 			outProjMode(outProjMode), outProjTransform(), outProjCamera(outProjCamera),
 			panoFieldSampler(), panoDepthSampler(), panoMaskSampler(), panoFieldTexture(panoFieldTexture), panoDepthTexture(panoDepthTexture), panoMaskTexture(panoMaskTexture),
 			enableField(true), enableDepth(true), enableMask(true),
-			inProjW2V(inProjCamera.size()), inProjW2C(inProjCamera.size()), inProjC2W(inProjCamera.size()), inProjV2W(inProjCamera.size()),
+			JOSH1_fovY(90.0f),
+			inProjW2V(inProjCamera.size()), inProjW2C(inProjCamera.size()), inProjC2W(inProjCamera.size()), inProjV2W(inProjCamera.size()), inProjCameraWeight(),
 			outProjW2V(outProjCamera.size()), outProjW2C(outProjCamera.size()), outProjV2W(outProjCamera.size()), outProjC2W(outProjCamera.size()),
 			layers(1)
 		{
@@ -164,6 +172,16 @@ namespace O3GL
 			*((std::vector<Mat44>*) & this->outProjTransform) = outProjTransform;
 		}
 
+		void SetInProjCameraWeight(const std::vector<GLfloat>& inProjCameraWeight) const
+		{
+			*((std::vector<GLfloat>*) & this->inProjCameraWeight) = inProjCameraWeight;
+		}
+
+		void SetJOSH1_fovY(GLfloat JOSH1_fovY) const
+		{
+			*((GLfloat*)&this->JOSH1_fovY) = JOSH1_fovY;
+		}
+
 	protected:
 		void Setup();
 
@@ -175,6 +193,7 @@ namespace O3GL
 		void PanoRender_Setup__rigMode_MONO__inProjMode_JOSH1();
 		void PanoRender_Setup__rigMode_MONO__inProjMode_JOSH2();
 		void PanoRender_Setup__rigMode_MONO__inProjMode_JOSH3();
+		void PanoRender_Setup__rigMode_MONO__inProjMode_JOSH1_X();
 
 		void PanoRender_Setup__rigMode_MULTI__inProjMode_PERSPECTIVE();
 		void PanoRender_Setup__rigMode_MULTI__inProjMode_EQUIRECTANGULAR();
@@ -184,6 +203,7 @@ namespace O3GL
 		void PanoRender_Setup__rigMode_MULTI__inProjMode_JOSH1();
 		void PanoRender_Setup__rigMode_MULTI__inProjMode_JOSH2();
 		void PanoRender_Setup__rigMode_MULTI__inProjMode_JOSH3();
+		void PanoRender_Setup__rigMode_MULTI__inProjMode_JOSH1_X();
 
 	protected:
 		const bool enableField;
@@ -204,18 +224,24 @@ namespace O3GL
 		const ProjectionMode inProjMode;
 		const std::vector<Mat44> inProjTransform;
 
-		// for inProjMode: MULTI_PERSPECTIVE, CUBEMAP, JOSH1, JOSH2
+		// for inProjMode: JOSH1_X
+		const GLfloat JOSH1_fovY;
+
+		// for inProjMode: MULTI_PERSPECTIVE, CUBEMAP, JOSH1, JOSH2, JOSH3, JOSH1_X
 		const std::vector<Camera> inProjCamera;
 		const std::vector<Mat44> inProjW2V;
 		const std::vector<Mat44> inProjW2C;
 		const std::vector<Mat44> inProjV2W;
 		const std::vector<Mat44> inProjC2W;
 
+		// for inProjMode: MULTI_PERSPECTIVE, JOSH1_X
+		const std::vector<GLfloat> inProjCameraWeight;
+
 	protected:
 		const ProjectionMode outProjMode;
 		const std::vector<Mat44> outProjTransform;
 
-		// for outProjMode: PERSPECTIVE, MULTI_PERSPECTIVE, CUBEMAP, JOSH1, JOSH2
+		// for outProjMode: PERSPECTIVE, MULTI_PERSPECTIVE, CUBEMAP, JOSH1, JOSH2, JOSH3, JOSH1_X
 		const std::vector<Camera> outProjCamera;
 		const std::vector<Mat44> outProjW2V;
 		const std::vector<Mat44> outProjW2C;
@@ -236,6 +262,7 @@ namespace O3GL
 		const std::vector<Mat44>& GetInProjW2C() const { return inProjW2C; }
 		const std::vector<Mat44>& GetInProjV2W() const { return inProjV2W; }
 		const std::vector<Mat44>& GetInProjC2W() const { return inProjC2W; }
+		const std::vector<GLfloat>& GetInProjCameraWeight() const { return inProjCameraWeight; }
 
 		const ProjectionMode& GetOutProjMode() const { return outProjMode; }
 		const std::vector<Mat44>& GetOutProjTransform() const { return outProjTransform; }

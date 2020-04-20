@@ -85,6 +85,7 @@ in int gl_Layer;
 			case ProjectionMode::JOSH1:
 			case ProjectionMode::JOSH2:
 			case ProjectionMode::JOSH3:
+			case ProjectionMode::JOSH1_X:
 				shaderSources["canvas_frag"]->push_back(R"(
 int LayerID()
 {
@@ -125,6 +126,7 @@ int RigID()
 			case ProjectionMode::JOSH1:
 			case ProjectionMode::JOSH2:
 			case ProjectionMode::JOSH3:
+			case ProjectionMode::JOSH1_X:
 				shaderSources["canvas_frag"]->push_back(R"(
 int RigID()
 {
@@ -182,6 +184,12 @@ uniform mat4 u_inProjV2W[)");
 uniform mat4 u_inProjC2W[)");
 
 			shaderSources["canvas_frag"]->push_back(std::to_string(inProjCamera.size()) + "];");
+
+			//
+			shaderSources["canvas_frag"]->push_back(R"(
+uniform float u_inProjCameraWeight[)");
+
+			shaderSources["canvas_frag"]->push_back(std::to_string(inProjCameraWeight.size()) + "];");
 		}
 
 		//
@@ -252,6 +260,10 @@ uniform mat4 u_outProjC2W[)");
 				PanoRender_InitFragmentShaderHeadersEvent__rigMode_MONO__inProjMode_JOSH3();
 				break;
 
+			case ProjectionMode::JOSH1_X:
+				PanoRender_InitFragmentShaderHeadersEvent__rigMode_MONO__inProjMode_JOSH1_X();
+				break;
+
 			default:
 				THROW_EXCEPTION("inProjMode is not supported");
 				break;
@@ -291,6 +303,10 @@ uniform mat4 u_outProjC2W[)");
 
 			case ProjectionMode::JOSH3:
 				PanoRender_InitFragmentShaderHeadersEvent__rigMode_MULTI__inProjMode_JOSH3();
+				break;
+
+			case ProjectionMode::JOSH1_X:
+				PanoRender_InitFragmentShaderHeadersEvent__rigMode_MULTI__inProjMode_JOSH1_X();
 				break;
 
 			default:
@@ -342,6 +358,10 @@ uniform mat4 u_outProjC2W[)");
 				PanoRender_InitFragmentShaderHeadersEvent__rigMode_MONO__outProjMode_JOSH3();
 				break;
 
+			case ProjectionMode::JOSH1_X:
+				PanoRender_InitFragmentShaderHeadersEvent__rigMode_MONO__outProjMode_JOSH1_X();
+				break;
+
 			default:
 				THROW_EXCEPTION("outProjMode is not supported");
 				break;
@@ -383,6 +403,10 @@ uniform mat4 u_outProjC2W[)");
 				PanoRender_InitFragmentShaderHeadersEvent__rigMode_MULTI__outProjMode_JOSH3();
 				break;
 
+			case ProjectionMode::JOSH1_X:
+				PanoRender_InitFragmentShaderHeadersEvent__rigMode_MULTI__outProjMode_JOSH1_X();
+				break;
+
 			default:
 				THROW_EXCEPTION("outProjMode is not supported");
 				break;
@@ -398,6 +422,64 @@ uniform mat4 u_outProjC2W[)");
 	void PanoRenderBase::InitProgramParametersEvent() const
 	{
 		CanvasRender::InitProgramParametersEvent();
+
+		//
+		switch (inProjMode)
+		{
+		case ProjectionMode::JOSH1_X:
+		{
+			float cameraNear = 0.1f;
+			float cameraFar = 10.0f;
+			Mat44 perspective = glm::perspective(glm::radians(JOSH1_fovY), 1.0f, cameraNear, cameraFar);
+
+			for (std::size_t i = 0; i < inProjCamera.size(); ++i)
+			{
+				(*(Camera*)(&inProjCamera[i])).projection = perspective;
+
+				for (std::size_t i = 0; i < inProjCamera.size(); ++i)
+				{
+					Vec3 eye = inProjCamera[i].transform * Vec4(0.0f, 0.0f, 0.0f, 1.0f);
+					Vec3 viewDir = inProjCamera[i].transform * Vec4(1.0f, 0.0f, 0.0f, 0.0f);
+					Vec3 up = inProjCamera[i].transform * Vec4(0.0f, 0.0f, 1.0f, 0.0f);
+
+					(*((Mat44*)&inProjW2V[i])) = glm::lookAt(eye, eye + viewDir, up);
+					(*((Mat44*)&inProjW2C[i])) = inProjCamera[i].projection * inProjW2V[i];
+					(*((Mat44*)&inProjV2W[i])) = glm::inverse(inProjW2V[i]);
+					(*((Mat44*)&inProjC2W[i])) = glm::inverse(inProjW2C[i]);
+					(*((GLfloat*)&inProjCameraWeight[i])) = 1.0f;
+				}
+			}
+		}
+		break;
+		}
+
+		switch (outProjMode)
+		{
+		case ProjectionMode::JOSH1_X:
+		{
+			float cameraNear = 0.1f;
+			float cameraFar = 10.0f;
+			Mat44 perspective = glm::perspective(glm::radians(JOSH1_fovY), 1.0f, cameraNear, cameraFar);
+
+			for (std::size_t i = 0; i < outProjCamera.size(); ++i)
+			{
+				(*(Camera*)(&outProjCamera[i])).projection = perspective;
+
+				for (std::size_t i = 0; i < outProjCamera.size(); ++i)
+				{
+					Vec3 eye = outProjCamera[i].transform * Vec4(0.0f, 0.0f, 0.0f, 1.0f);
+					Vec3 viewDir = outProjCamera[i].transform * Vec4(1.0f, 0.0f, 0.0f, 0.0f);
+					Vec3 up = outProjCamera[i].transform * Vec4(0.0f, 0.0f, 1.0f, 0.0f);
+
+					(*((Mat44*)&outProjW2V[i])) = glm::lookAt(eye, eye + viewDir, up);
+					(*((Mat44*)&outProjW2C[i])) = outProjCamera[i].projection * outProjW2V[i];
+					(*((Mat44*)&outProjV2W[i])) = glm::inverse(outProjW2V[i]);
+					(*((Mat44*)&outProjC2W[i])) = glm::inverse(outProjW2C[i]);
+				}
+			}
+		}
+		break;
+		}
 
 		//
 		std::vector<Mat44> inProjTransformINV;
@@ -426,6 +508,7 @@ uniform mat4 u_outProjC2W[)");
 			programs.at("canvas")->Uniform<GLfloat, 4, 4>("u_inProjW2V", inProjW2V);
 			programs.at("canvas")->Uniform<GLfloat, 4, 4>("u_inProjV2W", inProjV2W);
 			programs.at("canvas")->Uniform<GLfloat, 4, 4>("u_inProjC2W", inProjC2W);
+			programs.at("canvas")->Uniform<GLfloat, 1>("u_inProjCameraWeight", inProjCameraWeight);
 		}
 
 		if (outProjCamera.size() > 0)
@@ -527,14 +610,14 @@ uniform mat4 u_outProjC2W[)");
 			0.0f, 0.0f, 0.0f, 1.0f);
 	}
 
-	void PanoRenderBase::InitCamera_JOSH1(const std::vector<Camera>& cameras)
+	void PanoRenderBase::InitCamera_JOSH1(const std::vector<Camera>& cameras, GLfloat fovY)
 	{
 		if (cameras.size() != 6)
 			THROW_EXCEPTION("cameras.size() != 6");
 
 		float cameraNear = 0.1f;
 		float cameraFar = 10.0f;
-		Mat44 perspective = glm::perspective(glm::radians(90.0f), 1.0f, cameraNear, cameraFar);
+		Mat44 perspective = glm::perspective(glm::radians(fovY), 1.0f, cameraNear, cameraFar);
 
 		for (std::size_t i = 0; i < cameras.size(); ++i)
 		{
@@ -826,7 +909,7 @@ vec4 PanoField(vec3 dir)
 		uvi = (s.xyz + 1.0f)*0.5f;
 		if(length(floor(uvi)) < 1.0f)
 		{
-			weight = dot(normalize(vec3(s.xy, 0.5f)), center);
+			weight = u_inProjCameraWeight[i] * dot(normalize(vec3(s.xy, 0.5f)), center);
 			field += weight * texture(u_panoField, vec3(uvi.xy, i)).rgb;
 			weightSum += weight;
 		}
@@ -858,7 +941,7 @@ float PanoDepth(vec3 dir)
 		uvi = (s.xyz + 1.0f)*0.5f;
 		if((length(floor(uvi)) < 1.0f) )
 		{
-			weight = dot(normalize(vec3(s.xy, 0.1f)), center);
+			weight = u_inProjCameraWeight[i] * dot(normalize(vec3(s.xy, 0.1f)), center);
 			depth += weight * texture(u_panoDepth, vec3(uvi.xy, i)).r;
 			weightSum += weight;
 		}
@@ -891,7 +974,7 @@ float PanoMask(vec3 dir)
 		uvi = (s.xyz + 1.0f)*0.5f;
 		if((length(floor(uvi)) < 1.0f) )
 		{
-			weight = dot(normalize(vec3(s.xy, 0.1f)), center);
+			weight = u_inProjCameraWeight[i] * dot(normalize(vec3(s.xy, 0.1f)), center);
 			depth += weight * texture(u_panoMask, vec3(uvi.xy, i)).r;
 			weightSum += weight;
 		}
@@ -1165,7 +1248,7 @@ vec4 PanoField(vec3 dir)
 		return mix( 
 			texture(u_panoField, uvi), 
 			texture(u_panoField, vec3(s.xy, 5)), 
-			clamp(-((-dir2.z - M_JOSH3_Z0) * M_JOSH3_ZS), 0.0f, 1.0f));
+			clamp((-dir2.z - M_JOSH3_Z0) * M_JOSH3_ZS, 0.0f, 1.0f));
 	}
 	else
 	{
@@ -1206,7 +1289,7 @@ float PanoDepth(vec3 dir)
 		return mix( 
 			texture(u_panoDepth, uvi).r, 
 			texture(u_panoDepth, vec3(s.xy, 5)).r, 
-			clamp(-((-dir2.z - M_JOSH3_Z0) * M_JOSH3_ZS), 0.0f, 1.0f));
+			clamp((-dir2.z - M_JOSH3_Z0) * M_JOSH3_ZS, 0.0f, 1.0f));
 	}
 	else
 	{
@@ -1248,7 +1331,7 @@ float PanoMask(vec3 dir)
 		return mix( 
 			texture(u_panoMask, uvi).r, 
 			texture(u_panoMask, vec3(s.xy, 5)).r, 
-			clamp(-((-dir2.z - M_JOSH3_Z0) * M_JOSH3_ZS), 0.0f, 1.0f));
+			clamp((-dir2.z - M_JOSH3_Z0) * M_JOSH3_ZS, 0.0f, 1.0f));
 	}
 	else
 	{
@@ -1257,6 +1340,11 @@ float PanoMask(vec3 dir)
 }
 				)");
 		}
+	}
+
+	void PanoRenderBase::PanoRender_InitFragmentShaderHeadersEvent__rigMode_MONO__inProjMode_JOSH1_X()
+	{
+		PanoRender_InitFragmentShaderHeadersEvent__rigMode_MONO__inProjMode_MULTI_PERSPECTIVE();
 	}
 
 	void PanoRenderBase::PanoRender_InitFragmentShaderHeadersEvent__rigMode_MULTI__inProjMode_PERSPECTIVE()
@@ -1417,7 +1505,7 @@ vec4 PanoField(vec3 dir)
 		uvi = (s.xyz + 1.0f)*0.5f;
 		if(length(floor(uvi)) < 1.0f)
 		{
-			weight = dot(normalize(vec3(s.xy, 0.5f)), center);
+			weight = u_inProjCameraWeight[i] * dot(normalize(vec3(s.xy, 0.5f)), center);
 			field += weight * texture(u_panoField, vec3(uvi.xy, i * u_numRigCameras + RigID())).rgb;
 			weightSum += weight;
 		}
@@ -1449,7 +1537,7 @@ float PanoDepth(vec3 dir)
 		uvi = (s.xyz + 1.0f)*0.5f;
 		if((length(floor(uvi)) < 1.0f) )
 		{
-			weight = dot(normalize(vec3(s.xy, 0.1f)), center);
+			weight = u_inProjCameraWeight[i] * dot(normalize(vec3(s.xy, 0.1f)), center);
 			depth += weight * texture(u_panoDepth, vec3(uvi.xy, i * u_numRigCameras + RigID())).r;
 			weightSum += weight;
 		}
@@ -1482,7 +1570,7 @@ float PanoMask(vec3 dir)
 		uvi = (s.xyz + 1.0f)*0.5f;
 		if((length(floor(uvi)) < 1.0f) )
 		{
-			weight = dot(normalize(vec3(s.xy, 0.1f)), center);
+			weight = u_inProjCameraWeight[i] * dot(normalize(vec3(s.xy, 0.1f)), center);
 			depth += weight * texture(sampler2DArray, vec3(uvi.xy, i * u_numRigCameras + RigID())).r;
 			weightSum += weight;
 		}
@@ -1581,7 +1669,7 @@ float PanoDepth(vec3 dir)
 				)");
 		}
 
-		if (enableDepth)
+		if (enableMask)
 		{
 			shaderSources["canvas_frag"]->push_back(R"(
 uniform sampler2DArray u_panoMask;
@@ -1707,7 +1795,7 @@ float PanoDepth(vec3 dir)
 				)");
 		}
 
-		if (enableDepth)
+		if (enableMask)
 		{
 			shaderSources["canvas_frag"]->push_back(R"(
 uniform sampler2DArray u_panoMask;
@@ -1738,7 +1826,6 @@ vec4 PanoField(vec3 dir)
 	int vi = clamp(int(uv.y * 2.0f), 0, 1);
 	int ui = clamp(int(uv.x * 2.0f), 0, 1);
 	vec3 uvi = vec3(uv * 2.0f - vec2(ui, vi), vi * 2 + ui);
-	vec3 temp = vec3(1, 1, u_numRigCameras) + vec3(0, 0, RigID());
 
 	if(dir2.z > M_JOSH3_Z0)
 	{
@@ -1746,8 +1833,8 @@ vec4 PanoField(vec3 dir)
 		s /= s.w;
 
 		return mix( 
-			texture(u_panoField, uvi * temp), 
-			texture(u_panoField, vec3(s.xy, 4) * temp), 
+			texture(u_panoField, uvi * vec3(1, 1, u_numRigCameras) + vec3(0, 0, RigID())), 
+			texture(u_panoField, vec3(s.xy, 4) * vec3(1, 1, u_numRigCameras) + vec3(0, 0, RigID())), 
 			clamp((dir2.z - M_JOSH3_Z0) * M_JOSH3_ZS, 0.0f, 1.0f));
 	}
 	else if (dir2.z < -M_JOSH3_Z0)
@@ -1756,13 +1843,13 @@ vec4 PanoField(vec3 dir)
 		s /= s.w;
 
 		return mix( 
-			texture(u_panoField, uvi * temp), 
-			texture(u_panoField, vec3(s.xy, 5) * temp), 
-			clamp(-((-dir2.z - M_JOSH3_Z0) * M_JOSH3_ZS), 0.0f, 1.0f));
+			texture(u_panoField, uvi * vec3(1, 1, u_numRigCameras) + vec3(0, 0, RigID())), 
+			texture(u_panoField, vec3(s.xy, 5) * vec3(1, 1, u_numRigCameras) + vec3(0, 0, RigID())), 
+			clamp((-dir2.z - M_JOSH3_Z0) * M_JOSH3_ZS, 0.0f, 1.0f));
 	}
 	else
 	{
-		return texture(u_panoField, uvi * temp);
+		return texture(u_panoField, uvi * vec3(1, 1, u_numRigCameras) + vec3(0, 0, RigID()));
 	}
 }
 			)");
@@ -1781,7 +1868,6 @@ float PanoDepth(vec3 dir)
 	int vi = clamp(int(uv.y * 2.0f), 0, 1);
 	int ui = clamp(int(uv.x * 2.0f), 0, 1);
 	vec3 uvi = vec3(uv * 2.0f - vec2(ui, vi), vi * 2 + ui);
-	vec3 temp = vec3(1, 1, u_numRigCameras) + vec3(0, 0, RigID());
 
 	if(dir2.z > M_JOSH3_Z0)
 	{
@@ -1789,8 +1875,8 @@ float PanoDepth(vec3 dir)
 		s /= s.w;
 
 		return mix( 
-			texture(u_panoDepth, uvi * temp).r, 
-			texture(u_panoDepth, vec3(s.xy, 4) * temp).r, 
+			texture(u_panoDepth, uvi * vec3(1, 1, u_numRigCameras) + vec3(0, 0, RigID())).r, 
+			texture(u_panoDepth, vec3(s.xy, 4) * vec3(1, 1, u_numRigCameras) + vec3(0, 0, RigID())).r, 
 			clamp((dir2.z - M_JOSH3_Z0) * M_JOSH3_ZS, 0.0f, 1.0f));
 	}
 	else if (dir2.z < -M_JOSH3_Z0)
@@ -1799,19 +1885,19 @@ float PanoDepth(vec3 dir)
 		s /= s.w;
 
 		return mix( 
-			texture(u_panoDepth, uvi * temp).r, 
-			texture(u_panoDepth, vec3(s.xy, 5) * temp).r, 
-			clamp(-((-dir2.z - M_JOSH3_Z0) * M_JOSH3_ZS), 0.0f, 1.0f));
+			texture(u_panoDepth, uvi * vec3(1, 1, u_numRigCameras) + vec3(0, 0, RigID())).r, 
+			texture(u_panoDepth, vec3(s.xy, 5) * vec3(1, 1, u_numRigCameras) + vec3(0, 0, RigID())).r, 
+			clamp((-dir2.z - M_JOSH3_Z0) * M_JOSH3_ZS, 0.0f, 1.0f));
 	}
 	else
 	{
-		return texture(u_panoDepth, uvi * temp).r;
+		return texture(u_panoDepth, uvi * vec3(1, 1, u_numRigCameras) + vec3(0, 0, RigID())).r;
 	}
 }
 				)");
 		}
 
-		if (enableDepth)
+		if (enableMask)
 		{
 			shaderSources["canvas_frag"]->push_back(R"(
 uniform sampler2DArray u_panoMask;
@@ -1824,7 +1910,6 @@ float PanoMask(vec3 dir)
 	int vi = clamp(int(uv.y * 2.0f), 0, 1);
 	int ui = clamp(int(uv.x * 2.0f), 0, 1);
 	vec3 uvi = vec3(uv * 2.0f - vec2(ui, vi), vi * 2 + ui);
-	vec3 temp = vec3(1, 1, u_numRigCameras) + vec3(0, 0, RigID());
 
 	if(dir2.z > M_JOSH3_Z0)
 	{
@@ -1832,8 +1917,8 @@ float PanoMask(vec3 dir)
 		s /= s.w;
 
 		return mix( 
-			texture(u_panoMask, uvi * temp).r, 
-			texture(u_panoMask, vec3(s.xy, 4) * temp).r, 
+			texture(u_panoMask, uvi * vec3(1, 1, u_numRigCameras) + vec3(0, 0, RigID())).r, 
+			texture(u_panoMask, vec3(s.xy, 4) * vec3(1, 1, u_numRigCameras) + vec3(0, 0, RigID())).r, 
 			clamp((dir2.z - M_JOSH3_Z0) * M_JOSH3_ZS, 0.0f, 1.0f));
 	}
 	else if (dir2.z < -M_JOSH3_Z0)
@@ -1842,17 +1927,22 @@ float PanoMask(vec3 dir)
 		s /= s.w;
 
 		return mix( 
-			texture(u_panoMask, uvi * temp).r, 
-			texture(u_panoMask, vec3(s.xy, 5) * temp).r, 
-			clamp(-((-dir2.z - M_JOSH3_Z0) * M_JOSH3_ZS), 0.0f, 1.0f));
+			texture(u_panoMask, uvi * vec3(1, 1, u_numRigCameras) + vec3(0, 0, RigID())).r, 
+			texture(u_panoMask, vec3(s.xy, 5) * vec3(1, 1, u_numRigCameras) + vec3(0, 0, RigID())).r, 
+			clamp((-dir2.z - M_JOSH3_Z0) * M_JOSH3_ZS, 0.0f, 1.0f));
 	}
 	else
 	{
-		return texture(u_panoMask, uvi * temp).r;
+		return texture(u_panoMask, uvi * vec3(1, 1, u_numRigCameras) + vec3(0, 0, RigID())).r;
 	}
 }
 				)");
 		}
+	}
+
+	void PanoRenderBase::PanoRender_InitFragmentShaderHeadersEvent__rigMode_MULTI__inProjMode_JOSH1_X()
+	{
+		PanoRender_InitFragmentShaderHeadersEvent__rigMode_MULTI__inProjMode_MULTI_PERSPECTIVE();
 	}
 
 	void PanoRenderBase::PanoRender_InitFragmentShaderHeadersEvent__rigMode_MONO__outProjMode_PERSPECTIVE()
@@ -2156,6 +2246,11 @@ Ray3D GetFragViewRay(vec2 fragUV)
 	}
 }
 			)");
+	}
+
+	void PanoRenderBase::PanoRender_InitFragmentShaderHeadersEvent__rigMode_MONO__outProjMode_JOSH1_X()
+	{
+		PanoRender_InitFragmentShaderHeadersEvent__rigMode_MONO__outProjMode_MULTI_PERSPECTIVE();
 	}
 
 	void PanoRenderBase::PanoRender_InitFragmentShaderHeadersEvent__rigMode_MULTI__outProjMode_PERSPECTIVE()
@@ -2479,6 +2574,20 @@ Ray3D GetFragViewRay(vec2 fragUV)
 			)");
 	}
 
+	void PanoRenderBase::PanoRender_InitFragmentShaderHeadersEvent__rigMode_MULTI__outProjMode_JOSH1_X()
+	{
+		shaderSources["canvas_frag"]->push_back(R"(
+Ray3D GetFragViewRay(vec2 fragUV)
+{
+	int layerID = LayerID();
+	vec4 ndc = vec4(fragUV * 2.0f - 1.0f, 1.0f, 1.0f);
+	vec4 clip = ndc * CAM_FAR; // -(-CAM_FAR)
+	vec3 eye = (u_outProjTransform[RigID()] * u_outProjV2W[layerID] * vec4(0.0f, 0.0f, 0.0f, 1.0f)).xyz;
+	return Ray3D(eye, normalize((u_outProjTransform[RigID()] * u_outProjC2W[layerID] * clip).xyz - eye));
+}
+			)");
+	}
+
 	void PanoRenderBase::CreateTexture(const std::string& name)
 	{
 		switch (rigMode)
@@ -2496,6 +2605,7 @@ Ray3D GetFragViewRay(vec2 fragUV)
 			case ProjectionMode::JOSH1:
 			case ProjectionMode::JOSH2:
 			case ProjectionMode::JOSH3:
+			case ProjectionMode::JOSH1_X:
 				textures[name] = PTR<Texture>(new Texture(GL_TEXTURE_2D_ARRAY));
 				break;
 
@@ -2519,6 +2629,7 @@ Ray3D GetFragViewRay(vec2 fragUV)
 			case ProjectionMode::JOSH1:
 			case ProjectionMode::JOSH2:
 			case ProjectionMode::JOSH3:
+			case ProjectionMode::JOSH1_X:
 				textures[name] = PTR<Texture>(new Texture(GL_TEXTURE_2D_ARRAY));
 				break;
 
@@ -2553,6 +2664,7 @@ Ray3D GetFragViewRay(vec2 fragUV)
 
 			case ProjectionMode::MULTI_PERSPECTIVE:
 			case ProjectionMode::JOSH1:
+			case ProjectionMode::JOSH1_X:
 				textures[name]->Storage3D(1, f, w, h, (GLsizei)outProjCamera.size());
 				break;
 
@@ -2585,6 +2697,7 @@ Ray3D GetFragViewRay(vec2 fragUV)
 
 			case ProjectionMode::MULTI_PERSPECTIVE:
 			case ProjectionMode::JOSH1:
+			case ProjectionMode::JOSH1_X:
 				textures[name]->Storage3D(1, f, w, h, (GLsizei)(outProjCamera.size() * rigW2V.size()));
 				break;
 
@@ -2659,15 +2772,18 @@ Ray3D GetFragViewRay(vec2 fragUV)
 			(*((std::vector<Mat44>*) & inProjW2C)).clear();
 			(*((std::vector<Mat44>*) & inProjV2W)).clear();
 			(*((std::vector<Mat44>*) & inProjC2W)).clear();
+			(*((std::vector<GLfloat>*) & inProjCameraWeight)).clear();
 			break;
 
 		case ProjectionMode::JOSH1:
+		case ProjectionMode::JOSH1_X:
 			(*(std::vector<Camera>*)(&this->inProjCamera)).resize(6);
 			(*((std::vector<Mat44>*) & inProjW2V)).resize(6);
 			(*((std::vector<Mat44>*) & inProjW2C)).resize(6);
 			(*((std::vector<Mat44>*) & inProjV2W)).resize(6);
 			(*((std::vector<Mat44>*) & inProjC2W)).resize(6);
-			InitCamera_JOSH1(inProjCamera);
+			(*((std::vector<GLfloat>*) & inProjCameraWeight)).resize(6);
+			InitCamera_JOSH1(inProjCamera, JOSH1_fovY);
 			break;
 
 		case ProjectionMode::JOSH2:
@@ -2676,6 +2792,7 @@ Ray3D GetFragViewRay(vec2 fragUV)
 			(*((std::vector<Mat44>*) & inProjW2C)).resize(8);
 			(*((std::vector<Mat44>*) & inProjV2W)).resize(8);
 			(*((std::vector<Mat44>*) & inProjC2W)).resize(8);
+			(*((std::vector<GLfloat>*) & inProjCameraWeight)).resize(8);
 			InitCamera_JOSH2(inProjCamera);
 			break;
 
@@ -2685,6 +2802,7 @@ Ray3D GetFragViewRay(vec2 fragUV)
 			(*((std::vector<Mat44>*) & inProjW2C)).resize(2);
 			(*((std::vector<Mat44>*) & inProjV2W)).resize(2);
 			(*((std::vector<Mat44>*) & inProjC2W)).resize(2);
+			(*((std::vector<GLfloat>*) & inProjCameraWeight)).resize(2);
 			InitCamera_JOSH3(inProjCamera);
 			break;
 
@@ -2748,12 +2866,13 @@ Ray3D GetFragViewRay(vec2 fragUV)
 			break;
 
 		case ProjectionMode::JOSH1:
+		case ProjectionMode::JOSH1_X:
 			(*(std::vector<Camera>*)(&this->outProjCamera)).resize(6);
 			(*((std::vector<Mat44>*) & outProjW2V)).resize(6);
 			(*((std::vector<Mat44>*) & outProjW2C)).resize(6);
 			(*((std::vector<Mat44>*) & outProjC2W)).resize(6);
 			(*((std::vector<Mat44>*) & outProjV2W)).resize(6);
-			InitCamera_JOSH1(outProjCamera);
+			InitCamera_JOSH1(outProjCamera, JOSH1_fovY);
 			break;
 
 		case ProjectionMode::JOSH2:
@@ -2821,6 +2940,10 @@ Ray3D GetFragViewRay(vec2 fragUV)
 				PanoRender_Setup__rigMode_MONO__inProjMode_JOSH3();
 				break;
 
+			case ProjectionMode::JOSH1_X:
+				PanoRender_Setup__rigMode_MONO__inProjMode_JOSH1_X();
+				break;
+
 			default:
 				THROW_EXCEPTION("inProjMode is not supported");
 				break;
@@ -2862,6 +2985,10 @@ Ray3D GetFragViewRay(vec2 fragUV)
 				PanoRender_Setup__rigMode_MULTI__inProjMode_JOSH3();
 				break;
 
+			case ProjectionMode::JOSH1_X:
+				PanoRender_Setup__rigMode_MULTI__inProjMode_JOSH1_X();
+				break;
+
 			default:
 				THROW_EXCEPTION("inProjMode is not supported");
 				break;
@@ -2882,6 +3009,7 @@ Ray3D GetFragViewRay(vec2 fragUV)
 			case ProjectionMode::MULTI_PERSPECTIVE:
 			case ProjectionMode::CUBEMAP:
 			case ProjectionMode::JOSH1:
+			case ProjectionMode::JOSH1_X:
 				(*(std::size_t*)(&layers)) = outProjCamera.size();
 				break;
 
@@ -2908,6 +3036,7 @@ Ray3D GetFragViewRay(vec2 fragUV)
 			case ProjectionMode::MULTI_PERSPECTIVE:
 			case ProjectionMode::CUBEMAP:
 			case ProjectionMode::JOSH1:
+			case ProjectionMode::JOSH1_X:
 				(*(std::size_t*)(&layers)) = outProjCamera.size() * rigW2V.size();
 				break;
 
@@ -2968,6 +3097,7 @@ Ray3D GetFragViewRay(vec2 fragUV)
 			(*((Mat44*)&inProjW2C[i])) = inProjCamera[i].projection * inProjW2V[i];
 			(*((Mat44*)&inProjV2W[i])) = glm::inverse(inProjW2V[i]);
 			(*((Mat44*)&inProjC2W[i])) = glm::inverse(inProjW2C[i]);
+			(*((GLfloat*)&inProjCameraWeight[i])) = 1.0f;
 		}
 
 		for (std::size_t i = 0; i < outProjCamera.size(); ++i)
@@ -3106,7 +3236,7 @@ Ray3D GetFragViewRay(vec2 fragUV)
 	void PanoRenderBase::PanoRender_Setup__rigMode_MONO__inProjMode_JOSH1()
 	{
 		PanoRender_Setup__rigMode_MONO__inProjMode_MULTI_PERSPECTIVE();
-		InitCamera_JOSH1(inProjCamera);
+		InitCamera_JOSH1(inProjCamera, JOSH1_fovY);
 	}
 
 	void PanoRenderBase::PanoRender_Setup__rigMode_MONO__inProjMode_JOSH2()
@@ -3175,6 +3305,12 @@ Ray3D GetFragViewRay(vec2 fragUV)
 		}
 
 		InitCamera_JOSH3(inProjCamera);
+	}
+
+	void PanoRenderBase::PanoRender_Setup__rigMode_MONO__inProjMode_JOSH1_X()
+	{
+		PanoRender_Setup__rigMode_MONO__inProjMode_MULTI_PERSPECTIVE();
+		InitCamera_JOSH1(inProjCamera, JOSH1_fovY);
 	}
 
 	void PanoRenderBase::PanoRender_Setup__rigMode_MULTI__inProjMode_PERSPECTIVE()
@@ -3340,7 +3476,7 @@ Ray3D GetFragViewRay(vec2 fragUV)
 	void PanoRenderBase::PanoRender_Setup__rigMode_MULTI__inProjMode_JOSH1()
 	{
 		PanoRender_Setup__rigMode_MULTI__inProjMode_MULTI_PERSPECTIVE();
-		InitCamera_JOSH1(inProjCamera);
+		InitCamera_JOSH1(inProjCamera, JOSH1_fovY);
 	}
 
 	void PanoRenderBase::PanoRender_Setup__rigMode_MULTI__inProjMode_JOSH2()
@@ -3409,6 +3545,12 @@ Ray3D GetFragViewRay(vec2 fragUV)
 		}
 
 		InitCamera_JOSH3(inProjCamera);
+	}
+
+	void PanoRenderBase::PanoRender_Setup__rigMode_MULTI__inProjMode_JOSH1_X()
+	{
+		PanoRender_Setup__rigMode_MULTI__inProjMode_MULTI_PERSPECTIVE();
+		InitCamera_JOSH1(inProjCamera, JOSH1_fovY);
 	}
 
 	//

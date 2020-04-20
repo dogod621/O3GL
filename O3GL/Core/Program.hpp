@@ -76,6 +76,7 @@ namespace O3GL
 		// Pass Arr
 		template<class GLType, int n		> void Uniform(GLint location, const GLType *value													) const;
 		template<class GLType, int n		> void Uniform(GLint location, GLsizei count, const GLType *value									) const;	
+		template<class GLType, int n		> void Uniform(GLint location, const std::vector<GLType>& v											) const;
 		template<class GLType, int n		> void Uniform(GLint location, const std::vector<Vec2>& v											) const;
 		template<class GLType, int n		> void Uniform(GLint location, const std::vector<Vec3>& v											) const;
 		template<class GLType, int n		> void Uniform(GLint location, const std::vector<Vec4>& v											) const;
@@ -88,6 +89,7 @@ namespace O3GL
 
 		template<class GLType, int n		> void Uniform(const std::string &name, const GLType *value											) const { Uniform<GLType, n		>(GetUniformLocation(name.c_str()), value					); GL_CHECK_ERROR; }
 		template<class GLType, int n		> void Uniform(const std::string &name, GLsizei count, const GLType *value							) const { Uniform<GLType, n		>(GetUniformLocation(name.c_str()), count, value			); GL_CHECK_ERROR; }
+		template<class GLType, int n		> void Uniform(const std::string &name, const std::vector<GLType>& v								) const { Uniform<GLType, n		>(GetUniformLocation(name.c_str()), v						); GL_CHECK_ERROR; }
 		template<class GLType, int n		> void Uniform(const std::string &name, const std::vector<Vec2>& v									) const { Uniform<GLType, n		>(GetUniformLocation(name.c_str()), v						); GL_CHECK_ERROR; }
 		template<class GLType, int n		> void Uniform(const std::string &name, const std::vector<Vec3>& v									) const { Uniform<GLType, n		>(GetUniformLocation(name.c_str()), v						); GL_CHECK_ERROR; }
 		template<class GLType, int n		> void Uniform(const std::string &name, const std::vector<Vec4>& v									) const { Uniform<GLType, n		>(GetUniformLocation(name.c_str()), v						); GL_CHECK_ERROR; }
@@ -242,6 +244,7 @@ namespace O3GL
 		// Pass Arr		-		GLfloat	, 1
 		template<> void Uniform<GLfloat	, 1		>(GLint location, const GLfloat *value										) const { glProgramUniform1fv			(*this, location, 1, value									); GL_CHECK_ERROR; }
 		template<> void Uniform<GLfloat	, 1		>(GLint location, GLsizei count, const GLfloat *value						) const { glProgramUniform1fv			(*this, location, count, value								); GL_CHECK_ERROR; }
+		template<> void Uniform<GLfloat	, 1		>(GLint location, const std::vector<GLfloat>& v								) const { glProgramUniform1fv			(*this, location, (GLsizei)v.size(), &v[0]					); GL_CHECK_ERROR; }
 		
 		// Pass Arr		-		GLfloat	, 2
 		template<> void Uniform<GLfloat	, 2		>(GLint location, const GLfloat *value										) const { glProgramUniform2fv			(*this, location, 1, value									); GL_CHECK_ERROR; }
@@ -262,6 +265,7 @@ namespace O3GL
 		// Pass Arr		-		GLint	, 1
 		template<> void Uniform<GLint	, 1		>(GLint location, const GLint *value										) const { glProgramUniform1iv			(*this, location, 1, value									); GL_CHECK_ERROR; }
 		template<> void Uniform<GLint	, 1		>(GLint location, GLsizei count, const GLint *value							) const { glProgramUniform1iv			(*this, location, count, value								); GL_CHECK_ERROR; }
+		template<> void Uniform<GLint	, 1		>(GLint location, const std::vector<GLint>& v								) const { glProgramUniform1iv			(*this, location, (GLsizei)v.size(), &v[0]					); GL_CHECK_ERROR; }
 		
 
 		// Pass Arr		-		GLint	, 2
@@ -285,6 +289,7 @@ namespace O3GL
 		// Pass Arr		-		GLuint	, 1
 		template<> void Uniform<GLuint	, 1		>(GLint location, const GLuint *value										) const { glProgramUniform1uiv			(*this, location, 1, value									); GL_CHECK_ERROR; }
 		template<> void Uniform<GLuint	, 1		>(GLint location, GLsizei count, const GLuint *value						) const { glProgramUniform1uiv			(*this, location, count, value								); GL_CHECK_ERROR; }
+		template<> void Uniform<GLuint	, 1		>(GLint location, const std::vector<GLuint>& v								) const { glProgramUniform1uiv			(*this, location, (GLsizei)v.size(), &v[0]					); GL_CHECK_ERROR; }
 		
 		// Pass Arr		-		GLuint	, 2
 		template<> void Uniform<GLuint	, 2		>(GLint location, const GLuint *value										) const { glProgramUniform2uiv			(*this, location, 1, value									); GL_CHECK_ERROR; }
