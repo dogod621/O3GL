@@ -451,6 +451,10 @@ uniform mat4 u_outProjC2W[)");
 			}
 		}
 		break;
+
+		case ProjectionMode::JOSH3:
+			programs.at("canvas")->Uniform<GLint, 1>("u_useCenterOnly", JOSH3_useCenterOnly);
+			break;
 		}
 
 		switch (outProjMode)
@@ -731,7 +735,7 @@ uniform mat4 u_outProjC2W[)");
 
 		float cameraNear = 0.1f;
 		float cameraFar = 10.0f;
-		Mat44 perspective = glm::perspective(glm::radians(60.0f), 1.0f, cameraNear, cameraFar);
+		Mat44 perspective = glm::perspective(glm::radians(90.0f), 1.0f, cameraNear, cameraFar);
 
 		for (std::size_t i = 0; i < cameras.size(); ++i)
 		{
@@ -1215,10 +1219,11 @@ float PanoMask(vec3 dir)
 	{
 		shaderSources["canvas_frag"]->push_back(R"(
 #define M_MERCATOR_RANGE	2.32175078194f // Mercator Evaluation Range
-#define M_JOSH3_Z0			0.86602540378f // cos(M_PI/6.0f)
-#define M_JOSH3_Z1			0.91715233568f // cos(0.5f * (M_PI - M_MERCATOR_RANGE))
-#define M_JOSH3_ZS			19.5591631097f // 1.0f / (M_JOSH3_Z1 - M_JOSH3_Z0)
+#define M_JOSH3_Z0			0.72499943359f // np.cos(np.arctan(0.95)) // 0.86602540378f // cos(M_PI/6.0f)
+#define M_JOSH3_Z1			0.74329414625f // 0.91715233568f // cos(0.5f * (M_PI - M_MERCATOR_RANGE))
+#define M_JOSH3_ZS			26.6136783392f // 19.5591631097f // 1.0f / (M_JOSH3_Z1 - M_JOSH3_Z0)
 
+uniform int u_useCenterOnly;
 uniform sampler2DArray u_panoField;
 
 vec4 PanoField(vec3 dir)
@@ -1230,29 +1235,36 @@ vec4 PanoField(vec3 dir)
 	int ui = clamp(int(uv.x * 2.0f), 0, 1);
 	vec3 uvi = vec3(uv * 2.0f - vec2(ui, vi), vi * 2 + ui);
 
-	if(dir2.z > M_JOSH3_Z0)
+	if(u_useCenterOnly > 0)
 	{
-		vec4 s = u_inProjW2C[0] * vec4(dir2, 1.0f);
-		s /= s.w;
-
-		return mix( 
-			texture(u_panoField, uvi), 
-			texture(u_panoField, vec3(s.xy, 4)), 
-			clamp((dir2.z - M_JOSH3_Z0) * M_JOSH3_ZS, 0.0f, 1.0f));
-	}
-	else if (dir2.z < -M_JOSH3_Z0)
-	{
-		vec4 s = u_inProjW2C[1] * vec4(dir2, 1.0f);
-		s /= s.w;
-
-		return mix( 
-			texture(u_panoField, uvi), 
-			texture(u_panoField, vec3(s.xy, 5)), 
-			clamp((-dir2.z - M_JOSH3_Z0) * M_JOSH3_ZS, 0.0f, 1.0f));
+		return texture(u_panoField, uvi);
 	}
 	else
 	{
-		return texture(u_panoField, uvi);
+		if(dir2.z > M_JOSH3_Z0)
+		{
+			vec4 s = u_inProjW2C[0] * vec4(dir2, 1.0f);
+			s /= s.w;
+
+			return mix( 
+				texture(u_panoField, uvi), 
+				texture(u_panoField, vec3(s.xy, 4)), 
+				clamp((dir2.z - M_JOSH3_Z0) * M_JOSH3_ZS, 0.0f, 1.0f));
+		}
+		else if (dir2.z < -M_JOSH3_Z0)
+		{
+			vec4 s = u_inProjW2C[1] * vec4(dir2, 1.0f);
+			s /= s.w;
+
+			return mix( 
+				texture(u_panoField, uvi), 
+				texture(u_panoField, vec3(s.xy, 5)), 
+				clamp((-dir2.z - M_JOSH3_Z0) * M_JOSH3_ZS, 0.0f, 1.0f));
+		}
+		else
+		{
+			return texture(u_panoField, uvi);
+		}
 	}
 }
 			)");
@@ -1271,29 +1283,36 @@ float PanoDepth(vec3 dir)
 	int ui = clamp(int(uv.x * 2.0f), 0, 1);
 	vec3 uvi = vec3(uv * 2.0f - vec2(ui, vi), vi * 2 + ui);
 
-	if(dir2.z > M_JOSH3_Z0)
+	if(u_useCenterOnly > 0)
 	{
-		vec4 s = u_inProjW2C[0] * vec4(dir2, 1.0f);
-		s /= s.w;
-
-		return mix( 
-			texture(u_panoDepth, uvi).r, 
-			texture(u_panoDepth, vec3(s.xy, 4)).r, 
-			clamp((dir2.z - M_JOSH3_Z0) * M_JOSH3_ZS, 0.0f, 1.0f));
-	}
-	else if (dir2.z < -M_JOSH3_Z0)
-	{
-		vec4 s = u_inProjW2C[1] * vec4(dir2, 1.0f);
-		s /= s.w;
-
-		return mix( 
-			texture(u_panoDepth, uvi).r, 
-			texture(u_panoDepth, vec3(s.xy, 5)).r, 
-			clamp((-dir2.z - M_JOSH3_Z0) * M_JOSH3_ZS, 0.0f, 1.0f));
+		return texture(u_panoDepth, uvi).r;
 	}
 	else
 	{
-		return texture(u_panoDepth, uvi).r;
+		if(dir2.z > M_JOSH3_Z0)
+		{
+			vec4 s = u_inProjW2C[0] * vec4(dir2, 1.0f);
+			s /= s.w;
+
+			return mix( 
+				texture(u_panoDepth, uvi).r, 
+				texture(u_panoDepth, vec3(s.xy, 4)).r, 
+				clamp((dir2.z - M_JOSH3_Z0) * M_JOSH3_ZS, 0.0f, 1.0f));
+		}
+		else if (dir2.z < -M_JOSH3_Z0)
+		{
+			vec4 s = u_inProjW2C[1] * vec4(dir2, 1.0f);
+			s /= s.w;
+
+			return mix( 
+				texture(u_panoDepth, uvi).r, 
+				texture(u_panoDepth, vec3(s.xy, 5)).r, 
+				clamp((-dir2.z - M_JOSH3_Z0) * M_JOSH3_ZS, 0.0f, 1.0f));
+		}
+		else
+		{
+			return texture(u_panoDepth, uvi).r;
+		}
 	}
 }
 				)");
@@ -1313,29 +1332,36 @@ float PanoMask(vec3 dir)
 	int ui = clamp(int(uv.x * 2.0f), 0, 1);
 	vec3 uvi = vec3(uv * 2.0f - vec2(ui, vi), vi * 2 + ui);
 
-	if(dir2.z > M_JOSH3_Z0)
+	if(u_useCenterOnly > 0)
 	{
-		vec4 s = u_inProjW2C[0] * vec4(dir2, 1.0f);
-		s /= s.w;
-
-		return mix( 
-			texture(u_panoMask, uvi).r, 
-			texture(u_panoMask, vec3(s.xy, 4)).r, 
-			clamp((dir2.z - M_JOSH3_Z0) * M_JOSH3_ZS, 0.0f, 1.0f));
-	}
-	else if (dir2.z < -M_JOSH3_Z0)
-	{
-		vec4 s = u_inProjW2C[1] * vec4(dir2, 1.0f);
-		s /= s.w;
-
-		return mix( 
-			texture(u_panoMask, uvi).r, 
-			texture(u_panoMask, vec3(s.xy, 5)).r, 
-			clamp((-dir2.z - M_JOSH3_Z0) * M_JOSH3_ZS, 0.0f, 1.0f));
+		return texture(u_panoMask, uvi).r;
 	}
 	else
 	{
-		return texture(u_panoMask, uvi).r;
+		if(dir2.z > M_JOSH3_Z0)
+		{
+			vec4 s = u_inProjW2C[0] * vec4(dir2, 1.0f);
+			s /= s.w;
+
+			return mix( 
+				texture(u_panoMask, uvi).r, 
+				texture(u_panoMask, vec3(s.xy, 4)).r, 
+				clamp((dir2.z - M_JOSH3_Z0) * M_JOSH3_ZS, 0.0f, 1.0f));
+		}
+		else if (dir2.z < -M_JOSH3_Z0)
+		{
+			vec4 s = u_inProjW2C[1] * vec4(dir2, 1.0f);
+			s /= s.w;
+
+			return mix( 
+				texture(u_panoMask, uvi).r, 
+				texture(u_panoMask, vec3(s.xy, 5)).r, 
+				clamp((-dir2.z - M_JOSH3_Z0) * M_JOSH3_ZS, 0.0f, 1.0f));
+		}
+		else
+		{
+			return texture(u_panoMask, uvi).r;
+		}
 	}
 }
 				)");
@@ -1811,12 +1837,13 @@ float PanoMask(vec3 dir)
 	void PanoRenderBase::PanoRender_InitFragmentShaderHeadersEvent__rigMode_MULTI__inProjMode_JOSH3()
 	{
 		shaderSources["canvas_frag"]->push_back(R"(
-uniform sampler2DArray u_panoField;
-
 #define M_MERCATOR_RANGE	2.32175078194f // Mercator Evaluation Range
-#define M_JOSH3_Z0			0.86602540378f // cos(M_PI/6.0f)
-#define M_JOSH3_Z1			0.91715233568f // cos(0.5f * (M_PI - M_MERCATOR_RANGE))
-#define M_JOSH3_ZS			19.5591631097f // 1.0f / (M_JOSH3_Z1 - M_JOSH3_Z0)
+#define M_JOSH3_Z0			0.72499943359f // np.cos(np.arctan(0.95)) // 0.86602540378f // cos(M_PI/6.0f)
+#define M_JOSH3_Z1			0.74329414625f // 0.91715233568f // cos(0.5f * (M_PI - M_MERCATOR_RANGE))
+#define M_JOSH3_ZS			26.6136783392f // 19.5591631097f // 1.0f / (M_JOSH3_Z1 - M_JOSH3_Z0)
+
+uniform int u_useCenterOnly;
+uniform sampler2DArray u_panoField;
 
 vec4 PanoField(vec3 dir)
 {
@@ -1827,29 +1854,36 @@ vec4 PanoField(vec3 dir)
 	int ui = clamp(int(uv.x * 2.0f), 0, 1);
 	vec3 uvi = vec3(uv * 2.0f - vec2(ui, vi), vi * 2 + ui);
 
-	if(dir2.z > M_JOSH3_Z0)
+	if(u_useCenterOnly > 0)
 	{
-		vec4 s = u_inProjW2C[0] * vec4(dir2, 1.0f);
-		s /= s.w;
-
-		return mix( 
-			texture(u_panoField, uvi * vec3(1, 1, u_numRigCameras) + vec3(0, 0, RigID())), 
-			texture(u_panoField, vec3(s.xy, 4) * vec3(1, 1, u_numRigCameras) + vec3(0, 0, RigID())), 
-			clamp((dir2.z - M_JOSH3_Z0) * M_JOSH3_ZS, 0.0f, 1.0f));
-	}
-	else if (dir2.z < -M_JOSH3_Z0)
-	{
-		vec4 s = u_inProjW2C[1] * vec4(dir2, 1.0f);
-		s /= s.w;
-
-		return mix( 
-			texture(u_panoField, uvi * vec3(1, 1, u_numRigCameras) + vec3(0, 0, RigID())), 
-			texture(u_panoField, vec3(s.xy, 5) * vec3(1, 1, u_numRigCameras) + vec3(0, 0, RigID())), 
-			clamp((-dir2.z - M_JOSH3_Z0) * M_JOSH3_ZS, 0.0f, 1.0f));
+		return texture(u_panoField, uvi * vec3(1, 1, u_numRigCameras) + vec3(0, 0, RigID()));
 	}
 	else
 	{
-		return texture(u_panoField, uvi * vec3(1, 1, u_numRigCameras) + vec3(0, 0, RigID()));
+		if(dir2.z > M_JOSH3_Z0)
+		{
+			vec4 s = u_inProjW2C[0] * vec4(dir2, 1.0f);
+			s /= s.w;
+
+			return mix( 
+				texture(u_panoField, uvi * vec3(1, 1, u_numRigCameras) + vec3(0, 0, RigID())), 
+				texture(u_panoField, vec3(s.xy, 4) * vec3(1, 1, u_numRigCameras) + vec3(0, 0, RigID())), 
+				clamp((dir2.z - M_JOSH3_Z0) * M_JOSH3_ZS, 0.0f, 1.0f));
+		}
+		else if (dir2.z < -M_JOSH3_Z0)
+		{
+			vec4 s = u_inProjW2C[1] * vec4(dir2, 1.0f);
+			s /= s.w;
+
+			return mix( 
+				texture(u_panoField, uvi * vec3(1, 1, u_numRigCameras) + vec3(0, 0, RigID())), 
+				texture(u_panoField, vec3(s.xy, 5) * vec3(1, 1, u_numRigCameras) + vec3(0, 0, RigID())), 
+				clamp((-dir2.z - M_JOSH3_Z0) * M_JOSH3_ZS, 0.0f, 1.0f));
+		}
+		else
+		{
+			return texture(u_panoField, uvi * vec3(1, 1, u_numRigCameras) + vec3(0, 0, RigID()));
+		}
 	}
 }
 			)");
@@ -1869,29 +1903,36 @@ float PanoDepth(vec3 dir)
 	int ui = clamp(int(uv.x * 2.0f), 0, 1);
 	vec3 uvi = vec3(uv * 2.0f - vec2(ui, vi), vi * 2 + ui);
 
-	if(dir2.z > M_JOSH3_Z0)
+	if(u_useCenterOnly > 0)
 	{
-		vec4 s = u_inProjW2C[0] * vec4(dir2, 1.0f);
-		s /= s.w;
-
-		return mix( 
-			texture(u_panoDepth, uvi * vec3(1, 1, u_numRigCameras) + vec3(0, 0, RigID())).r, 
-			texture(u_panoDepth, vec3(s.xy, 4) * vec3(1, 1, u_numRigCameras) + vec3(0, 0, RigID())).r, 
-			clamp((dir2.z - M_JOSH3_Z0) * M_JOSH3_ZS, 0.0f, 1.0f));
-	}
-	else if (dir2.z < -M_JOSH3_Z0)
-	{
-		vec4 s = u_inProjW2C[1] * vec4(dir2, 1.0f);
-		s /= s.w;
-
-		return mix( 
-			texture(u_panoDepth, uvi * vec3(1, 1, u_numRigCameras) + vec3(0, 0, RigID())).r, 
-			texture(u_panoDepth, vec3(s.xy, 5) * vec3(1, 1, u_numRigCameras) + vec3(0, 0, RigID())).r, 
-			clamp((-dir2.z - M_JOSH3_Z0) * M_JOSH3_ZS, 0.0f, 1.0f));
+		return texture(u_panoDepth, uvi * vec3(1, 1, u_numRigCameras) + vec3(0, 0, RigID())).r;
 	}
 	else
 	{
-		return texture(u_panoDepth, uvi * vec3(1, 1, u_numRigCameras) + vec3(0, 0, RigID())).r;
+		if(dir2.z > M_JOSH3_Z0)
+		{
+			vec4 s = u_inProjW2C[0] * vec4(dir2, 1.0f);
+			s /= s.w;
+
+			return mix( 
+				texture(u_panoDepth, uvi * vec3(1, 1, u_numRigCameras) + vec3(0, 0, RigID())).r, 
+				texture(u_panoDepth, vec3(s.xy, 4) * vec3(1, 1, u_numRigCameras) + vec3(0, 0, RigID())).r, 
+				clamp((dir2.z - M_JOSH3_Z0) * M_JOSH3_ZS, 0.0f, 1.0f));
+		}
+		else if (dir2.z < -M_JOSH3_Z0)
+		{
+			vec4 s = u_inProjW2C[1] * vec4(dir2, 1.0f);
+			s /= s.w;
+
+			return mix( 
+				texture(u_panoDepth, uvi * vec3(1, 1, u_numRigCameras) + vec3(0, 0, RigID())).r, 
+				texture(u_panoDepth, vec3(s.xy, 5) * vec3(1, 1, u_numRigCameras) + vec3(0, 0, RigID())).r, 
+				clamp((-dir2.z - M_JOSH3_Z0) * M_JOSH3_ZS, 0.0f, 1.0f));
+		}
+		else
+		{
+			return texture(u_panoDepth, uvi * vec3(1, 1, u_numRigCameras) + vec3(0, 0, RigID())).r;
+		}
 	}
 }
 				)");
@@ -1911,29 +1952,36 @@ float PanoMask(vec3 dir)
 	int ui = clamp(int(uv.x * 2.0f), 0, 1);
 	vec3 uvi = vec3(uv * 2.0f - vec2(ui, vi), vi * 2 + ui);
 
-	if(dir2.z > M_JOSH3_Z0)
+	if(u_useCenterOnly > 0)
 	{
-		vec4 s = u_inProjW2C[0] * vec4(dir2, 1.0f);
-		s /= s.w;
-
-		return mix( 
-			texture(u_panoMask, uvi * vec3(1, 1, u_numRigCameras) + vec3(0, 0, RigID())).r, 
-			texture(u_panoMask, vec3(s.xy, 4) * vec3(1, 1, u_numRigCameras) + vec3(0, 0, RigID())).r, 
-			clamp((dir2.z - M_JOSH3_Z0) * M_JOSH3_ZS, 0.0f, 1.0f));
-	}
-	else if (dir2.z < -M_JOSH3_Z0)
-	{
-		vec4 s = u_inProjW2C[1] * vec4(dir2, 1.0f);
-		s /= s.w;
-
-		return mix( 
-			texture(u_panoMask, uvi * vec3(1, 1, u_numRigCameras) + vec3(0, 0, RigID())).r, 
-			texture(u_panoMask, vec3(s.xy, 5) * vec3(1, 1, u_numRigCameras) + vec3(0, 0, RigID())).r, 
-			clamp((-dir2.z - M_JOSH3_Z0) * M_JOSH3_ZS, 0.0f, 1.0f));
+		return texture(u_panoMask, uvi * vec3(1, 1, u_numRigCameras) + vec3(0, 0, RigID())).r;
 	}
 	else
 	{
-		return texture(u_panoMask, uvi * vec3(1, 1, u_numRigCameras) + vec3(0, 0, RigID())).r;
+		if(dir2.z > M_JOSH3_Z0)
+		{
+			vec4 s = u_inProjW2C[0] * vec4(dir2, 1.0f);
+			s /= s.w;
+
+			return mix( 
+				texture(u_panoMask, uvi * vec3(1, 1, u_numRigCameras) + vec3(0, 0, RigID())).r, 
+				texture(u_panoMask, vec3(s.xy, 4) * vec3(1, 1, u_numRigCameras) + vec3(0, 0, RigID())).r, 
+				clamp((dir2.z - M_JOSH3_Z0) * M_JOSH3_ZS, 0.0f, 1.0f));
+		}
+		else if (dir2.z < -M_JOSH3_Z0)
+		{
+			vec4 s = u_inProjW2C[1] * vec4(dir2, 1.0f);
+			s /= s.w;
+
+			return mix( 
+				texture(u_panoMask, uvi * vec3(1, 1, u_numRigCameras) + vec3(0, 0, RigID())).r, 
+				texture(u_panoMask, vec3(s.xy, 5) * vec3(1, 1, u_numRigCameras) + vec3(0, 0, RigID())).r, 
+				clamp((-dir2.z - M_JOSH3_Z0) * M_JOSH3_ZS, 0.0f, 1.0f));
+		}
+		else
+		{
+			return texture(u_panoMask, uvi * vec3(1, 1, u_numRigCameras) + vec3(0, 0, RigID())).r;
+		}
 	}
 }
 				)");

@@ -105,7 +105,7 @@ namespace O3GL
 			JOSH1_fovY(90.0f),
 			inProjW2V(inProjCamera.size()), inProjW2C(inProjCamera.size()), inProjC2W(inProjCamera.size()), inProjV2W(inProjCamera.size()), inProjCameraWeight(),
 			outProjW2V(outProjCamera.size()), outProjW2C(outProjCamera.size()), outProjV2W(outProjCamera.size()), outProjC2W(outProjCamera.size()),
-			layers(1)
+			layers(1), JOSH3_useCenterOnly(0)
 		{
 			Setup();
 		}
@@ -125,7 +125,7 @@ namespace O3GL
 			JOSH1_fovY(90.0f),
 			inProjW2V(inProjCamera.size()), inProjW2C(inProjCamera.size()), inProjC2W(inProjCamera.size()), inProjV2W(inProjCamera.size()), inProjCameraWeight(),
 			outProjW2V(outProjCamera.size()), outProjW2C(outProjCamera.size()), outProjV2W(outProjCamera.size()), outProjC2W(outProjCamera.size()),
-			layers(1)
+			layers(1), JOSH3_useCenterOnly(0)
 		{
 			Setup();
 		}
@@ -145,7 +145,7 @@ namespace O3GL
 			JOSH1_fovY(90.0f),
 			inProjW2V(inProjCamera.size()), inProjW2C(inProjCamera.size()), inProjC2W(inProjCamera.size()), inProjV2W(inProjCamera.size()), inProjCameraWeight(),
 			outProjW2V(outProjCamera.size()), outProjW2C(outProjCamera.size()), outProjV2W(outProjCamera.size()), outProjC2W(outProjCamera.size()),
-			layers(1)
+			layers(1), JOSH3_useCenterOnly(0)
 		{
 			Setup();
 		}
@@ -180,6 +180,11 @@ namespace O3GL
 		void SetJOSH1_fovY(GLfloat JOSH1_fovY) const
 		{
 			*((GLfloat*)&this->JOSH1_fovY) = JOSH1_fovY;
+		}
+
+		void SetJOSH3_useCenterOnly(GLint JOSH3_useCenterOnly) const
+		{
+			*((GLint*)&this->JOSH3_useCenterOnly) = JOSH3_useCenterOnly;
 		}
 
 	protected:
@@ -236,6 +241,9 @@ namespace O3GL
 
 		// for inProjMode: MULTI_PERSPECTIVE, JOSH1_X
 		const std::vector<GLfloat> inProjCameraWeight;
+
+		// for inProjMode: JOSH3
+		const GLint JOSH3_useCenterOnly;
 
 	protected:
 		const ProjectionMode outProjMode;
