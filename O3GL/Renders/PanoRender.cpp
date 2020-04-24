@@ -1391,6 +1391,20 @@ vec4 PanoField(vec3 dir)
 		texture(u_panoField, vec3(uvi.xy, RigID())), 
 		float(length(floor(uvi)) < 1.0f));
 }
+
+vec4 PanoField(vec3 dir, int rigID)
+{
+	vec3 dir2 = (u_inProjTransformINV[rigID] * vec4(dir, 0.0f)).xyz;
+
+	vec4 s = u_inProjW2C[0] * vec4(dir2, 1.0f);
+	s /= s.w;
+	vec3 uvi = (s.xyz + 1.0f)*0.5f;
+
+	return mix( 
+		vec4(255.0f, 255.0f, 255.0f, 1.0f), 
+		texture(u_panoField, vec3(uvi.xy, rigID)), 
+		float(length(floor(uvi)) < 1.0f));
+}
 			)");
 
 		if (enableDepth)
@@ -1409,6 +1423,20 @@ float PanoDepth(vec3 dir)
 	return mix( 
 		0.0f, 
 		texture(u_panoDepth, vec3(uvi.xy, RigID())).r, 
+		float(length(floor(uvi)) < 1.0f));
+}
+
+float PanoDepth(vec3 dir, int rigID)
+{
+	vec3 dir2 = (u_inProjTransformINV[rigID] * vec4(dir, 0.0f)).xyz;
+
+	vec4 s = u_inProjW2C[0] * vec4(dir2, 1.0f);
+	s /= s.w;
+	vec3 uvi = (s.xyz + 1.0f)*0.5f;
+
+	return mix( 
+		0.0f, 
+		texture(u_panoDepth, vec3(uvi.xy, rigID)).r, 
 		float(length(floor(uvi)) < 1.0f));
 }
 				)");
@@ -1432,6 +1460,20 @@ float PanoMask(vec3 dir)
 		texture(u_panoMask, vec3(uvi.xy, RigID())).r, 
 		float(length(floor(uvi)) < 1.0f));
 }
+
+float PanoMask(vec3 dir, int rigID)
+{
+	vec3 dir2 = (u_inProjTransformINV[rigID] * vec4(dir, 0.0f)).xyz;
+
+	vec4 s = u_inProjW2C[0] * vec4(dir2, 1.0f);
+	s /= s.w;
+	vec3 uvi = (s.xyz + 1.0f)*0.5f;
+
+	return mix( 
+		0.0f, 
+		texture(u_panoMask, vec3(uvi.xy, rigID)).r, 
+		float(length(floor(uvi)) < 1.0f));
+}
 				)");
 		}
 	}
@@ -1445,6 +1487,11 @@ vec4 PanoField(vec3 dir)
 {
 	return texture(u_panoField, vec3(Dir_To_EquirectangularUV((u_inProjTransformINV[RigID()] * vec4(dir, 0.0f)).xyz), RigID()));
 }
+
+vec4 PanoField(vec3 dir, int rigID)
+{
+	return texture(u_panoField, vec3(Dir_To_EquirectangularUV((u_inProjTransformINV[rigID] * vec4(dir, 0.0f)).xyz), rigID));
+}
 			)");
 
 		if (enableDepth)
@@ -1455,6 +1502,11 @@ uniform sampler2DArray u_panoDepth;
 float PanoDepth(vec3 dir)
 {
 	return texture(u_panoDepth, vec3(Dir_To_EquirectangularUV((u_inProjTransformINV[RigID()] * vec4(dir, 0.0f)).xyz), RigID())).r;
+}
+
+float PanoDepth(vec3 dir, int rigID)
+{
+	return texture(u_panoDepth, vec3(Dir_To_EquirectangularUV((u_inProjTransformINV[rigID] * vec4(dir, 0.0f)).xyz), rigID)).r;
 }
 				)");
 		}
@@ -1467,6 +1519,11 @@ uniform sampler2DArray u_panoMask;
 float PanoMask(vec3 dir)
 {
 	return texture(u_panoMask, vec3(Dir_To_EquirectangularUV((u_inProjTransformINV[RigID()] * vec4(dir, 0.0f)).xyz), RigID())).r;
+}
+
+float PanoMask(vec3 dir, int rigID)
+{
+	return texture(u_panoMask, vec3(Dir_To_EquirectangularUV((u_inProjTransformINV[rigID] * vec4(dir, 0.0f)).xyz), rigID)).r;
 }
 				)");
 		}
@@ -1481,6 +1538,11 @@ vec4 PanoField(vec3 dir)
 {
 	return texture(u_panoField, vec3(Dir_To_MercatorUV((u_inProjTransformINV[RigID()] * vec4(dir, 0.0f)).xyz), RigID()));
 }
+
+vec4 PanoField(vec3 dir, int rigID)
+{
+	return texture(u_panoField, vec3(Dir_To_MercatorUV((u_inProjTransformINV[rigID] * vec4(dir, 0.0f)).xyz), rigID));
+}
 			)");
 
 		if (enableDepth)
@@ -1491,6 +1553,11 @@ uniform sampler2DArray u_panoDepth;
 float PanoDepth(vec3 dir)
 {
 	return texture(u_panoDepth, vec3(Dir_To_MercatorUV((u_inProjTransformINV[RigID()] * vec4(dir, 0.0f)).xyz), RigID())).r;
+}
+
+float PanoDepth(vec3 dir, int rigID)
+{
+	return texture(u_panoDepth, vec3(Dir_To_MercatorUV((u_inProjTransformINV[rigID] * vec4(dir, 0.0f)).xyz), rigID)).r;
 }
 				)");
 		}
@@ -1503,6 +1570,11 @@ uniform sampler2DArray u_panoMask;
 float PanoMask(vec3 dir)
 {
 	return texture(u_panoMask, vec3(Dir_To_MercatorUV((u_inProjTransformINV[RigID()] * vec4(dir, 0.0f)).xyz), RigID())).r;
+}
+
+float PanoMask(vec3 dir, int rigID)
+{
+	return texture(u_panoMask, vec3(Dir_To_MercatorUV((u_inProjTransformINV[rigID] * vec4(dir, 0.0f)).xyz), rigID)).r;
 }
 				)");
 		}
@@ -1538,6 +1610,32 @@ vec4 PanoField(vec3 dir)
 	}
 	return vec4(field / weightSum, 1.0f);
 }
+
+vec4 PanoField(vec3 dir, int rigID)
+{
+	vec3 dir2 = (u_inProjTransformINV[rigID] * vec4(dir, 0.0f)).xyz;
+
+	vec4 s;
+	float weight = 0.0f;
+	float weightSum = 0.0f;
+	vec3 field = vec3(0.0f, 0.0f, 0.0f);
+	vec3 center = normalize(vec3(0.0f, 0.0f, 0.5f));
+
+	vec3 uvi;
+	for(uint i = 0 ; i < u_numPanoProjectionCameras ; ++i)
+	{
+		s = u_inProjW2C[i] * vec4(dir2, 1.0f);
+		s /= s.w;
+		uvi = (s.xyz + 1.0f)*0.5f;
+		if(length(floor(uvi)) < 1.0f)
+		{
+			weight = u_inProjCameraWeight[i] * dot(normalize(vec3(s.xy, 0.5f)), center);
+			field += weight * texture(u_panoField, vec3(uvi.xy, i * u_numRigCameras + rigID)).rgb;
+			weightSum += weight;
+		}
+	}
+	return vec4(field / weightSum, 1.0f);
+}
 			)");
 
 		if (enableDepth)
@@ -1565,6 +1663,32 @@ float PanoDepth(vec3 dir)
 		{
 			weight = u_inProjCameraWeight[i] * dot(normalize(vec3(s.xy, 0.1f)), center);
 			depth += weight * texture(u_panoDepth, vec3(uvi.xy, i * u_numRigCameras + RigID())).r;
+			weightSum += weight;
+		}
+	}
+	return depth / weightSum;
+}
+
+float PanoDepth(vec3 dir, int rigID)
+{
+	vec3 dir2 = (u_inProjTransformINV[rigID] * vec4(dir, 0.0f)).xyz;
+
+	vec4 s;
+	float weight = 0.0f;
+	float weightSum = 0.0f;
+	float depth = 0.0f;
+	vec3 center = normalize(vec3(0.0f, 0.0f, 0.5f));
+
+	vec3 uvi;
+	for(uint i = 0 ; i < u_numPanoProjectionCameras ; ++i)
+	{
+		s = u_inProjW2C[i] * vec4(dir2, 1.0f);
+		s /= s.w;
+		uvi = (s.xyz + 1.0f)*0.5f;
+		if((length(floor(uvi)) < 1.0f) )
+		{
+			weight = u_inProjCameraWeight[i] * dot(normalize(vec3(s.xy, 0.1f)), center);
+			depth += weight * texture(u_panoDepth, vec3(uvi.xy, i * u_numRigCameras + rigID)).r;
 			weightSum += weight;
 		}
 	}
@@ -1603,6 +1727,32 @@ float PanoMask(vec3 dir)
 	}
 	return depth / weightSum;
 }
+
+float PanoMask(vec3 dir, int rigID)
+{
+	vec3 dir2 = (u_inProjTransformINV[rigID] * vec4(dir, 0.0f)).xyz;
+
+	vec4 s;
+	float weight = 0.0f;
+	float weightSum = 0.0f;
+	float depth = 0.0f;
+	vec3 center = normalize(vec3(0.0f, 0.0f, 0.5f));
+
+	vec3 uvi;
+	for(uint i = 0 ; i < u_numPanoProjectionCameras ; ++i)
+	{
+		s = u_inProjW2C[i] * vec4(dir2, 1.0f);
+		s /= s.w;
+		uvi = (s.xyz + 1.0f)*0.5f;
+		if((length(floor(uvi)) < 1.0f) )
+		{
+			weight = u_inProjCameraWeight[i] * dot(normalize(vec3(s.xy, 0.1f)), center);
+			depth += weight * texture(sampler2DArray, vec3(uvi.xy, i * u_numRigCameras + rigID)).r;
+			weightSum += weight;
+		}
+	}
+	return depth / weightSum;
+}
 				)");
 		}
 	}
@@ -1616,6 +1766,11 @@ vec4 PanoField(vec3 dir)
 {
 	return texture(u_panoField, vec4((u_inProjTransformINV[RigID()] * vec4(dir, 0.0f)).xyz, RigID()));
 }
+
+vec4 PanoField(vec3 dir, int rigID)
+{
+	return texture(u_panoField, vec4((u_inProjTransformINV[rigID] * vec4(dir, 0.0f)).xyz, rigID));
+}
 			)");
 
 		if (enableDepth)
@@ -1626,6 +1781,11 @@ uniform samplerCubeArray u_panoDepth;
 float PanoDepth(vec3 dir)
 {
 	return texture(u_panoDepth, vec4((u_inProjTransformINV[RigID()] * vec4(dir, 0.0f)).xyz, RigID())).r;
+}
+
+float PanoDepth(vec3 dir, int rigID)
+{
+	return texture(u_panoDepth, vec4((u_inProjTransformINV[rigID] * vec4(dir, 0.0f)).xyz, rigID)).r;
 }
 				)");
 		}
@@ -1638,6 +1798,11 @@ uniform samplerCubeArray u_panoMask;
 float PanoMask(vec3 dir)
 {
 	return texture(u_panoMask, vec4((u_inProjTransformINV[RigID()] * vec4(dir, 0.0f)).xyz, RigID())).r;
+}
+
+float PanoMask(vec3 dir, int rigID)
+{
+	return texture(u_panoMask, vec4((u_inProjTransformINV[rigID] * vec4(dir, 0.0f)).xyz, rigID)).r;
 }
 				)");
 		}
@@ -1681,6 +1846,11 @@ vec4 PanoField(vec3 dir)
 {
 	return texture(u_panoField, Dir_To_JOSH1UVI((u_inProjTransformINV[RigID()] * vec4(dir, 0.0f)).xyz) * vec3(1, 1, u_numRigCameras) + vec3(0, 0, RigID()));
 }
+
+vec4 PanoField(vec3 dir, int rigID)
+{
+	return texture(u_panoField, Dir_To_JOSH1UVI((u_inProjTransformINV[rigID] * vec4(dir, 0.0f)).xyz) * vec3(1, 1, u_numRigCameras) + vec3(0, 0, rigID));
+}
 			)");
 
 		if (enableDepth)
@@ -1691,6 +1861,11 @@ uniform sampler2DArray u_panoDepth;
 float PanoDepth(vec3 dir)
 {
 	return texture(u_panoDepth, Dir_To_JOSH1UVI((u_inProjTransformINV[RigID()] * vec4(dir, 0.0f)).xyz) * vec3(1, 1, u_numRigCameras) + vec3(0, 0, RigID())).r;
+}
+
+float PanoDepth(vec3 dir, int rigID)
+{
+	return texture(u_panoDepth, Dir_To_JOSH1UVI((u_inProjTransformINV[rigID] * vec4(dir, 0.0f)).xyz) * vec3(1, 1, u_numRigCameras) + vec3(0, 0, rigID)).r;
 }
 				)");
 		}
@@ -1703,6 +1878,11 @@ uniform sampler2DArray u_panoMask;
 float PanoMask(vec3 dir)
 {
 	return texture(u_panoMask, Dir_To_JOSH1UVI((u_inProjTransformINV[RigID()] * vec4(dir, 0.0f)).xyz) * vec3(1, 1, u_numRigCameras) + vec3(0, 0, RigID())).r;
+}
+
+float PanoMask(vec3 dir, int rigID)
+{
+	return texture(u_panoMask, Dir_To_JOSH1UVI((u_inProjTransformINV[rigID] * vec4(dir, 0.0f)).xyz) * vec3(1, 1, u_numRigCameras) + vec3(0, 0, rigID)).r;
 }
 				)");
 		}
@@ -1806,6 +1986,11 @@ vec4 PanoField(vec3 dir)
 {
 	return texture(u_panoField, Dir_To_Josh2UVI((u_inProjTransformINV[RigID()] * vec4(dir, 0.0f)).xyz) * vec3(1, 1, u_numRigCameras) + vec3(0, 0, RigID()));
 }
+
+vec4 PanoField(vec3 dir, int rigID)
+{
+	return texture(u_panoField, Dir_To_Josh2UVI((u_inProjTransformINV[rigID] * vec4(dir, 0.0f)).xyz) * vec3(1, 1, u_numRigCameras) + vec3(0, 0, rigID));
+}
 			)");
 
 		if (enableDepth)
@@ -1818,6 +2003,11 @@ float PanoDepth(vec3 dir)
 {
 	return texture(u_panoDepth, Dir_To_Josh2UVI((u_inProjTransformINV[RigID()] * vec4(dir, 0.0f)).xyz) * vec3(1, 1, u_numRigCameras) + vec3(0, 0, RigID())).r;
 }
+
+float PanoDepth(vec3 dir, int rigID)
+{
+	return texture(u_panoDepth, Dir_To_Josh2UVI((u_inProjTransformINV[rigID] * vec4(dir, 0.0f)).xyz) * vec3(1, 1, u_numRigCameras) + vec3(0, 0, rigID)).r;
+}
 				)");
 		}
 
@@ -1829,6 +2019,11 @@ uniform sampler2DArray u_panoMask;
 float PanoMask(vec3 dir)
 {
 	return texture(u_panoMask, Dir_To_Josh2UVI((u_inProjTransformINV[RigID()] * vec4(dir, 0.0f)).xyz) * vec3(1, 1, u_numRigCameras) + vec3(0, 0, RigID())).r;
+}
+
+float PanoMask(vec3 dir, int rigID)
+{
+	return texture(u_panoMask, Dir_To_Josh2UVI((u_inProjTransformINV[rigID] * vec4(dir, 0.0f)).xyz) * vec3(1, 1, u_numRigCameras) + vec3(0, 0, rigID)).r;
 }
 				)");
 		}
@@ -1886,13 +2081,54 @@ vec4 PanoField(vec3 dir)
 		}
 	}
 }
+
+vec4 PanoField(vec3 dir, int rigID)
+{
+	vec3 dir2 = (u_inProjTransformINV[rigID] * vec4(dir, 0.0f)).xyz;
+
+	vec2 uv = Dir_To_MercatorUV(dir2);
+	int vi = clamp(int(uv.y * 2.0f), 0, 1);
+	int ui = clamp(int(uv.x * 2.0f), 0, 1);
+	vec3 uvi = vec3(uv * 2.0f - vec2(ui, vi), vi * 2 + ui);
+
+	if(u_useCenterOnly > 0)
+	{
+		return texture(u_panoField, uvi * vec3(1, 1, u_numRigCameras) + vec3(0, 0, rigID));
+	}
+	else
+	{
+		if(dir2.z > M_JOSH3_Z0)
+		{
+			vec4 s = u_inProjW2C[0] * vec4(dir2, 1.0f);
+			s /= s.w;
+
+			return mix( 
+				texture(u_panoField, uvi * vec3(1, 1, u_numRigCameras) + vec3(0, 0, rigID)), 
+				texture(u_panoField, vec3(s.xy, 4) * vec3(1, 1, u_numRigCameras) + vec3(0, 0, rigID)), 
+				clamp((dir2.z - M_JOSH3_Z0) * M_JOSH3_ZS, 0.0f, 1.0f));
+		}
+		else if (dir2.z < -M_JOSH3_Z0)
+		{
+			vec4 s = u_inProjW2C[1] * vec4(dir2, 1.0f);
+			s /= s.w;
+
+			return mix( 
+				texture(u_panoField, uvi * vec3(1, 1, u_numRigCameras) + vec3(0, 0, rigID)), 
+				texture(u_panoField, vec3(s.xy, 5) * vec3(1, 1, u_numRigCameras) + vec3(0, 0, rigID)), 
+				clamp((-dir2.z - M_JOSH3_Z0) * M_JOSH3_ZS, 0.0f, 1.0f));
+		}
+		else
+		{
+			return texture(u_panoField, uvi * vec3(1, 1, u_numRigCameras) + vec3(0, 0, rigID));
+		}
+	}
+}
 			)");
 
 		if (enableDepth)
 		{
 			shaderSources["canvas_frag"]->push_back(R"(
 uniform sampler2DArray u_panoDepth;
-
 
 float PanoDepth(vec3 dir)
 {
@@ -1932,6 +2168,48 @@ float PanoDepth(vec3 dir)
 		else
 		{
 			return texture(u_panoDepth, uvi * vec3(1, 1, u_numRigCameras) + vec3(0, 0, RigID())).r;
+		}
+	}
+}
+
+float PanoDepth(vec3 dir, int rigID)
+{
+	vec3 dir2 = (u_inProjTransformINV[rigID] * vec4(dir, 0.0f)).xyz;
+
+	vec2 uv = Dir_To_MercatorUV(dir2);
+	int vi = clamp(int(uv.y * 2.0f), 0, 1);
+	int ui = clamp(int(uv.x * 2.0f), 0, 1);
+	vec3 uvi = vec3(uv * 2.0f - vec2(ui, vi), vi * 2 + ui);
+
+	if(u_useCenterOnly > 0)
+	{
+		return texture(u_panoDepth, uvi * vec3(1, 1, u_numRigCameras) + vec3(0, 0, rigID)).r;
+	}
+	else
+	{
+		if(dir2.z > M_JOSH3_Z0)
+		{
+			vec4 s = u_inProjW2C[0] * vec4(dir2, 1.0f);
+			s /= s.w;
+
+			return mix( 
+				texture(u_panoDepth, uvi * vec3(1, 1, u_numRigCameras) + vec3(0, 0, rigID)).r, 
+				texture(u_panoDepth, vec3(s.xy, 4) * vec3(1, 1, u_numRigCameras) + vec3(0, 0, rigID)).r, 
+				clamp((dir2.z - M_JOSH3_Z0) * M_JOSH3_ZS, 0.0f, 1.0f));
+		}
+		else if (dir2.z < -M_JOSH3_Z0)
+		{
+			vec4 s = u_inProjW2C[1] * vec4(dir2, 1.0f);
+			s /= s.w;
+
+			return mix( 
+				texture(u_panoDepth, uvi * vec3(1, 1, u_numRigCameras) + vec3(0, 0, rigID)).r, 
+				texture(u_panoDepth, vec3(s.xy, 5) * vec3(1, 1, u_numRigCameras) + vec3(0, 0, rigID)).r, 
+				clamp((-dir2.z - M_JOSH3_Z0) * M_JOSH3_ZS, 0.0f, 1.0f));
+		}
+		else
+		{
+			return texture(u_panoDepth, uvi * vec3(1, 1, u_numRigCameras) + vec3(0, 0, rigID)).r;
 		}
 	}
 }
@@ -1981,6 +2259,48 @@ float PanoMask(vec3 dir)
 		else
 		{
 			return texture(u_panoMask, uvi * vec3(1, 1, u_numRigCameras) + vec3(0, 0, RigID())).r;
+		}
+	}
+}
+
+float PanoMask(vec3 dir, int rigID)
+{
+	vec3 dir2 = (u_inProjTransformINV[rigID] * vec4(dir, 0.0f)).xyz;
+
+	vec2 uv = Dir_To_MercatorUV(dir2);
+	int vi = clamp(int(uv.y * 2.0f), 0, 1);
+	int ui = clamp(int(uv.x * 2.0f), 0, 1);
+	vec3 uvi = vec3(uv * 2.0f - vec2(ui, vi), vi * 2 + ui);
+
+	if(u_useCenterOnly > 0)
+	{
+		return texture(u_panoMask, uvi * vec3(1, 1, u_numRigCameras) + vec3(0, 0, rigID)).r;
+	}
+	else
+	{
+		if(dir2.z > M_JOSH3_Z0)
+		{
+			vec4 s = u_inProjW2C[0] * vec4(dir2, 1.0f);
+			s /= s.w;
+
+			return mix( 
+				texture(u_panoMask, uvi * vec3(1, 1, u_numRigCameras) + vec3(0, 0, rigID)).r, 
+				texture(u_panoMask, vec3(s.xy, 4) * vec3(1, 1, u_numRigCameras) + vec3(0, 0, rigID)).r, 
+				clamp((dir2.z - M_JOSH3_Z0) * M_JOSH3_ZS, 0.0f, 1.0f));
+		}
+		else if (dir2.z < -M_JOSH3_Z0)
+		{
+			vec4 s = u_inProjW2C[1] * vec4(dir2, 1.0f);
+			s /= s.w;
+
+			return mix( 
+				texture(u_panoMask, uvi * vec3(1, 1, u_numRigCameras) + vec3(0, 0, rigID)).r, 
+				texture(u_panoMask, vec3(s.xy, 5) * vec3(1, 1, u_numRigCameras) + vec3(0, 0, rigID)).r, 
+				clamp((-dir2.z - M_JOSH3_Z0) * M_JOSH3_ZS, 0.0f, 1.0f));
+		}
+		else
+		{
+			return texture(u_panoMask, uvi * vec3(1, 1, u_numRigCameras) + vec3(0, 0, rigID)).r;
 		}
 	}
 }
@@ -2311,17 +2631,32 @@ Ray3D GetFragViewRay(vec2 fragUV)
 	vec3 eye = (u_outProjTransform[RigID()] * u_outProjV2W[0] * vec4(0.0f, 0.0f, 0.0f, 1.0f)).xyz;
 	return Ray3D(eye, normalize((u_outProjTransform[RigID()] * u_outProjC2W[0] * clip).xyz - eye));
 }
+
+Ray3D GetFragViewRay(vec2 fragUV, int rigID)
+{
+	vec4 ndc = vec4(fragUV * 2.0f - 1.0f, 1.0f, 1.0f);
+	vec4 clip = ndc * CAM_FAR; // -(-CAM_FAR)
+	vec3 eye = (u_outProjTransform[rigID] * u_outProjV2W[0] * vec4(0.0f, 0.0f, 0.0f, 1.0f)).xyz;
+	return Ray3D(eye, normalize((u_outProjTransform[rigID] * u_outProjC2W[0] * clip).xyz - eye));
+}
 			)");
 	}
 
 	void PanoRenderBase::PanoRender_InitFragmentShaderHeadersEvent__rigMode_MULTI__outProjMode_EQUIRECTANGULAR()
 	{
-		shaderSources["canvas_frag"]->push_back(R"(
+		shaderSources["canvas_frag"]->push_back(R"(\
 Ray3D GetFragViewRay(vec2 fragUV)
 {
 	return Ray3D(
 			(u_outProjTransform[RigID()] * vec4(0.0f, 0.0f, 0.0f, 1.0f)).xyz, 
 			(u_outProjTransform[RigID()] * vec4(EquirectangularUV_To_Dir(fragUV), 0.0f)).xyz);
+}
+
+Ray3D GetFragViewRay(vec2 fragUV, int rigID)
+{
+	return Ray3D(
+			(u_outProjTransform[rigID] * vec4(0.0f, 0.0f, 0.0f, 1.0f)).xyz, 
+			(u_outProjTransform[rigID] * vec4(EquirectangularUV_To_Dir(fragUV), 0.0f)).xyz);
 }
 			)");
 	}
@@ -2334,6 +2669,13 @@ Ray3D GetFragViewRay(vec2 fragUV)
 	return Ray3D(
 			(u_outProjTransform[RigID()] * vec4(0.0f, 0.0f, 0.0f, 1.0f)).xyz, 
 			(u_outProjTransform[RigID()] * vec4(MercatorUV_To_Dir(fragUV), 0.0f)).xyz);
+}
+
+Ray3D GetFragViewRay(vec2 fragUV, int rigID)
+{
+	return Ray3D(
+			(u_outProjTransform[rigID] * vec4(0.0f, 0.0f, 0.0f, 1.0f)).xyz, 
+			(u_outProjTransform[rigID] * vec4(MercatorUV_To_Dir(fragUV), 0.0f)).xyz);
 }
 			)");
 	}
@@ -2349,6 +2691,15 @@ Ray3D GetFragViewRay(vec2 fragUV)
 	vec3 eye = (u_outProjTransform[RigID()] * u_outProjV2W[layerID] * vec4(0.0f, 0.0f, 0.0f, 1.0f)).xyz;
 	return Ray3D(eye, normalize((u_outProjTransform[RigID()] * u_outProjC2W[layerID] * clip).xyz - eye));
 }
+
+Ray3D GetFragViewRay(vec2 fragUV, int rigID)
+{
+	int layerID = LayerID();
+	vec4 ndc = vec4(fragUV * 2.0f - 1.0f, 1.0f, 1.0f);
+	vec4 clip = ndc * CAM_FAR; // -(-CAM_FAR)
+	vec3 eye = (u_outProjTransform[rigID] * u_outProjV2W[layerID] * vec4(0.0f, 0.0f, 0.0f, 1.0f)).xyz;
+	return Ray3D(eye, normalize((u_outProjTransform[rigID] * u_outProjC2W[layerID] * clip).xyz - eye));
+}
 			)");
 	}
 
@@ -2362,6 +2713,15 @@ Ray3D GetFragViewRay(vec2 fragUV)
 	vec4 clip = ndc * CAM_FAR; // -(-CAM_FAR)
 	vec3 eye = (u_outProjTransform[RigID()] * u_outProjV2W[layerID] * vec4(0.0f, 0.0f, 0.0f, 1.0f)).xyz;
 	return Ray3D(eye, normalize((u_outProjTransform[RigID()] * u_outProjC2W[layerID] * clip).xyz - eye));
+}
+
+Ray3D GetFragViewRay(vec2 fragUV, int rigID)
+{
+	int layerID = LayerID();
+	vec4 ndc = vec4(fragUV * 2.0f - 1.0f, 1.0f, 1.0f);
+	vec4 clip = ndc * CAM_FAR; // -(-CAM_FAR)
+	vec3 eye = (u_outProjTransform[rigID] * u_outProjV2W[layerID] * vec4(0.0f, 0.0f, 0.0f, 1.0f)).xyz;
+	return Ray3D(eye, normalize((u_outProjTransform[rigID] * u_outProjC2W[layerID] * clip).xyz - eye));
 }
 			)");
 	}
@@ -2377,6 +2737,15 @@ Ray3D GetFragViewRay(vec2 fragUV)
 	vec3 eye = (u_outProjTransform[RigID()] * u_outProjV2W[layerID] * vec4(0.0f, 0.0f, 0.0f, 1.0f)).xyz;
 	return Ray3D(eye, normalize((u_outProjTransform[RigID()] * u_outProjC2W[layerID] * clip).xyz - eye));
 }
+
+Ray3D GetFragViewRay(vec2 fragUV, int rigID)
+{
+	int layerID = LayerID();
+	vec4 ndc = vec4(fragUV * 2.0f - 1.0f, 1.0f, 1.0f);
+	vec4 clip = ndc * CAM_FAR; // -(-CAM_FAR)
+	vec3 eye = (u_outProjTransform[rigID] * u_outProjV2W[layerID] * vec4(0.0f, 0.0f, 0.0f, 1.0f)).xyz;
+	return Ray3D(eye, normalize((u_outProjTransform[rigID] * u_outProjC2W[layerID] * clip).xyz - eye));
+}
 			)");
 	}
 
@@ -2389,6 +2758,14 @@ Ray3D GetFragViewRayFace(int id, vec2 faceUV)
 	vec4 clip = ndc * CAM_FAR; // -(-CAM_FAR)
 	vec3 eye = (u_outProjTransform[RigID()] * u_outProjV2W[id] * vec4(0.0f, 0.0f, 0.0f, 1.0f)).xyz;
 	return Ray3D(eye, normalize((u_outProjTransform[RigID()] * u_outProjC2W[id] * clip).xyz - eye));
+}
+
+Ray3D GetFragViewRayFace(int id, vec2 faceUV, int rigID)
+{
+	vec4 ndc = vec4(faceUV * 2.0f - 1.0f, 1.0f, 1.0f);
+	vec4 clip = ndc * CAM_FAR; // -(-CAM_FAR)
+	vec3 eye = (u_outProjTransform[rigID] * u_outProjV2W[id] * vec4(0.0f, 0.0f, 0.0f, 1.0f)).xyz;
+	return Ray3D(eye, normalize((u_outProjTransform[rigID] * u_outProjC2W[id] * clip).xyz - eye));
 }
 
 Ray3D GetFragViewRayFace0(vec2 warpUV)
@@ -2584,6 +2961,200 @@ Ray3D GetFragViewRay(vec2 fragUV)
 	}//---------------------------------------
 	return Ray3D(vec3(0.0f), vec3(0.0f));
 }
+
+Ray3D GetFragViewRayFace0(vec2 warpUV, int rigID)
+{
+	vec2 faceUV = warpUV;
+	return GetFragViewRayFace(0, faceUV, rigID);
+}
+
+Ray3D GetFragViewRayFace1(vec2 warpUV, int rigID)
+{
+	float scale = (0.5f + (1.0f - warpUV.x)) * 2.0f;
+	vec2 faceUV = vec2(
+		warpUV.x, 
+		warpUV.y / scale);
+	return GetFragViewRayFace(1, faceUV, rigID);
+}
+
+Ray3D GetFragViewRayFace2(vec2 warpUV, int rigID)
+{
+	float scale = (0.5f + (1.0f - warpUV.x)) * 2.0f;
+	vec2 faceUV = vec2(
+		warpUV.x, 
+		warpUV.y / scale);
+	return GetFragViewRayFace(2, faceUV, rigID);
+}
+
+Ray3D GetFragViewRayFace3(vec2 warpUV, int rigID)
+{
+	float scale = (0.5f + warpUV.x) * 2.0f;
+	vec2 faceUV = vec2(
+		warpUV.x, 
+		warpUV.y / scale);
+	return GetFragViewRayFace(3, faceUV, rigID);
+}
+
+Ray3D GetFragViewRayFace4(vec2 warpUV, int rigID)
+{
+	float scale = (0.5f + warpUV.y) * 2.0f;
+	vec2 faceUV = vec2(
+		warpUV.x / scale,
+		warpUV.y);
+	return GetFragViewRayFace(4, faceUV, rigID);
+}
+
+Ray3D GetFragViewRayFace5(vec2 warpUV, int rigID)
+{
+	float scale = (0.5f + ( 1.0f - warpUV.y) ) * 2.0f;
+	vec2 faceUV = vec2(
+		warpUV.x / scale,
+		warpUV.y);
+	return GetFragViewRayFace(5, faceUV, rigID);
+}
+
+Ray3D GetFragViewRayFace6(vec2 warpUV, int rigID)
+{
+	float scale = (0.5f + warpUV.y) * 2.0f;
+	vec2 faceUV = vec2(
+		warpUV.x / scale,
+		warpUV.y);
+	return GetFragViewRayFace(6, faceUV, rigID);
+}
+
+Ray3D GetFragViewRayFace7(vec2 warpUV, int rigID)
+{
+	float scale = (0.5f + ( 1.0f - warpUV.y) ) * 2.0f;
+	vec2 faceUV = vec2(
+		warpUV.x / scale,
+		warpUV.y);
+	return GetFragViewRayFace(7, faceUV, rigID);
+}
+
+Ray3D GetFragViewRay(vec2 fragUV, int rigID)
+{
+	int layerID = LayerID();
+	if(layerID == 0)
+	{
+		if((fragUV.x + fragUV.y) > 1.0f)
+		{
+			return GetFragViewRayFace4( fragUV + 
+				vec2(0.0f - (1.0f - fragUV.y), 0.0f), rigID );
+		}
+		else
+		{
+			return GetFragViewRayFace2( fragUV + 
+				vec2( 0.0f, 2.0f - fragUV.x), rigID );
+		}
+	}
+	else if (layerID == 4)
+	{
+		{
+			return GetFragViewRayFace2( fragUV + 
+				vec2( 0.0f, 1.0f - fragUV.x), rigID );
+		}
+	}
+	else if (layerID == 8)
+	{
+		if(fragUV.y > fragUV.x)
+		{
+			return GetFragViewRayFace2( fragUV + 
+				vec2( 0.0f, 0.0f - fragUV.x), rigID );
+		}
+		else
+		{
+			return GetFragViewRayFace5( fragUV + 
+				vec2( 0.0f - fragUV.y, 0.0f), rigID );
+		}
+	} //---------------------------------------
+	else if (layerID == 1)
+	{
+		{
+			return GetFragViewRayFace4( fragUV + 
+				vec2(1.0f - (1.0f - fragUV.y), 0.0f), rigID );
+		}
+	}
+	else if (layerID == 5)
+	{
+		{
+			return GetFragViewRayFace0( fragUV, rigID );
+		}
+	}
+	else if (layerID == 9)
+	{
+		{
+			return GetFragViewRayFace5( fragUV + 
+				vec2( 1.0f - fragUV.y, 0.0f), rigID );
+		}
+	}//---------------------------------------
+	else if (layerID == 2)
+	{
+		if(fragUV.y > fragUV.x)
+		{
+			return GetFragViewRayFace4( fragUV + 
+				vec2(2.0f - (1.0f - fragUV.y), 0.0f), rigID );
+		}
+		else
+		{
+			return GetFragViewRayFace3( fragUV + 
+				vec2( 0.0f, 2.0f - (1.0f - fragUV.x) ), rigID );
+		}
+	}
+	else if (layerID == 6)
+	{
+		{
+			return GetFragViewRayFace3( fragUV + 
+				vec2( 0.0f, 1.0f - (1.0f - fragUV.x) ), rigID );
+		}
+	}
+	else if (layerID == 10)
+	{
+		if((fragUV.x + fragUV.y) >1.0f)
+		{
+			return GetFragViewRayFace3( fragUV + 
+				vec2( 0.0f, 0.0f - (1.0f - fragUV.x) ), rigID );
+		}
+		else
+		{
+			return GetFragViewRayFace5( fragUV + 
+				vec2( 2.0f - fragUV.y, 0.0f), rigID );
+		}
+	}//---------------------------------------
+	else if (layerID == 3)
+	{
+		if((fragUV.x + fragUV.y) >1.0f)
+		{
+			return GetFragViewRayFace6( fragUV + 
+				vec2( 0.0f - (1.0f - fragUV.y), 0.0f), rigID );
+		}
+		else
+		{
+			return GetFragViewRayFace1( fragUV + 
+				vec2( 0.0f, 2.0f - fragUV.x), rigID );
+		}
+	}
+	else if (layerID == 7)
+	{
+		{
+			return GetFragViewRayFace1( fragUV + 
+				vec2( 0.0f, 1.0f - fragUV.x), rigID );
+		}
+	}
+	else if (layerID == 11)
+	{
+		if(fragUV.y > fragUV.x)
+		{
+			return GetFragViewRayFace1( fragUV + 
+				vec2( 0.0f, 0.0f - fragUV.x), rigID );
+		}
+		else
+		{
+			return GetFragViewRayFace7( fragUV + 
+				vec2( 0.0f - fragUV.y, 0.0f), rigID );
+		}
+	}//---------------------------------------
+	return Ray3D(vec3(0.0f), vec3(0.0f));
+}
 			)");
 	}
 
@@ -2619,6 +3190,36 @@ Ray3D GetFragViewRay(vec2 fragUV)
 		return Ray3D(eye, normalize((u_outProjTransform[RigID()] * u_outProjC2W[1] * clip).xyz - eye));
 	}
 }
+
+Ray3D GetFragViewRay(vec2 fragUV, int rigID)
+{
+	int layerID = LayerID();
+
+	if(layerID < 4)
+	{
+		int vi = layerID / 2;
+		int ui = layerID % 2;
+		vec3 uvi = vec3(fragUV * 2.0f - vec2(ui, vi), vi * 2 + ui);
+
+		return Ray3D(
+			(u_outProjTransform[rigID] * vec4(0.0f, 0.0f, 0.0f, 1.0f)).xyz, 
+			(u_outProjTransform[rigID] * vec4(MercatorUV_To_Dir((fragUV + vec2(ui, vi)) * 0.5f), 0.0f)).xyz);
+	}
+	else if (layerID == 4)
+	{
+		vec4 ndc = vec4(fragUV * 2.0f - 1.0f, 1.0f, 1.0f);
+		vec4 clip = ndc * CAM_FAR; // -(-CAM_FAR)
+		vec3 eye = (u_outProjTransform[rigID] * u_outProjV2W[0] * vec4(0.0f, 0.0f, 0.0f, 1.0f)).xyz;
+		return Ray3D(eye, normalize((u_outProjTransform[rigID] * u_outProjC2W[0] * clip).xyz - eye));
+	}
+	else
+	{
+		vec4 ndc = vec4(fragUV * 2.0f - 1.0f, 1.0f, 1.0f);
+		vec4 clip = ndc * CAM_FAR; // -(-CAM_FAR)
+		vec3 eye = (u_outProjTransform[rigID] * u_outProjV2W[1] * vec4(0.0f, 0.0f, 0.0f, 1.0f)).xyz;
+		return Ray3D(eye, normalize((u_outProjTransform[rigID] * u_outProjC2W[1] * clip).xyz - eye));
+	}
+}
 			)");
 	}
 
@@ -2632,6 +3233,15 @@ Ray3D GetFragViewRay(vec2 fragUV)
 	vec4 clip = ndc * CAM_FAR; // -(-CAM_FAR)
 	vec3 eye = (u_outProjTransform[RigID()] * u_outProjV2W[layerID] * vec4(0.0f, 0.0f, 0.0f, 1.0f)).xyz;
 	return Ray3D(eye, normalize((u_outProjTransform[RigID()] * u_outProjC2W[layerID] * clip).xyz - eye));
+}
+
+Ray3D GetFragViewRay(vec2 fragUV, int rigID)
+{
+	int layerID = LayerID();
+	vec4 ndc = vec4(fragUV * 2.0f - 1.0f, 1.0f, 1.0f);
+	vec4 clip = ndc * CAM_FAR; // -(-CAM_FAR)
+	vec3 eye = (u_outProjTransform[rigID] * u_outProjV2W[layerID] * vec4(0.0f, 0.0f, 0.0f, 1.0f)).xyz;
+	return Ray3D(eye, normalize((u_outProjTransform[rigID] * u_outProjC2W[layerID] * clip).xyz - eye));
 }
 			)");
 	}
